@@ -6,27 +6,33 @@ import './App.css';
 class App extends Component {
   constructor() {
     super();
-    this.state = { message: "Hello World" }
+    this.state = {
+      messages: []
+    }
   }
 
   componentDidMount() {
-    firebase.database().ref("/message").on("value", snapshot => {
+    firebase.database().ref("/messages").on("value", snapshot => {
+      const messages = snapshot.val();
       this.setState({
-        message: snapshot.val()
+        messages: Object.keys(messages).map(k => {
+          return { key: k, message: messages[k].message }
+        })
       })
     });
   }
 
   render() {
+    const messageComponents = this.state.messages.map(message => {
+      return <li key={message.key}>{message.message}</li>
+    });
     return (
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
-        <p className="App-intro">
-          { this.state.message }
-        </p>
+        <ul>{ messageComponents }</ul>
       </div>
     );
   }
