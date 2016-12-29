@@ -1,8 +1,22 @@
 import React, { Component } from 'react';
+import * as firebase from "firebase";
 import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = { message: "Hello World" }
+  }
+
+  componentDidMount() {
+    firebase.database().ref("/message").on("value", snapshot => {
+      this.setState({
+        message: snapshot.val()
+      })
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -11,7 +25,7 @@ class App extends Component {
           <h2>Welcome to React</h2>
         </div>
         <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
+          { this.state.message }
         </p>
       </div>
     );
