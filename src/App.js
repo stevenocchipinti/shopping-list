@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import * as firebase from "firebase";
+import NewEntryForm from './NewEntryForm';
 import logo from './logo.svg';
-import './App.css';
+import './App.css'
 
 class App extends Component {
   constructor() {
@@ -33,6 +34,7 @@ class App extends Component {
           <h2>Welcome to React</h2>
         </div>
         <ul>{ messageComponents }</ul>
+        <NewEntryForm />
       </div>
     );
   }
