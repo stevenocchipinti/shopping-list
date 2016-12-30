@@ -41,11 +41,20 @@ class App extends Component {
     });
   }
 
+  handleDelete(checkinKey) {
+    this.checkinsRef.child(checkinKey).remove();
+  }
+
   body() {
     if (this.state.checkins.length === 0) {
       return <LoadingSpinner />;
     } else {
-      return <CheckinTable checkins={ this.state.checkins }/>;
+      return (
+        <CheckinTable
+          checkins={ this.state.checkins }
+          onDelete={ (key) => this.handleDelete(key) }
+        />
+      );
     }
   }
 

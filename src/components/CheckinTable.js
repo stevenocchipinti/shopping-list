@@ -36,10 +36,14 @@ export default class CheckinTable extends Component {
     );
   }
 
-  menu() {
+  menu(key) {
     const iconButton = (
       <IconButton style={ styles.tableMenuCellStyle }><MoreVertIcon /></IconButton>
     );
+
+    const handleDelete = () => {
+      this.props.onDelete(key);
+    };
 
     return (
       <IconMenu
@@ -47,14 +51,12 @@ export default class CheckinTable extends Component {
         anchorOrigin={{horizontal: "right", vertical: "top"}}
         targetOrigin={{horizontal: "right", vertical: "top"}}
       >
-        <MenuItem primaryText="Edit" />
-        <MenuItem primaryText="Delete" />
+        <MenuItem onTouchTap={handleDelete} primaryText="Delete" />
       </IconMenu>
     );
   }
 
   rows() {
-
     return this.props.checkins.map(checkin => {
       const date = new Date(checkin.date);
       return (
@@ -74,7 +76,7 @@ export default class CheckinTable extends Component {
             { checkin.waist } cm
           </TableRowColumn>
           <TableRowColumn style={ styles.tableMenuCellStyle }>
-            { this.menu() }
+            { this.menu(checkin.key) }
           </TableRowColumn>
         </TableRow>
       );
