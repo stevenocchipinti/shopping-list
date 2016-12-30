@@ -12,7 +12,10 @@ parserOptions:
 plugins:
   - react
 rules:
-  jsx-uses-vars: true
+  react/jsx-uses-vars: 2
+  react/jsx-uses-react: 2
+  no-console:
+    - warn
   indent:
     - error
     - 2
