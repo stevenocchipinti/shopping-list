@@ -17,7 +17,7 @@ class App extends Component {
     super();
     this.state = {
       checkins: []
-    }
+    };
   }
 
   componentDidMount() {
@@ -31,9 +31,9 @@ class App extends Component {
             weight: checkins[k].weight,
             fat: checkins[k].fat,
             waist: checkins[k].waist
-          }
+          };
         })
-      })
+      });
     });
   }
 
@@ -46,7 +46,7 @@ class App extends Component {
     const tableMenuCellStyle = {
       padding: "0px",
       width: "30px"
-    }
+    };
 
     const iconButton = (
       <IconButton style={tableMenuCellStyle}><MoreVertIcon /></IconButton>
@@ -86,8 +86,8 @@ class App extends Component {
           <TableRowColumn style={ tableMenuCellStyle }>
             <IconMenu
               iconButtonElement={iconButton}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+              anchorOrigin={{horizontal: "right", vertical: "top"}}
+              targetOrigin={{horizontal: "right", vertical: "top"}}
             >
               <MenuItem primaryText="Edit" />
               <MenuItem primaryText="Delete" />
