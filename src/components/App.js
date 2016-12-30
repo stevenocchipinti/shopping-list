@@ -3,20 +3,19 @@ import * as firebase from "firebase";
 
 import AppBar from "material-ui/AppBar";
 
-import NewEntryForm from "./NewEntryForm";
 import LoadingSpinner from "./LoadingSpinner";
 import CheckinTable from "./CheckinTable";
+import NewCheckinDialog from "./NewCheckinDialog";
 
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      checkins: []
-    };
+    this.checkinsRef = firebase.database().ref("/checkins");
+    this.state = { checkins: [] };
   }
 
   componentDidMount() {
-    firebase.database().ref("/checkins").on("value", snapshot => {
+    this.checkinsRef.on("value", snapshot => {
       const checkins = snapshot.val();
       this.setState({
         checkins: Object.keys(checkins).reverse().map(k => {
@@ -32,6 +31,16 @@ class App extends Component {
     });
   }
 
+  handleSubmit(checkin) {
+    let newCheckinRef = this.checkinsRef.push();
+    newCheckinRef.set({
+      createdAt: checkin.date.toISOString(),
+      weight: checkin.weight,
+      fat: checkin.fat,
+      waist: checkin.waist
+    });
+  }
+
   body() {
     if (this.state.checkins.length === 0) {
       return <LoadingSpinner />;
@@ -44,8 +53,12 @@ class App extends Component {
     return (
       <div className="App">
         <AppBar title="FatLog" showMenuIconButton={false} />
-        <NewEntryForm />
+
+        <NewCheckinDialog onSubmit={ checkin => this.handleSubmit(checkin) }/>
+
         { this.body() }
+
+        <footer style={{ height: "100px" }} />
       </div>
     );
   }

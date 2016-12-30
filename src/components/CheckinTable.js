@@ -60,7 +60,7 @@ export default class CheckinTable extends Component {
       return (
         <TableRow key={ checkin.key }>
           <TableRowColumn style={ styles.tableCellStyle }>
-            { `${date.getDate()}/${date.getMonth()}` }
+            { `${date.getDate()}/${date.getMonth()+1}` }
             <br />
             { date.getFullYear() }
           </TableRowColumn>
