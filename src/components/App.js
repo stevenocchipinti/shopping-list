@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import * as firebase from "firebase";
 
-import AppBar from "material-ui/AppBar";
-
 import LoadingSpinner from "./LoadingSpinner";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
+import AppBar from "./AppBar";
+
 
 class App extends Component {
   constructor() {
@@ -61,12 +61,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AppBar title="FatLog" showMenuIconButton={false} />
-
+        <AppBar />
         <NewCheckinDialog onSubmit={ checkin => this.handleSubmit(checkin) }/>
-
         { this.body() }
-
         <footer style={{ height: "100px" }} />
       </div>
     );
