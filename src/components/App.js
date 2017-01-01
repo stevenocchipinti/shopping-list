@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import * as firebase from "firebase";
+
+import backend from "../backend";
 
 import LoadingSpinner from "./LoadingSpinner";
 import NoLogsPlaceholder from "./NoLogsPlaceholder";
@@ -15,61 +16,22 @@ class App extends Component {
   }
 
   componentDidMount() {
-    var that = this;
-    firebase.auth().onAuthStateChanged(user => {
-      this.setState({...this.state, user});
-
-      if (!user) return;
-      that.checkinsRef().on("value", snapshot => {
-        const checkins = snapshot.val();
-        if (checkins) {
-          that.setState({
-            ...that.state,
-            checkins: Object.keys(checkins).reverse().map(k => {
-              return {
-                key: k,
-                date: checkins[k].createdAt,
-                weight: checkins[k].weight,
-                fat: checkins[k].fat,
-                waist: checkins[k].waist
-              };
-            })
-          });
-        } else {
-          that.setState({...that.state, checkins: []});
-        }
-      });
+    backend.init({
+      onAuthStateChanged: user => {
+        this.setState({...this.state, user});
+      },
+      onCheckinsChanged: checkins => {
+        this.setState({...this.state, checkins});
+      }
     });
-
-  }
-
-  checkinsRef() {
-    return firebase.database().ref(`/checkins/${this.state.user.uid}`);
-  }
-
-  handleSignIn() {
-    let provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
-  }
-
-  handleSignOut() {
-    firebase.auth().signOut();
   }
 
   handleSubmit(checkin) {
-    if (!this.state.user) return;
-    let newCheckinRef = this.checkinsRef().push();
-    newCheckinRef.set({
-      createdAt: checkin.date.toISOString(),
-      weight: checkin.weight,
-      fat: checkin.fat,
-      waist: checkin.waist
-    });
+    backend.addCheckin(checkin);
   }
 
   handleDelete(checkinKey) {
-    if (!this.state.user) return;
-    this.checkinsRef().child(checkinKey).remove();
+    backend.deleteCheckin(checkinKey);
   }
 
   body() {
@@ -91,8 +53,8 @@ class App extends Component {
     return (
       <div className="App">
         <AppBar
-          onSignIn={ () => this.handleSignIn() }
-          onSignOut={ () => this.handleSignOut() }
+          onSignIn={backend.signIn}
+          onSignOut={backend.signOut}
           user={this.state.user}
         />
 
