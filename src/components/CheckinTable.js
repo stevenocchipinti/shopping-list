@@ -3,10 +3,7 @@ import React, { Component } from "react";
 import { Table, TableBody, TableRow, TableRowColumn } from "material-ui/Table";
 import { TableHeader, TableHeaderColumn } from "material-ui/Table";
 
-import IconMenu from "material-ui/IconMenu";
-import MenuItem from "material-ui/MenuItem";
-import IconButton from "material-ui/IconButton";
-import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+import CheckinMenu from "./CheckinMenu";
 
 const styles = {
   tableCellStyle: {
@@ -36,26 +33,6 @@ export default class CheckinTable extends Component {
     );
   }
 
-  menu(key) {
-    const iconButton = (
-      <IconButton style={ styles.tableMenuCellStyle }><MoreVertIcon /></IconButton>
-    );
-
-    const handleDelete = () => {
-      this.props.onDelete(key);
-    };
-
-    return (
-      <IconMenu
-        iconButtonElement={iconButton}
-        anchorOrigin={{horizontal: "right", vertical: "top"}}
-        targetOrigin={{horizontal: "right", vertical: "top"}}
-      >
-        <MenuItem onTouchTap={handleDelete} primaryText="Delete" />
-      </IconMenu>
-    );
-  }
-
   rows() {
     return this.props.checkins.map(checkin => {
       const date = new Date(checkin.date);
@@ -76,7 +53,11 @@ export default class CheckinTable extends Component {
             { checkin.waist } cm
           </TableRowColumn>
           <TableRowColumn style={ styles.tableMenuCellStyle }>
-            { this.menu(checkin.key) }
+            <CheckinMenu
+              checkinKey={checkin.key}
+              iconButtonStyle={styles.tableMenuCellStyle}
+              onDelete={this.props.onDelete}
+            />
           </TableRowColumn>
         </TableRow>
       );

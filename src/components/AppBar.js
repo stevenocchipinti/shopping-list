@@ -8,7 +8,7 @@ import IconButton from "material-ui/IconButton";
 import PersonIcon from "material-ui/svg-icons/social/person";
 
 class AppBar extends Component {
-  menuItem() {
+  menuContent() {
     if (this.props.user) {
       return (
         <MenuItem
@@ -34,7 +34,7 @@ class AppBar extends Component {
         targetOrigin={{horizontal: "right", vertical: "top"}}
         anchorOrigin={{horizontal: "right", vertical: "top"}}
       >
-        { this.menuItem() }
+        { this.menuContent() }
       </IconMenu>
     );
   }
