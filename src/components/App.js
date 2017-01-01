@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import backend from "../backend";
 
 import LoadingSpinner from "./LoadingSpinner";
-import NoLogsPlaceholder from "./NoLogsPlaceholder";
+import Placeholder from "./Placeholder";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
 import AppBar from "./AppBar";
@@ -35,10 +35,12 @@ class App extends Component {
   }
 
   body() {
-    if (!this.state.checkins) {
+    if (!backend.currentUser()) {
+      return <Placeholder>Not signed in</Placeholder>;
+    } else if (!this.state.checkins) {
       return <LoadingSpinner />;
     } else if (this.state.checkins.length === 0) {
-      return <NoLogsPlaceholder />;
+      return <Placeholder>No logs yet</Placeholder>;
     } else {
       return (
         <CheckinTable

@@ -43,7 +43,7 @@ class AppBar extends Component {
     return (
       <div>
         <MuiAppBar
-          title={this.props.user ? this.props.user.displayName : "FatLog"}
+          title="FatLog"
           showMenuIconButton={false}
           iconElementRight={this.menu()}
         />
