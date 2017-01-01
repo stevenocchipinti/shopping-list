@@ -1,53 +1,46 @@
 import React, { Component } from "react";
-import * as firebase from "firebase";
 
-import AppBar from "material-ui/AppBar";
+import backend from "../backend";
 
 import LoadingSpinner from "./LoadingSpinner";
+import Placeholder from "./Placeholder";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
+import AppBar from "./AppBar";
+
 
 class App extends Component {
   constructor() {
     super();
-    this.checkinsRef = firebase.database().ref("/checkins");
-    this.state = { checkins: [] };
+    this.state = {};
   }
 
   componentDidMount() {
-    this.checkinsRef.on("value", snapshot => {
-      const checkins = snapshot.val();
-      this.setState({
-        checkins: Object.keys(checkins).reverse().map(k => {
-          return {
-            key: k,
-            date: checkins[k].createdAt,
-            weight: checkins[k].weight,
-            fat: checkins[k].fat,
-            waist: checkins[k].waist
-          };
-        })
-      });
+    backend.init({
+      onAuthStateChanged: user => {
+        this.setState({...this.state, user});
+      },
+      onCheckinsChanged: checkins => {
+        this.setState({...this.state, checkins});
+      }
     });
   }
 
   handleSubmit(checkin) {
-    let newCheckinRef = this.checkinsRef.push();
-    newCheckinRef.set({
-      createdAt: checkin.date.toISOString(),
-      weight: checkin.weight,
-      fat: checkin.fat,
-      waist: checkin.waist
-    });
+    backend.addCheckin(checkin);
   }
 
   handleDelete(checkinKey) {
-    this.checkinsRef.child(checkinKey).remove();
+    backend.deleteCheckin(checkinKey);
   }
 
   body() {
-    if (this.state.checkins.length === 0) {
+    if (!backend.currentUser()) {
+      return <Placeholder>Not signed in</Placeholder>;
+    } else if (!this.state.checkins) {
       return <LoadingSpinner />;
+    } else if (this.state.checkins.length === 0) {
+      return <Placeholder>No logs yet</Placeholder>;
     } else {
       return (
         <CheckinTable
@@ -61,7 +54,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AppBar title="FatLog" showMenuIconButton={false} />
+        <AppBar
+          onSignIn={backend.signIn}
+          onSignOut={backend.signOut}
+          user={this.state.user}
+        />
 
         <NewCheckinDialog onSubmit={ checkin => this.handleSubmit(checkin) }/>
 
