@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import * as firebase from "firebase";
 
 import MuiAppBar from "material-ui/AppBar";
 
@@ -9,27 +8,18 @@ import IconButton from "material-ui/IconButton";
 import PersonIcon from "material-ui/svg-icons/social/person";
 
 class AppBar extends Component {
-  constructor() {
-    super();
-    this.state = { user: null };
-    firebase.auth().onAuthStateChanged(user => {
-      this.setState({user});
-    });
-  }
-
   menuItem() {
-    if (this.state.user) {
+    if (this.props.user) {
       return (
         <MenuItem
-          onTouchTap={ () => firebase.auth().signOut() }
+          onTouchTap={ () => this.props.onSignOut() }
           primaryText="Sign out"
         />
       );
     } else {
-      var provider = new firebase.auth.GoogleAuthProvider();
       return (
         <MenuItem
-          onTouchTap={ () => firebase.auth().signInWithRedirect(provider) }
+          onTouchTap={ () => this.props.onSignIn() }
           primaryText="Sign in"
         />
       );
@@ -53,7 +43,7 @@ class AppBar extends Component {
     return (
       <div>
         <MuiAppBar
-          title={this.state.user ? this.state.user.displayName : "FatLog"}
+          title={this.props.user ? this.props.user.displayName : "FatLog"}
           showMenuIconButton={false}
           iconElementRight={this.menu()}
         />
