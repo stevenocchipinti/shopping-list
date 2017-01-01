@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import backend from "../backend";
 
 import LoadingSpinner from "./LoadingSpinner";
+import Snackbar from "material-ui/Snackbar";
 import Placeholder from "./Placeholder";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
@@ -12,7 +13,12 @@ import AppBar from "./AppBar";
 class App extends Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      notification: {
+        message: "",
+        visible: false
+      }
+    };
   }
 
   componentDidMount() {
@@ -31,7 +37,22 @@ class App extends Component {
   }
 
   handleDelete(checkinKey) {
-    backend.deleteCheckin(checkinKey);
+    backend.deleteCheckin(checkinKey).then(() => {
+      this.notify("Check-in deleted");
+    });
+  }
+
+  notify(message) {
+    this.setState({
+      ...this.state,
+      notification: { message, visible: true }
+    });
+  }
+  hideNotification() {
+    this.setState({
+      ...this.state,
+      notification: { message: "", visible: false }
+    });
   }
 
   body() {
@@ -65,6 +86,14 @@ class App extends Component {
         { this.body() }
 
         <footer style={{ height: "100px" }} />
+
+        <Snackbar
+          open={this.state.notification.visible}
+          message={this.state.notification.message}
+          style={{textAlign: "center"}}
+          autoHideDuration={3000}
+          onRequestClose={ () => { this.hideNotification(); } }
+        />
       </div>
     );
   }

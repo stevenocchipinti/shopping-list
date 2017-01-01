@@ -52,7 +52,7 @@ const backend = {
   addCheckin: (checkin) => {
     if (!backend.currentUser()) return false;
     let newCheckinRef = backend.checkinsRef().push();
-    newCheckinRef.set({
+    return newCheckinRef.set({
       createdAt: checkin.date.toISOString(),
       weight: checkin.weight,
       fat: checkin.fat,
@@ -62,7 +62,7 @@ const backend = {
 
   deleteCheckin: (checkinKey) => {
     if (!backend.currentUser()) return false;
-    backend.checkinsRef().child(checkinKey).remove();
+    return backend.checkinsRef().child(checkinKey).remove();
   }
 };
 
