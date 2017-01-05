@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import backend from "../backend";
+import { registerServiceWorker } from "../serviceWorkerRegistration";
 
 import LoadingSpinner from "./LoadingSpinner";
 import Snackbar from "material-ui/Snackbar";
@@ -22,6 +23,15 @@ class App extends Component {
   }
 
   componentDidMount() {
+    registerServiceWorker({
+      onInstall: () => {
+        this.notify("Now available offline");
+      },
+      onUpdate: () => {
+        this.notify("Refresh for the new version");
+      }
+    });
+
     backend.init({
       onAuthStateChanged: user => {
         this.setState({...this.state, user});
@@ -32,7 +42,7 @@ class App extends Component {
     });
   }
 
-  handleSubmit(checkin) {
+  handleCreate(checkin) {
     backend.addCheckin(checkin);
   }
 
@@ -81,7 +91,7 @@ class App extends Component {
           user={this.state.user}
         />
 
-        <NewCheckinDialog onSubmit={ checkin => this.handleSubmit(checkin) }/>
+        <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
 
         { this.body() }
 
