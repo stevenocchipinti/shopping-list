@@ -12,13 +12,15 @@
     "material-ui": "^0.16.6",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-tap-event-plugin": "^2.0.1",
+    "sw-precache": "^4.2.3"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && yarn sw-precache",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "yarn run build && firebase deploy"
+    "deploy": "yarn build && firebase deploy",
+    "sw-precache": "sw-precache --config='sw-precache-config.json' --verbose --root='build'"
   }
 }
