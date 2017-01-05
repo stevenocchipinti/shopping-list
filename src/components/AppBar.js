@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import MuiAppBar from "material-ui/AppBar";
+import LinearProgress from "material-ui/LinearProgress";
 
 import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
@@ -39,6 +40,15 @@ class AppBar extends Component {
     );
   }
 
+  loadingIndicator() {
+    if (this.props.loading) {
+      return <LinearProgress mode="indeterminate" />;
+    } else {
+      // This keeps the height consistent instead of jumping by 4 pixels
+      return <div style={{ height: "4px" }} />;
+    }
+  }
+
   render() {
     return (
       <div>
@@ -46,7 +56,9 @@ class AppBar extends Component {
           title="FatLog"
           showMenuIconButton={false}
           iconElementRight={this.menu()}
+          style={this.props.offline ? {backgroundColor: "#666"} : {}}
         />
+        { this.loadingIndicator() }
       </div>
     );
   }

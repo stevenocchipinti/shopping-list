@@ -1,25 +1,35 @@
 import React, { Component } from "react";
 
 import backend from "../backend";
+import { loadState, saveState, clearState } from "../localStorage";
 import { registerServiceWorker } from "../serviceWorkerRegistration";
 
-import LoadingSpinner from "./LoadingSpinner";
-import Snackbar from "material-ui/Snackbar";
 import Placeholder from "./Placeholder";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
 import AppBar from "./AppBar";
 
+import Snackbar from "material-ui/Snackbar";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
+      checkins: [],
       notification: {
         message: "",
         visible: false
-      }
+      },
+      loading: true,
+      offline: !navigator.onLine
     };
+  }
+
+  componentWillUpdate(props, state) {
+    saveState({
+      checkins: state.checkins,
+      user: state.user
+    });
   }
 
   componentDidMount() {
@@ -32,12 +42,32 @@ class App extends Component {
       }
     });
 
+    let persistedState = loadState();
+    if (persistedState) {
+      this.setState({
+        ...this.state,
+        checkins: persistedState.checkins,
+        user: persistedState.user
+      });
+    }
+
+    if (window) window.addEventListener("online", () => {
+      this.setState({...this.state, offline: false});
+    });
+    if (window) window.addEventListener("offline", () => {
+      this.setState({...this.state, offline: true});
+    });
+
     backend.init({
       onAuthStateChanged: user => {
         this.setState({...this.state, user});
       },
       onCheckinsChanged: checkins => {
-        this.setState({...this.state, checkins});
+        this.setState({
+          ...this.state,
+          loading: false,
+          checkins
+        });
       }
     });
   }
@@ -66,10 +96,8 @@ class App extends Component {
   }
 
   body() {
-    if (!backend.currentUser()) {
+    if (!this.state.user) {
       return <Placeholder>Not signed in</Placeholder>;
-    } else if (!this.state.checkins) {
-      return <LoadingSpinner />;
     } else if (this.state.checkins.length === 0) {
       return <Placeholder>No logs yet</Placeholder>;
     } else {
@@ -86,9 +114,11 @@ class App extends Component {
     return (
       <div className="App">
         <AppBar
-          onSignIn={backend.signIn}
-          onSignOut={backend.signOut}
+          onSignIn={ () => { backend.signIn(); } }
+          onSignOut={ () => { backend.signOut(); clearState(); } }
           user={this.state.user}
+          loading={this.state.user && this.state.loading}
+          offline={this.state.offline}
         />
 
         <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
