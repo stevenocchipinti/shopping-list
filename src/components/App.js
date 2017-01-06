@@ -73,7 +73,9 @@ class App extends Component {
   }
 
   handleCreate(checkin) {
-    backend.addCheckin(checkin);
+    backend.addCheckin(checkin).then(() => {
+      this.notify("Check-in created");
+    });
   }
 
   handleDelete(checkinKey) {
