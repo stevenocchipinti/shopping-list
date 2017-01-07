@@ -2,9 +2,9 @@ import React, { Component } from "react";
 
 import backend from "../backend";
 import { loadState, saveState, clearState } from "../localStorage";
-import { registerServiceWorker } from "../serviceWorkerRegistration";
+import { registerServiceWorker } from "../registerServiceWorker";
 
-import Placeholder from "./Placeholder";
+import Homepage from "./Homepage";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
 import AppBar from "./AppBar";
@@ -33,15 +33,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    registerServiceWorker({
-      onInstall: () => {
-        this.notify("Now available offline");
-      },
-      onUpdate: () => {
-        this.notify("Refresh for the new version");
-      }
-    });
-
     let persistedState = loadState();
     if (persistedState) {
       this.setState({
@@ -61,6 +52,7 @@ class App extends Component {
     backend.init({
       onAuthStateChanged: user => {
         this.setState({...this.state, user});
+        if (user) this.installServiceWorker();
       },
       onCheckinsChanged: checkins => {
         this.setState({
@@ -69,6 +61,13 @@ class App extends Component {
           checkins
         });
       }
+    });
+  }
+
+  installServiceWorker() {
+    registerServiceWorker({
+      onInstall: () => { this.notify("Now available offline"); },
+      onUpdate: () => { this.notify("Refresh for the new version"); }
     });
   }
 
@@ -97,22 +96,9 @@ class App extends Component {
     });
   }
 
-  body() {
-    if (!this.state.user) {
-      return <Placeholder>Not signed in</Placeholder>;
-    } else if (this.state.checkins.length === 0) {
-      return <Placeholder>No logs yet</Placeholder>;
-    } else {
-      return (
-        <CheckinTable
-          checkins={ this.state.checkins }
-          onDelete={ (key) => this.handleDelete(key) }
-        />
-      );
-    }
-  }
-
   render() {
+    if (!this.state.user) return <Homepage signIn={backend.signIn} />;
+
     return (
       <div className="App">
         <AppBar
@@ -125,7 +111,10 @@ class App extends Component {
 
         <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
 
-        { this.body() }
+        <CheckinTable
+          checkins={ this.state.checkins }
+          onDelete={ (key) => this.handleDelete(key) }
+        />
 
         <footer style={{ height: "100px" }} />
 
