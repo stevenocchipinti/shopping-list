@@ -4,6 +4,7 @@ import backend from "../backend";
 import { loadState, saveState, clearState } from "../localStorage";
 import { registerServiceWorker } from "../serviceWorkerRegistration";
 
+import Homepage from "./Homepage";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
 import AppBar from "./AppBar";
@@ -97,7 +98,7 @@ class App extends Component {
   }
 
   render() {
-    // if (!this.state.user) return <Homepage />;
+    if (!this.state.user) return <Homepage signIn={backend.signIn} />;
     return (
       <div className="App">
         <AppBar
