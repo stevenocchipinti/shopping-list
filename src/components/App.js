@@ -4,7 +4,6 @@ import backend from "../backend";
 import { loadState, saveState, clearState } from "../localStorage";
 import { registerServiceWorker } from "../serviceWorkerRegistration";
 
-import Placeholder from "./Placeholder";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
 import AppBar from "./AppBar";
@@ -97,22 +96,8 @@ class App extends Component {
     });
   }
 
-  body() {
-    if (!this.state.user) {
-      return <Placeholder>Not signed in</Placeholder>;
-    } else if (this.state.checkins.length === 0) {
-      return <Placeholder>No logs yet</Placeholder>;
-    } else {
-      return (
-        <CheckinTable
-          checkins={ this.state.checkins }
-          onDelete={ (key) => this.handleDelete(key) }
-        />
-      );
-    }
-  }
-
   render() {
+    // if (!this.state.user) return <Homepage />;
     return (
       <div className="App">
         <AppBar
@@ -125,7 +110,10 @@ class App extends Component {
 
         <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
 
-        { this.body() }
+        <CheckinTable
+          checkins={ this.state.checkins }
+          onDelete={ (key) => this.handleDelete(key) }
+        />
 
         <footer style={{ height: "100px" }} />
 

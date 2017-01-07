@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import { Table, TableBody, TableRow, TableRowColumn } from "material-ui/Table";
 import { TableHeader, TableHeaderColumn } from "material-ui/Table";
+import Placeholder from "./Placeholder";
 
 import CheckinMenu from "./CheckinMenu";
 
@@ -65,13 +66,17 @@ export default class CheckinTable extends Component {
   }
 
   render() {
-    return (
-      <Table selectable={false}>
-        { this.header() }
-        <TableBody displayRowCheckbox={false}>
-          { this.rows() }
-        </TableBody>
-      </Table>
-    );
+    if (!this.props.checkins || this.props.checkins.length === 0) {
+      return <Placeholder>No logs yet</Placeholder>;
+    } else {
+      return (
+        <Table selectable={false}>
+          { this.header() }
+          <TableBody displayRowCheckbox={false}>
+            { this.rows() }
+          </TableBody>
+        </Table>
+      );
+    }
   }
 }
