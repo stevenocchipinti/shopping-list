@@ -9,11 +9,11 @@ import theme from "./theme";
 import "./index.css";
 
 const config = {
-  apiKey: "AIzaSyCzW5_IINwJFTEM0VqSyYCRgNGlzYLoSno",
-  authDomain: "fatlog-staging.firebaseapp.com",
-  databaseURL: "https://fatlog-staging.firebaseio.com",
-  storageBucket: "fatlog-staging.appspot.com",
-  messagingSenderId: "1031126490652"
+  apiKey: "AIzaSyCk78H-sLkJt6WbwqM9tAP9DIeZe9iWOTA",
+  authDomain: "fatlog-app.firebaseapp.com",
+  databaseURL: "https://fatlog-app.firebaseio.com",
+  storageBucket: "fatlog-app.appspot.com",
+  messagingSenderId: "893039177685"
 };
 firebase.initializeApp(config);
 
