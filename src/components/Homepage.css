@@ -40,3 +40,7 @@
   background-color: rgba(255,255,255,0.2);
   border-radius: 7px;
 }
+.homepage button.ghost:focus {
+  outline: none;
+  border-color: #69F0AE;
+}
