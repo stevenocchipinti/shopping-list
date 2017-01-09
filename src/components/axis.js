@@ -11,17 +11,16 @@ export default class Axis extends React.Component {
     this.renderAxis();
   }
 
-  axisType(type) {
-    if (type === "left")
-      return axisLeft;
-    else if (type === "bottom")
-      return axisBottom;
+  axis(type) {
+    if (type === "left") {
+      return axisLeft(this.props.scale).ticks(10);
+    } else if (type === "bottom") {
+      return axisBottom(this.props.scale).ticks(10);
+    }
   }
 
   renderAxis() {
-    var node  = this.refs.axis;
-    var axis = this.axisType(this.props.orient)(this.props.scale).ticks(5);
-    select(node).call(axis);
+    select(this.refs.axis).call(this.axis(this.props.orient));
   }
 
   render() {

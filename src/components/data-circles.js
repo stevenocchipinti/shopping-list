@@ -1,10 +1,10 @@
 import React from "react";
 
 const renderCircles = (props) => {
-  return (coords, index) => {
+  return (checkin, index) => {
     const circleProps = {
-      cx: props.xScale(coords[0]),
-      cy: props.yScale(coords[1]),
+      cx: props.xScale(new Date(checkin.date)),
+      cy: props.yScale(checkin.fat),
       r: 2,
       key: index
     };

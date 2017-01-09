@@ -119,7 +119,7 @@ class App extends Component {
         />
 
         <CheckinChart
-          checkins={ this.state.fakeData }
+          checkins={ this.state.checkins }
           width={ this.state.viewportWidth }
           height={300}
           padding={30}
