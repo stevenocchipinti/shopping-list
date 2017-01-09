@@ -26,6 +26,7 @@ class App extends Component {
       },
       loading: true,
       offline: !navigator.onLine,
+      viewportWidth: window.innerWidth,
       fakeData
     };
   }
@@ -52,6 +53,9 @@ class App extends Component {
     });
     if (window) window.addEventListener("offline", () => {
       this.setState({...this.state, offline: true});
+    });
+    if (window) window.addEventListener("resize", e => {
+      this.setState({...this.state, viewportWidth: e.target.innerWidth});
     });
 
     backend.init({
@@ -116,7 +120,7 @@ class App extends Component {
 
         <CheckinChart
           checkins={ this.state.fakeData }
-          width={500}
+          width={ this.state.viewportWidth }
           height={300}
           padding={30}
         />
