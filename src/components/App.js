@@ -5,6 +5,7 @@ import { loadState, saveState, clearState } from "../localStorage";
 import { registerServiceWorker } from "../registerServiceWorker";
 
 import Homepage from "./Homepage";
+import CheckinChart from "./CheckinChart";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
 import AppBar from "./AppBar";
@@ -96,6 +97,21 @@ class App extends Component {
     });
   }
 
+  fakeData() {
+    return [
+      [11, 1],
+      [12, 2],
+      [13, 3],
+      [14, 4],
+      [15, 5],
+      [16, 6],
+      [17, 7],
+      [18, 8],
+      [19, 9],
+      [110, 10]
+    ];
+  }
+
   render() {
     if (!this.state.user) return <Homepage signIn={backend.signIn} />;
 
@@ -109,12 +125,19 @@ class App extends Component {
           offline={this.state.offline}
         />
 
-        <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
+        <CheckinChart
+          checkins={ this.fakeData() }
+          width={500}
+          height={300}
+          padding={30}
+        />
 
         <CheckinTable
           checkins={ this.state.checkins }
           onDelete={ (key) => this.handleDelete(key) }
         />
+
+        <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
 
         <footer style={{ height: "100px" }} />
 
