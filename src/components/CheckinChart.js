@@ -2,6 +2,7 @@ import React from "react";
 import { max } from "d3";
 import { scaleLinear } from "d3-scale";
 import DataCircles from "./data-circles";
+import XYAxis from "./x-y-axis";
 
 // Returns the largest X coordinate from the data set
 const xMax = (data) => max(data, (d) => d[0]);
@@ -28,6 +29,7 @@ export default (props) => {
   return (
     <svg width={props.width} height={props.height}>
       <DataCircles {...props} {...scales} />
+      <XYAxis {...props} {...scales} />
     </svg>
   );
 };

@@ -13,7 +13,10 @@ import AppBar from "./AppBar";
 import Snackbar from "material-ui/Snackbar";
 
 class App extends Component {
+
   constructor() {
+    var fakeData  = [ [11, 1], [12, 2], [13, 3], [14, 4], [15, 5], [16, 6], [17, 7], [18, 8], [19, 9], [110, 10] ];
+
     super();
     this.state = {
       checkins: [],
@@ -22,7 +25,8 @@ class App extends Component {
         visible: false
       },
       loading: true,
-      offline: !navigator.onLine
+      offline: !navigator.onLine,
+      fakeData
     };
   }
 
@@ -97,21 +101,6 @@ class App extends Component {
     });
   }
 
-  fakeData() {
-    return [
-      [11, 1],
-      [12, 2],
-      [13, 3],
-      [14, 4],
-      [15, 5],
-      [16, 6],
-      [17, 7],
-      [18, 8],
-      [19, 9],
-      [110, 10]
-    ];
-  }
-
   render() {
     if (!this.state.user) return <Homepage signIn={backend.signIn} />;
 
@@ -126,7 +115,7 @@ class App extends Component {
         />
 
         <CheckinChart
-          checkins={ this.fakeData() }
+          checkins={ this.state.fakeData }
           width={500}
           height={300}
           padding={30}
