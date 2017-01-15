@@ -1,8 +1,8 @@
 import React from "react";
 import { max, min } from "d3";
 import { scaleLinear, scaleTime } from "d3-scale";
-import DataCircles from "./data-circles";
-import XYAxis from "./x-y-axis";
+import Line from "./Line";
+import XYAxis from "./XYAxis";
 
 // Returns the largest X coordinate from the data set
 const xMin = (data) => min(data, (d) => new Date(d.date));
@@ -30,7 +30,7 @@ export default (props) => {
   const scales = { xScale: xScale(props), yScale: yScale(props) };
   return (
     <svg width={props.width} height={props.height}>
-      <DataCircles {...props} {...scales} />
+      <Line {...props} {...scales} />
       <XYAxis {...props} {...scales} />
     </svg>
   );
