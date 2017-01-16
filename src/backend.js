@@ -10,7 +10,13 @@ function mapFirebaseCheckins(checkins) {
       fat: checkins[k].fat,
       waist: checkins[k].waist
     };
-  });
+  }).sort(compareCheckins);
+}
+
+function compareCheckins(a, b, key="date") {
+  if (a[key] < b[key]) return 1;
+  if (a[key] > b[key]) return -1;
+  return 0;
 }
 
 let allCallbacks = {};
