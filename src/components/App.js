@@ -9,6 +9,7 @@ import CheckinChart from "./CheckinChart";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
 import AppBar from "./AppBar";
+import Footer from "./Footer";
 
 import Snackbar from "material-ui/Snackbar";
 
@@ -128,7 +129,7 @@ class App extends Component {
 
         <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
 
-        <footer style={{ height: "100px" }} />
+        <Footer />
 
         <Snackbar
           open={this.state.notification.visible}

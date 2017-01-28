@@ -2,11 +2,15 @@ import React, { Component } from "react";
 
 import { Table, TableBody, TableRow, TableRowColumn } from "material-ui/Table";
 import { TableHeader, TableHeaderColumn } from "material-ui/Table";
+import Paper from "material-ui/Paper";
 import Placeholder from "./Placeholder";
-
 import CheckinMenu from "./CheckinMenu";
 
 const styles = {
+  wrapper: {
+    maxWidth: "600px",
+    margin: "0 auto"
+  },
   tableCellStyle: {
     padding: "10px",
     textAlign: "center",
@@ -70,12 +74,16 @@ export default class CheckinTable extends Component {
       return <Placeholder>No logs yet</Placeholder>;
     } else {
       return (
-        <Table selectable={false}>
-          { this.header() }
-          <TableBody displayRowCheckbox={false}>
-            { this.rows() }
-          </TableBody>
-        </Table>
+        <div style={styles.wrapper}>
+          <Paper style={{ margin: 10 }} zDepth={1}>
+            <Table selectable={false}>
+              { this.header() }
+              <TableBody displayRowCheckbox={false}>
+                { this.rows() }
+              </TableBody>
+            </Table>
+          </Paper>
+        </div>
       );
     }
   }

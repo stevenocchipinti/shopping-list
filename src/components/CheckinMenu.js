@@ -4,6 +4,7 @@ import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
 import IconButton from "material-ui/IconButton";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+import { grey400 } from "material-ui/styles/colors";
 
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
@@ -32,7 +33,7 @@ export default class CheckinMenu extends Component {
   render() {
     const iconButton = (
       <IconButton style={ this.props.iconButtonStyle }>
-        <MoreVertIcon />
+        <MoreVertIcon color={grey400} />
       </IconButton>
     );
 
