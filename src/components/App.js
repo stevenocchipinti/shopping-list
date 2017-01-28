@@ -15,8 +15,6 @@ import Snackbar from "material-ui/Snackbar";
 class App extends Component {
 
   constructor() {
-    var fakeData  = [ [11, 1], [12, 2], [13, 3], [14, 4], [15, 5], [16, 6], [17, 7], [18, 8], [19, 9], [110, 10] ];
-
     super();
     this.state = {
       checkins: [],
@@ -26,8 +24,7 @@ class App extends Component {
       },
       loading: true,
       offline: !navigator.onLine,
-      viewportWidth: window.innerWidth,
-      fakeData
+      viewportWidth: window.innerWidth
     };
   }
 
@@ -121,8 +118,7 @@ class App extends Component {
         <CheckinChart
           checkins={ this.state.checkins }
           width={ this.state.viewportWidth }
-          height={300}
-          padding={30}
+          height={250}
         />
 
         <CheckinTable
