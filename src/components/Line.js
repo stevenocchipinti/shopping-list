@@ -8,12 +8,27 @@ const renderPath = (props) => {
   return valueLine(props.checkins);
 };
 
+const renderPoints = (props) => {
+  return (checkin, index) => {
+    const circleProps = {
+      cx: props.xScale(new Date(checkin.date)),
+      cy: props.yScale(checkin.fat),
+      r: 2,
+      key: index
+    };
+    return <circle {...circleProps} />;
+  };
+};
+
 export default (props) => {
   return (
-    <path
-      className="line"
-      style={{fill: "none", stroke: "#000"}}
-      d={renderPath(props)}
-    />
+    <g>
+      { props.checkins.map(renderPoints(props)) }
+      <path
+        className="line"
+        style={{fill: "none", stroke: "#000"}}
+        d={renderPath(props)}
+      />
+    </g>
   );
 };

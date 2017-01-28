@@ -2,7 +2,6 @@ import React from "react";
 import { max, min } from "d3";
 import { scaleLinear, scaleTime } from "d3-scale";
 import Line from "./Line";
-import DataCircles from "./DataCircles";
 import XAxis from "./XAxis";
 
 const verticalPadding = 20;
@@ -35,7 +34,6 @@ export default props => {
   return (
     <svg width={props.width} height={props.height}>
       <Line {...props} {...scales} />
-      <DataCircles {...props} {...scales} />
       <XAxis position={props.height - verticalPadding} {...scales} />
     </svg>
   );
