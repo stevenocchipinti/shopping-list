@@ -6,7 +6,7 @@ export default (props) => {
     <g className="xy-axis">
       <Axis
         translate={`translate(0, ${props.position})`}
-        scale={props.xScale}
+        scale={props.scale}
         orient="bottom"
       />
     </g>

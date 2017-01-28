@@ -4,37 +4,57 @@ import { scaleLinear, scaleTime } from "d3-scale";
 import Line from "./Line";
 import XAxis from "./XAxis";
 
+import { lightBlue500, orange500, green500 } from "material-ui/styles/colors";
+
 const verticalPadding = 20;
 const horizontalPadding = 10;
 
-// Returns the largest X coordinate from the data set
-const xMin = data => min(data, d => new Date(d.date));
-const xMax = data => max(data, d => new Date(d.date));
-
-// Returns the higest Y coordinate from the data set
-const yMin = data => min(data, d => d.fat);
-const yMax = data => max(data, d => d.fat);
-
-// Returns a function that "scales" X coordinates from the data to fit the chart
-const xScale = props => {
-  return scaleTime()
-    .domain([ xMin(props.checkins), xMax(props.checkins) ])
-    .range([ horizontalPadding, props.width - horizontalPadding ]);
-};
-
-// Returns a function that "scales" Y coordinates from the data to fit the chart
-const yScale = props => {
-  return scaleLinear()
-    .domain([ yMin(props.checkins), yMax(props.checkins) ])
-    .range([ props.height - verticalPadding * 2, verticalPadding ]);
-};
-
 export default props => {
-  const scales = { xScale: xScale(props), yScale: yScale(props) };
+  const xScale = (data, accessor) => {
+    return scaleTime()
+      .domain([ min(data, accessor), max(data, accessor) ])
+      .range([ horizontalPadding, props.width - horizontalPadding ]);
+  };
+
+  const yScale = (data, accessor) => {
+    return scaleLinear()
+      .domain([ min(data, accessor), max(data, accessor) ])
+      .range([ props.height - verticalPadding * 2, verticalPadding ]);
+  };
+
+  const date = d => new Date(d.date);
+  const dateScale = xScale(props.checkins, date);
+
+  const fat = d => d.fat;
+  const fatScale = yScale(props.checkins, fat);
+
+  const weight = d => d.weight;
+  const weightScale = yScale(props.checkins, weight);
+
+  const waist = d => d.waist;
+  const waistScale = yScale(props.checkins, waist);
+
   return (
     <svg width={props.width} height={props.height}>
-      <Line {...props} {...scales} />
-      <XAxis position={props.height - verticalPadding} {...scales} />
+      <Line
+        x={d => dateScale(date(d))}
+        y={d => fatScale(fat(d))}
+        data={props.checkins}
+        color={lightBlue500}
+      />
+      <Line
+        x={d => dateScale(date(d))}
+        y={d => weightScale(weight(d))}
+        data={props.checkins}
+        color={green500}
+      />
+      <Line
+        x={d => dateScale(date(d))}
+        y={d => waistScale(waist(d))}
+        data={props.checkins}
+        color={orange500}
+      />
+      <XAxis position={props.height - verticalPadding} scale={dateScale} />
     </svg>
   );
 };
