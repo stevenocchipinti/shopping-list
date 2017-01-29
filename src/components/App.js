@@ -5,6 +5,7 @@ import { loadState, saveState, clearState } from "../localStorage";
 import { registerServiceWorker } from "../registerServiceWorker";
 
 import Homepage from "./Homepage";
+import CheckinChart from "./CheckinChart";
 import CheckinTable from "./CheckinTable";
 import NewCheckinDialog from "./NewCheckinDialog";
 import AppBar from "./AppBar";
@@ -12,6 +13,7 @@ import AppBar from "./AppBar";
 import Snackbar from "material-ui/Snackbar";
 
 class App extends Component {
+
   constructor() {
     super();
     this.state = {
@@ -21,7 +23,8 @@ class App extends Component {
         visible: false
       },
       loading: true,
-      offline: !navigator.onLine
+      offline: !navigator.onLine,
+      viewportWidth: window.innerWidth
     };
   }
 
@@ -47,6 +50,9 @@ class App extends Component {
     });
     if (window) window.addEventListener("offline", () => {
       this.setState({...this.state, offline: true});
+    });
+    if (window) window.addEventListener("resize", e => {
+      this.setState({...this.state, viewportWidth: e.target.innerWidth});
     });
 
     backend.init({
@@ -109,12 +115,18 @@ class App extends Component {
           offline={this.state.offline}
         />
 
-        <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
+        <CheckinChart
+          checkins={ this.state.checkins }
+          width={ this.state.viewportWidth }
+          height={250}
+        />
 
         <CheckinTable
           checkins={ this.state.checkins }
           onDelete={ (key) => this.handleDelete(key) }
         />
+
+        <NewCheckinDialog onSubmit={ checkin => this.handleCreate(checkin) }/>
 
         <footer style={{ height: "100px" }} />
 
