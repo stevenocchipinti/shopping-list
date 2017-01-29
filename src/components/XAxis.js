@@ -1,14 +1,24 @@
 import React from "react";
-import Axis from "./axis";
+import { axisBottom } from "d3-axis";
+import { select } from "d3-selection";
 
-export default (props) => {
-  return (
-    <g className="xy-axis">
-      <Axis
-        translate={`translate(0, ${props.position})`}
-        scale={props.scale}
-        orient="bottom"
-      />
-    </g>
-  );
-};
+export default class Axis extends React.Component {
+  componentDidMount() {
+    this.renderAxis();
+  }
+
+  componentDidUpdate() {
+    this.renderAxis();
+  }
+
+  renderAxis() {
+    select(this.refs.axis).call(
+      axisBottom(this.props.scale).ticks(10)
+    );
+  }
+
+  render() {
+    const translate = `translate(0, ${this.props.position})`;
+    return <g className="axis" ref="axis" transform={translate}></g>;
+  }
+}
