@@ -8,8 +8,10 @@
 }
 
 .homepage {
+  /* source: https://www.flickr.com/photos/tgerus/24032021532 */
   background: linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.5)),
     url("../assets/images/background.jpg") no-repeat center center fixed;
+  background-size: cover;
   color: #fff;
   font-size: 24px;
   text-align: center;
