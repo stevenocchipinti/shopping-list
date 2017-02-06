@@ -1,4 +1,4 @@
-import * as firebase from "firebase";
+import { auth, database } from "firebase";
 
 function mapFirebaseCheckins(checkins) {
   if (!checkins) return [];
@@ -26,7 +26,7 @@ const backend = {
   init: (callbacks) => {
     allCallbacks = callbacks;
 
-    firebase.auth().onAuthStateChanged(user => {
+    auth().onAuthStateChanged(user => {
       callbacks.onAuthStateChanged(user);
 
       if (!user) return;
@@ -37,22 +37,22 @@ const backend = {
   },
 
   signIn: () => {
-    let provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
+    let provider = new auth.GoogleAuthProvider();
+    auth().signInWithRedirect(provider);
   },
 
   signOut: () => {
-    firebase.auth().signOut();
+    auth().signOut();
     allCallbacks.onCheckinsChanged([]);
   },
 
   currentUser: () => {
-    return firebase.auth().currentUser;
+    return auth().currentUser;
   },
 
   checkinsRef: () => {
     const user = backend.currentUser();
-    return firebase.database().ref(`/checkins/${user.uid}`);
+    return database().ref(`/checkins/${user.uid}`);
   },
 
   addCheckin: (checkin) => {
