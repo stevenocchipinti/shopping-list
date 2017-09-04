@@ -10,6 +10,7 @@ export default (props) => {
         r={2}
         key={index}
         fill={props.color}
+        style={{clipPath: "url(#clip)"}}
       />
     );
   });
@@ -22,7 +23,7 @@ export default (props) => {
       { points }
       <path
         className="line"
-        style={{fill: "none", stroke: props.color}}
+        style={{fill: "none", stroke: props.color, clipPath: "url(#clip)"}}
         d={linePath}
       />
     </g>
