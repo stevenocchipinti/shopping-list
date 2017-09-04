@@ -118,7 +118,7 @@ class App extends Component {
 
         <CheckinChart
           checkins={ this.state.checkins }
-          width={ this.state.viewportWidth }
+          viewportWidth={ this.state.viewportWidth }
           height={250}
         />
 

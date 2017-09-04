@@ -22,7 +22,7 @@ export default (props) => {
       { points }
       <path
         className="line"
-        style={{fill: "none", stroke: props.color}}
+        style={{fill: "none", stroke: props.color, clipPath: "url(#clip)"}}
         d={linePath}
       />
     </g>
