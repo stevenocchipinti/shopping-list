@@ -11,6 +11,7 @@ import XAxis from "./XAxis";
 const MARGIN = 10;
 const PADDING = 20;
 const VERTICAL_SPACING = 20;
+const CLIPPING_BUFFER = 2;   // To cater for the <circle> elements in <Line>
 
 const date = d => new Date(d.date);
 const fat = d => d.fat;
@@ -77,14 +78,15 @@ export default class CheckinChart extends Component {
         >
           <defs>
             <clipPath id="clip">
-              <rect width={this.innerWidth()} height={this.innerHeight()}/>
+              <rect
+                transform={`translate(-${CLIPPING_BUFFER}, -${CLIPPING_BUFFER})`}
+                width={this.innerWidth() + CLIPPING_BUFFER * 2}
+                height={this.innerHeight() + CLIPPING_BUFFER * 2}
+              />
             </clipPath>
           </defs>
 
-          <g
-            ref="focus"
-            transform={`translate(${PADDING}, ${PADDING})`}
-          >
+          <g ref="focus" transform={`translate(${PADDING}, ${PADDING})`}>
             <XAxis
               position={this.innerHeight() }
               scale={this.state.dateScale}

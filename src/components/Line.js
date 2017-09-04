@@ -10,6 +10,7 @@ export default (props) => {
         r={2}
         key={index}
         fill={props.color}
+        style={{clipPath: "url(#clip)"}}
       />
     );
   });
