@@ -9,7 +9,7 @@ const styles = {
 export default () => (
   <footer style={styles.wrapper}>
     <p style={styles.content}>
-      Crafted by <a style={styles.link} href="//stevenocchipinti.com">Steve Occhipinti</a>
+      Crafted by <a style={styles.link} href="http://stevenocchipinti.com">Steve Occhipinti</a>
     </p>
   </footer>
 );
