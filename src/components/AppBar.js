@@ -3,41 +3,21 @@ import React, { Component } from "react";
 import MuiAppBar from "material-ui/AppBar";
 import LinearProgress from "material-ui/LinearProgress";
 
-import IconMenu from "material-ui/IconMenu";
-import MenuItem from "material-ui/MenuItem";
 import IconButton from "material-ui/IconButton";
-import PersonIcon from "material-ui/svg-icons/social/person";
+import SweepIcon from "material-ui/svg-icons/content/delete-sweep";
+import ShareIcon from "material-ui/svg-icons/social/share";
+import CatalogueIcon from "material-ui/svg-icons/communication/import-contacts";
+import SwitchIcon from "material-ui/svg-icons/action/add-shopping-cart";
+
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
 
 class AppBar extends Component {
-  menuContent() {
-    if (this.props.user) {
-      return (
-        <MenuItem
-          onTouchTap={ () => this.props.onSignOut() }
-          primaryText="Sign out"
-        />
-      );
-    } else {
-      return (
-        <MenuItem
-          onTouchTap={ () => this.props.onSignIn() }
-          primaryText="Sign in"
-        />
-      );
-    }
-  }
-
-  menu() {
-    const iconButton = <IconButton><PersonIcon /></IconButton>;
-    return (
-      <IconMenu
-        iconButtonElement={iconButton}
-        targetOrigin={{horizontal: "right", vertical: "top"}}
-        anchorOrigin={{horizontal: "right", vertical: "top"}}
-      >
-        { this.menuContent() }
-      </IconMenu>
-    );
+  constructor(props) {
+    super(props);
+    this.state = {
+      drawerOpen: false
+    };
   }
 
   loadingIndicator() {
@@ -49,16 +29,38 @@ class AppBar extends Component {
     }
   }
 
+  drawer() {
+    return (
+      <Drawer
+        open={this.state.drawerOpen}
+        docked={false}
+        onRequestChange={(open) => this.setState({drawerOpen: open})}
+      >
+        <MuiAppBar
+          title="Shopping List"
+          style={this.props.offline ? {backgroundColor: "#666"} : {}}
+          onLeftIconButtonTouchTap={() => this.setState({drawerOpen: false})}
+        />
+        <MenuItem leftIcon={<CatalogueIcon />}>View All Items</MenuItem>
+        <MenuItem leftIcon={<SweepIcon />}>Clear Done Items</MenuItem>
+        <MenuItem leftIcon={<ShareIcon />}>Share Live List</MenuItem>
+        <MenuItem leftIcon={<SwitchIcon />}>Open Another List</MenuItem>
+      </Drawer>
+    )
+  }
+
   render() {
     return (
       <div>
         <MuiAppBar
-          title="FatLog"
-          showMenuIconButton={false}
-          iconElementRight={this.menu()}
+          title="Shopping List"
+          iconElementRight={<IconButton><SweepIcon /></IconButton>}
+          onLeftIconButtonTouchTap={() => this.setState({drawerOpen: true})}
+          onRightIconButtonTouchTap={() => this.props.sweepItems()}
           style={this.props.offline ? {backgroundColor: "#666"} : {}}
         />
         { this.loadingIndicator() }
+        { this.drawer() }
       </div>
     );
   }
