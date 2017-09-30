@@ -19,7 +19,7 @@ class App extends Component {
       catalogue: {},
       notification: { message: "", visible: false },
       loading: true,
-      offline: !navigator.onLine,
+      offline: false//!navigator.onLine,
     };
   }
 
@@ -38,9 +38,11 @@ class App extends Component {
     }
 
     if (window) window.addEventListener("online", () => {
+      this.notify("Connected to server!");
       this.setState({...this.state, offline: false});
     });
     if (window) window.addEventListener("offline", () => {
+      this.notify("Disconnected from server!");
       this.setState({...this.state, offline: true});
     });
 
