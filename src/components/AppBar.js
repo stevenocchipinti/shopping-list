@@ -9,8 +9,8 @@ import ShareIcon from "material-ui/svg-icons/social/share";
 import CatalogueIcon from "material-ui/svg-icons/communication/import-contacts";
 import SwitchIcon from "material-ui/svg-icons/action/add-shopping-cart";
 
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
+import Drawer from "material-ui/Drawer";
+import MenuItem from "material-ui/MenuItem";
 
 class AppBar extends Component {
   constructor(props) {
@@ -29,38 +29,74 @@ class AppBar extends Component {
     }
   }
 
-  drawer() {
-    return (
-      <Drawer
-        open={this.state.drawerOpen}
-        docked={false}
-        onRequestChange={(open) => this.setState({drawerOpen: open})}
-      >
-        <MuiAppBar
-          title="Shopping List"
-          style={this.props.offline ? {backgroundColor: "#666"} : {}}
-          onLeftIconButtonTouchTap={() => this.setState({drawerOpen: false})}
-        />
-        <MenuItem leftIcon={<CatalogueIcon />}>View All Items</MenuItem>
-        <MenuItem leftIcon={<SweepIcon />}>Clear Done Items</MenuItem>
-        <MenuItem leftIcon={<ShareIcon />}>Share Live List</MenuItem>
-        <MenuItem leftIcon={<SwitchIcon />}>Open Another List</MenuItem>
-      </Drawer>
-    )
-  }
-
   render() {
     return (
       <div>
         <MuiAppBar
           title="Shopping List"
-          iconElementRight={<IconButton><SweepIcon /></IconButton>}
-          onLeftIconButtonTouchTap={() => this.setState({drawerOpen: true})}
+          iconElementRight={
+            <IconButton>
+              <SweepIcon />
+            </IconButton>
+          }
+          onLeftIconButtonTouchTap={() => this.setState({ drawerOpen: true })}
           onRightIconButtonTouchTap={() => this.props.sweepItems()}
-          style={this.props.offline ? {backgroundColor: "#666"} : {}}
+          style={this.props.offline ? { backgroundColor: "#666" } : {}}
         />
-        { this.loadingIndicator() }
-        { this.drawer() }
+        {this.loadingIndicator()}
+
+        <Drawer
+          open={this.state.drawerOpen}
+          docked={false}
+          onRequestChange={open => this.setState({ drawerOpen: open })}
+        >
+          <MuiAppBar
+            title="Shopping List"
+            style={this.props.offline ? { backgroundColor: "#666" } : {}}
+            onLeftIconButtonTouchTap={() =>
+              this.setState({ drawerOpen: false })}
+          />
+
+          <MenuItem
+            onClick={e => {
+              this.props.sweepItems();
+              this.setState({ drawerOpen: false });
+            }}
+            leftIcon={<CatalogueIcon />}
+          >
+            View All Items{" "}
+          </MenuItem>
+
+          <MenuItem
+            onClick={e => {
+              this.props.sweepItems();
+              this.setState({ drawerOpen: false });
+            }}
+            leftIcon={<SweepIcon />}
+          >
+            Clear Done Items
+          </MenuItem>
+
+          <MenuItem
+            onClick={e => {
+              this.props.sweepItems();
+              this.setState({ drawerOpen: false });
+            }}
+            leftIcon={<ShareIcon />}
+          >
+            Share Live List
+          </MenuItem>
+
+          <MenuItem
+            onClick={e => {
+              this.props.sweepItems();
+              this.setState({ drawerOpen: false });
+            }}
+            leftIcon={<SwitchIcon />}
+          >
+            Open Another List
+          </MenuItem>
+        </Drawer>
       </div>
     );
   }
