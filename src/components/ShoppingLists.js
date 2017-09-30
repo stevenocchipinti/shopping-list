@@ -75,7 +75,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ marginBottom: 100 }}>
         { this.renderSections() }
       </div>
     );
