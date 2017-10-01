@@ -6,7 +6,7 @@ import LinearProgress from "material-ui/LinearProgress";
 import IconButton from "material-ui/IconButton";
 import SweepIcon from "material-ui/svg-icons/content/delete-sweep";
 import ShareIcon from "material-ui/svg-icons/social/share";
-import CatalogueIcon from "material-ui/svg-icons/communication/import-contacts";
+import ImportExportIcon from "material-ui/svg-icons/communication/import-export";
 import SwitchIcon from "material-ui/svg-icons/action/add-shopping-cart";
 
 import Drawer from "material-ui/Drawer";
@@ -118,16 +118,6 @@ class AppBar extends Component {
 
           <MenuItem
             onClick={e => {
-              this.props.showCatalogue();
-              this.setState({ drawerOpen: false });
-            }}
-            leftIcon={<CatalogueIcon />}
-          >
-            View All Items{" "}
-          </MenuItem>
-
-          <MenuItem
-            onClick={e => {
               this.props.sweepItems();
               this.setState({ drawerOpen: false });
             }}
@@ -155,6 +145,17 @@ class AppBar extends Component {
             Open Another List
           </MenuItem>
           {this.openDialog()}
+
+          <MenuItem
+            onClick={e => {
+              this.props.showImportExport();
+              this.setState({ drawerOpen: false });
+            }}
+            leftIcon={<ImportExportIcon />}
+          >
+            Import / Export
+          </MenuItem>
+
         </Drawer>
       </div>
     );

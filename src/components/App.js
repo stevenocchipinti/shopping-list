@@ -6,13 +6,12 @@ import { registerServiceWorker } from "../registerServiceWorker";
 
 import AppBar from "./AppBar";
 import ShoppingLists from "./ShoppingLists";
-import Catalogue from "./Catalogue";
+import ImportExport from "./ImportExport";
 
 import Snackbar from "material-ui/Snackbar";
-import MuiAppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
-
+import MuiAppBar from "material-ui/AppBar";
+import IconButton from "material-ui/IconButton";
+import NavigationClose from "material-ui/svg-icons/navigation/close";
 
 class App extends Component {
   constructor() {
@@ -20,15 +19,15 @@ class App extends Component {
     this.state = {
       items: [],
       catalogue: {},
-      showCatalogue: false,
+      showImportExport: false,
       notification: { message: "", visible: false },
       loading: true,
-      offline: false//!navigator.onLine,
+      offline: false //!navigator.onLine,
     };
   }
 
   componentWillUpdate(props, state) {
-    saveState({items: state.items, catalogue: state.catalogue});
+    saveState({ items: state.items, catalogue: state.catalogue });
   }
 
   componentDidMount() {
@@ -41,14 +40,16 @@ class App extends Component {
       });
     }
 
-    if (window) window.addEventListener("online", () => {
-      this.notify("Connected to server!");
-      this.setState({...this.state, offline: false});
-    });
-    if (window) window.addEventListener("offline", () => {
-      this.notify("Disconnected from server!");
-      this.setState({...this.state, offline: true});
-    });
+    if (window)
+      window.addEventListener("online", () => {
+        this.notify("Connected to server!");
+        this.setState({ ...this.state, offline: false });
+      });
+    if (window)
+      window.addEventListener("offline", () => {
+        this.notify("Disconnected from server!");
+        this.setState({ ...this.state, offline: true });
+      });
 
     // backend.init({
     //   onCheckinsChanged: checkins => {
@@ -63,8 +64,12 @@ class App extends Component {
 
   installServiceWorker() {
     registerServiceWorker({
-      onInstall: () => { this.notify("Now available offline"); },
-      onUpdate: () => { this.notify("Refresh for the new version"); }
+      onInstall: () => {
+        this.notify("Now available offline");
+      },
+      onUpdate: () => {
+        this.notify("Refresh for the new version");
+      }
     });
   }
 
@@ -82,27 +87,36 @@ class App extends Component {
   }
 
   handleAdd(itemName, catalogueEntry) {
-    this.setState({
-      items: [...this.state.items, { label: itemName, done: false }],
-      catalogue: {...this.state.catalogue, ...catalogueEntry}
-    }, () => this.notify("New Item Added!"));
+    this.setState(
+      {
+        items: [...this.state.items, { label: itemName, done: false }],
+        catalogue: { ...this.state.catalogue, ...catalogueEntry }
+      },
+      () => this.notify("New Item Added!")
+    );
   }
 
   handleMove(catalogueEntry) {
-    this.setState({
-      catalogue: {...this.state.catalogue, ...catalogueEntry}
-    }, () => this.notify("Item Moved!"));
+    this.setState(
+      {
+        catalogue: { ...this.state.catalogue, ...catalogueEntry }
+      },
+      () => this.notify("Item Moved!")
+    );
   }
 
   handleUncheck(itemName) {
     const index = this.state.items.findIndex(i => i.label === itemName);
-    this.setState({
-      items: [
-        ...this.state.items.slice(0, index),
-        { label: itemName, done: false },
-        ...this.state.items.slice(index + 1)
-      ]
-    }, () => this.notify("Item Unchecked!"));
+    this.setState(
+      {
+        items: [
+          ...this.state.items.slice(0, index),
+          { label: itemName, done: false },
+          ...this.state.items.slice(index + 1)
+        ]
+      },
+      () => this.notify("Item Unchecked!")
+    );
   }
 
   handleMark(item) {
@@ -110,7 +124,7 @@ class App extends Component {
     this.setState({
       items: [
         ...this.state.items.slice(0, index),
-        {...item, done: !item.done},
+        { ...item, done: !item.done },
         ...this.state.items.slice(index + 1)
       ]
     });
@@ -119,7 +133,7 @@ class App extends Component {
   handleSweep() {
     this.setState({
       items: this.state.items.filter(i => !i.done)
-    })
+    });
   }
 
   handleSubmit(entry) {
@@ -145,29 +159,32 @@ class App extends Component {
           sweepItems={() => this.handleSweep()}
           loading={this.state.user && this.state.loading}
           offline={this.state.offline}
-          showCatalogue={() => this.setState({showCatalogue: true})}
+          showImportExport={() => this.setState({ showImportExport: true })}
         />
         <ShoppingLists
           handleMark={item => this.handleMark(item)}
           items={this.state.items}
           catalogue={this.state.catalogue}
-          onSubmit={(entry) => {this.handleSubmit(entry)}}
+          onSubmit={entry => {
+            this.handleSubmit(entry);
+          }}
         />
       </div>
-    )
+    );
   }
 
-  catalogue() {
+  importExport() {
     return (
       <div>
         <MuiAppBar
-          title="Catalogue"
+          title="Import / Export"
           style={this.props.offline ? { backgroundColor: "#666" } : {}}
           iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-          onLeftIconButtonTouchTap={() =>
-            this.setState({ showCatalogue: false })}
+          onLeftIconButtonTouchTap={
+            () => this.setState({ showImportExport: false })
+          }
         />
-        <Catalogue catalogue={this.state.catalogue} />
+        <ImportExport catalogue={this.state.catalogue} />
       </div>
     );
   }
@@ -175,15 +192,20 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-
-        { this.state.showCatalogue ? this.catalogue() : this.shoppingLists() }
+        {
+          this.state.showImportExport
+          ? this.importExport()
+          : this.shoppingLists()
+        }
 
         <Snackbar
           open={this.state.notification.visible}
           message={this.state.notification.message}
-          style={{textAlign: "center"}}
+          style={{ textAlign: "center" }}
           autoHideDuration={3000}
-          onRequestClose={ () => { this.hideNotification(); } }
+          onRequestClose={() => {
+            this.hideNotification();
+          }}
         />
       </div>
     );

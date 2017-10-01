@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Paper from "material-ui/Paper";
 import TextField from "material-ui/TextField";
 
-class Catalogue extends Component {
+class ImportExport extends Component {
   constructor(props) {
     super(props);
     this.styles = {
@@ -34,4 +34,4 @@ class Catalogue extends Component {
     );
   }
 }
-export default Catalogue;
+export default ImportExport;
