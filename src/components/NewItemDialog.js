@@ -48,10 +48,15 @@ export default class NewCheckinDialog extends Component {
     this.setState({ open: false });
   }
 
+  format(string) {
+    const capitalize = s => `${s[0].toUpperCase()}${s.slice(1)}`;
+    return string.trim().split(/\s+/).map(capitalize).join(" ");
+  }
+
   handleSubmit() {
     this.props.onSubmit({
-      item: this.state.item,
-      section: this.state.section
+      item: this.format(this.state.item),
+      section: this.format(this.state.section)
     });
     this.setState(this.defaults);
   }
