@@ -11,12 +11,15 @@ import SwitchIcon from "material-ui/svg-icons/action/add-shopping-cart";
 
 import Drawer from "material-ui/Drawer";
 import MenuItem from "material-ui/MenuItem";
+import Dialog from "material-ui/Dialog";
+import TextField from "material-ui/TextField";
 
 class AppBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      drawerOpen: false
+      drawerOpen: false,
+      shareDialogOpen: false
     };
   }
 
@@ -27,6 +30,21 @@ class AppBar extends Component {
       // This keeps the height consistent instead of jumping by 4 pixels
       return <div style={{ height: "4px" }} />;
     }
+  }
+
+  shareDialog() {
+    return (
+      <Dialog
+        title="Share Live List URL"
+        modal={false}
+        open={this.state.shareDialogOpen}
+        onRequestClose={() => this.setState({shareDialogOpen: false})}
+      >
+        WARNING: Anyone who has this URL will be able to view and
+        modify this list!
+        <TextField id="share" fullWidth={true} value={window.location.href} />
+      </Dialog>
+    );
   }
 
   render() {
@@ -79,13 +97,13 @@ class AppBar extends Component {
 
           <MenuItem
             onClick={e => {
-              this.props.sweepItems();
-              this.setState({ drawerOpen: false });
+              this.setState({ drawerOpen: false, shareDialogOpen: true });
             }}
             leftIcon={<ShareIcon />}
           >
             Share Live List
           </MenuItem>
+          { this.shareDialog() }
 
           <MenuItem
             onClick={e => {
