@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import NewItemDialog from "./NewItemDialog";
+
 import Paper from "material-ui/Paper";
 import Chip from 'material-ui/Chip';
 
@@ -77,6 +79,11 @@ class App extends Component {
     return (
       <div style={{ marginBottom: 100 }}>
         { this.renderSections() }
+        <NewItemDialog
+          items={this.props.items}
+          catalogue={this.props.catalogue}
+          onSubmit={(entry) => {this.props.onSubmit(entry)}}
+        />
       </div>
     );
   }

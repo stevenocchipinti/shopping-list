@@ -4,7 +4,6 @@ import React, { Component } from "react";
 import { loadState, saveState } from "../localStorage";
 import { registerServiceWorker } from "../registerServiceWorker";
 
-import NewItemDialog from "./NewItemDialog";
 import AppBar from "./AppBar";
 import ShoppingLists from "./ShoppingLists";
 
@@ -17,6 +16,7 @@ class App extends Component {
     this.state = {
       items: [],
       catalogue: {},
+      showCatalogue: false,
       notification: { message: "", visible: false },
       loading: true,
       offline: false//!navigator.onLine,
@@ -145,11 +145,6 @@ class App extends Component {
 
         <ShoppingLists
           handleMark={item => this.handleMark(item)}
-          items={this.state.items}
-          catalogue={this.state.catalogue}
-        />
-
-        <NewItemDialog
           items={this.state.items}
           catalogue={this.state.catalogue}
           onSubmit={(entry) => {this.handleSubmit(entry)}}
