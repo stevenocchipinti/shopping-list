@@ -184,7 +184,18 @@ class App extends Component {
             () => this.setState({ showImportExport: false })
           }
         />
-        <ImportExport catalogue={this.state.catalogue} />
+        <ImportExport
+          data={{
+            items: this.state.items,
+            catalogue: this.state.catalogue
+          }}
+          onImport={(data) => {
+            this.setState({
+              items: data.items,
+              catalogue: data.catalogue
+            }, () => this.notify("Data imported!"));
+          }}
+        />
       </div>
     );
   }
