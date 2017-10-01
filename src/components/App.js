@@ -6,8 +6,12 @@ import { registerServiceWorker } from "../registerServiceWorker";
 
 import AppBar from "./AppBar";
 import ShoppingLists from "./ShoppingLists";
+import Catalogue from "./Catalogue";
 
 import Snackbar from "material-ui/Snackbar";
+import MuiAppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 
 class App extends Component {
@@ -134,21 +138,45 @@ class App extends Component {
     }
   }
 
-  render() {
+  shoppingLists() {
     return (
-      <div className="App">
+      <div>
         <AppBar
           sweepItems={() => this.handleSweep()}
           loading={this.state.user && this.state.loading}
           offline={this.state.offline}
+          showCatalogue={() => this.setState({showCatalogue: true})}
         />
-
         <ShoppingLists
           handleMark={item => this.handleMark(item)}
           items={this.state.items}
           catalogue={this.state.catalogue}
           onSubmit={(entry) => {this.handleSubmit(entry)}}
         />
+      </div>
+    )
+  }
+
+  catalogue() {
+    return (
+      <div>
+        <MuiAppBar
+          title="Catalogue"
+          style={this.props.offline ? { backgroundColor: "#666" } : {}}
+          iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+          onLeftIconButtonTouchTap={() =>
+            this.setState({ showCatalogue: false })}
+        />
+        <Catalogue catalogue={this.state.catalogue} />
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className="App">
+
+        { this.state.showCatalogue ? this.catalogue() : this.shoppingLists() }
 
         <Snackbar
           open={this.state.notification.visible}

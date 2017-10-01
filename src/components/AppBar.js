@@ -59,7 +59,7 @@ class AppBar extends Component {
 
           <MenuItem
             onClick={e => {
-              this.props.sweepItems();
+              this.props.showCatalogue();
               this.setState({ drawerOpen: false });
             }}
             leftIcon={<CatalogueIcon />}
