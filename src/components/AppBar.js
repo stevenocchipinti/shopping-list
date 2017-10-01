@@ -13,13 +13,16 @@ import Drawer from "material-ui/Drawer";
 import MenuItem from "material-ui/MenuItem";
 import Dialog from "material-ui/Dialog";
 import TextField from "material-ui/TextField";
+import FlatButton from "material-ui/FlatButton";
 
 class AppBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       drawerOpen: false,
-      shareDialogOpen: false
+      shareDialogOpen: false,
+      openDialogOpen: false,
+      newListUrl: ""
     };
   }
 
@@ -38,11 +41,49 @@ class AppBar extends Component {
         title="Share Live List URL"
         modal={false}
         open={this.state.shareDialogOpen}
-        onRequestClose={() => this.setState({shareDialogOpen: false})}
+        onRequestClose={() => this.setState({ shareDialogOpen: false })}
       >
-        WARNING: Anyone who has this URL will be able to view and
-        modify this list!
+        WARNING: Anyone who has this URL will be able to view and modify this
+        list!
         <TextField id="share" fullWidth={true} value={window.location.href} />
+      </Dialog>
+    );
+  }
+
+  openNewList() {
+    let newListUrl = this.state.newListUrl;
+    try {
+      const url = new URL(newListUrl);
+      window.location.href = window.location.origin + url.pathname;
+    } catch (Exception) {
+      window.location.href = window.location.origin + `/${newListUrl}`;
+    }
+  }
+
+  openDialog() {
+    const button = (
+      <FlatButton
+        label="Open"
+        primary={true}
+        keyboardFocused={true}
+        onClick={e => this.openNewList()}
+      />
+    );
+    return (
+      <Dialog
+        title="Open another list"
+        modal={false}
+        actions={button}
+        open={this.state.openDialogOpen}
+        onRequestClose={() => this.setState({ openDialogOpen: false })}
+      >
+        To open another list, paste the URL or id here
+        <TextField
+          onChange={e => this.setState({ newListUrl: e.target.value })}
+          value={this.state.newListUrl}
+          id="open"
+          fullWidth={true}
+        />
       </Dialog>
     );
   }
@@ -103,17 +144,17 @@ class AppBar extends Component {
           >
             Share Live List
           </MenuItem>
-          { this.shareDialog() }
+          {this.shareDialog()}
 
           <MenuItem
             onClick={e => {
-              this.props.sweepItems();
-              this.setState({ drawerOpen: false });
+              this.setState({ drawerOpen: false, openDialogOpen: true });
             }}
             leftIcon={<SwitchIcon />}
           >
             Open Another List
           </MenuItem>
+          {this.openDialog()}
         </Drawer>
       </div>
     );
