@@ -33,11 +33,11 @@ class App extends Component {
   componentDidMount() {
     let persistedState = loadState();
     if (persistedState) {
-      this.setState({
-        ...this.state,
-        items: persistedState.items,
-        catalogue: persistedState.catalogue
+      let { items, catalogue } = persistedState;
+      let uniqueItems = items.filter((i1,idx) => {
+        return items.findIndex(i2 => i1.label === i2.label) === idx;
       });
+      this.setState({ ...this.state, items: uniqueItems, catalogue });
     }
 
     if (window)
