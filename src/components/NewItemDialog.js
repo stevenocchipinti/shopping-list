@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Dialog from "material-ui/Dialog";
 import FloatingActionButton from "material-ui/FloatingActionButton";
-import ContentAdd from "material-ui/svg-icons/content/add";
+import ContentAddIcon from "material-ui/svg-icons/content/add";
 import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
 import AutoComplete from "material-ui/AutoComplete";
@@ -113,8 +113,11 @@ export default class NewCheckinDialog extends Component {
 
     return (
       <div>
-        <FloatingActionButton style={styles.floatingButton}>
-          <ContentAdd onTouchTap={() => this.handleOpen()} />
+        <FloatingActionButton
+          onClick={() => this.handleOpen()}
+          style={styles.floatingButton}
+          >
+          <ContentAddIcon />
         </FloatingActionButton>
 
         <Dialog
