@@ -9,11 +9,12 @@ import theme from "./theme";
 import "./index.css";
 
 initializeApp({
-  apiKey: "AIzaSyCk78H-sLkJt6WbwqM9tAP9DIeZe9iWOTA",
-  authDomain: "fatlog-app.firebaseapp.com",
-  databaseURL: "https://fatlog-app.firebaseio.com",
-  storageBucket: "fatlog-app.appspot.com",
-  messagingSenderId: "893039177685"
+  apiKey: "AIzaSyCtgligqZSkUwWkWIAcMOW0nIW2mfgVdcw",
+  authDomain: "shopping-list-app-de905.firebaseapp.com",
+  databaseURL: "https://shopping-list-app-de905.firebaseio.com",
+  projectId: "shopping-list-app-de905",
+  storageBucket: "",
+  messagingSenderId: "975596815491"
 });
 
 injectTapEventPlugin();

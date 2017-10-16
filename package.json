@@ -1,5 +1,5 @@
 {
-  "name": "fatlog",
+  "name": "shopping-list",
   "version": "0.1.0",
   "engines": {
     "node": ">= 6.2.0"
