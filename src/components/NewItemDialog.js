@@ -41,7 +41,7 @@ export default class NewCheckinDialog extends Component {
   }
 
   handleOpen() {
-    this.setState({...this.defaults, open: true});
+    this.setState({...this.defaults, open: true}, () => this.focus());
   }
 
   handleClose() {
@@ -53,12 +53,16 @@ export default class NewCheckinDialog extends Component {
     return string.trim().split(/\s+/).map(capitalize).join(" ");
   }
 
+  focus() {
+    this.autoCompleteInput.refs.searchTextField.input.focus();
+  }
+
   handleSubmit() {
     this.props.onSubmit({
       item: this.format(this.state.item),
       section: this.format(this.state.section)
     });
-    this.setState(this.defaults);
+    this.setState(this.defaults, () => this.focus());
   }
 
   update(changes) {
@@ -102,12 +106,14 @@ export default class NewCheckinDialog extends Component {
       <FlatButton
         label="done"
         onTouchTap={() => this.setState({ open: false })}
+        tabIndex={4}
       />,
       <RaisedButton
         label={this.state.actionLabel}
         disabled={this.state.actionDisabled}
         primary={true}
         onTouchTap={() => this.handleSubmit()}
+        tabIndex={3}
       />
     ];
 
@@ -127,6 +133,7 @@ export default class NewCheckinDialog extends Component {
           actions={actions}
         >
           <AutoComplete
+            ref={input => this.autoCompleteInput = input}
             floatingLabelText="Item"
             fullWidth={true}
             filter={AutoComplete.fuzzyFilter}
@@ -135,7 +142,7 @@ export default class NewCheckinDialog extends Component {
             onUpdateInput={item => this.handleItemChange(item)}
             searchText={this.state.item}
             errorText={this.state.itemError}
-            ref="itemField"
+            tabIndex={1}
           />
           <AutoComplete
             floatingLabelText="Section"
@@ -145,6 +152,7 @@ export default class NewCheckinDialog extends Component {
             maxSearchResults={5}
             onUpdateInput={section => this.handleSectionChange(section)}
             searchText={this.state.section}
+            tabIndex={2}
           />
         </Dialog>
       </div>
