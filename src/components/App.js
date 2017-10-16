@@ -22,7 +22,7 @@ class App extends Component {
       showImportExport: false,
       notification: { message: "", visible: false },
       loading: true,
-      offline: false //!navigator.onLine,
+      offline: !navigator.onLine,
     };
   }
 
@@ -40,16 +40,21 @@ class App extends Component {
       this.setState({ ...this.state, items: uniqueItems, catalogue });
     }
 
-    if (window)
+    if (window) {
       window.addEventListener("online", () => {
         this.notify("Connected to server!");
         this.setState({ ...this.state, offline: false });
       });
-    if (window)
       window.addEventListener("offline", () => {
         this.notify("Disconnected from server!");
         this.setState({ ...this.state, offline: true });
       });
+    }
+
+    registerServiceWorker({
+      onInstall: () => this.notify("Now available offline"),
+      onUpdate: () => this.notify("Refresh for the new version")
+    });
 
     // backend.init({
     //   onCheckinsChanged: checkins => {
@@ -60,17 +65,6 @@ class App extends Component {
     //     });
     //   }
     // });
-  }
-
-  installServiceWorker() {
-    registerServiceWorker({
-      onInstall: () => {
-        this.notify("Now available offline");
-      },
-      onUpdate: () => {
-        this.notify("Refresh for the new version");
-      }
-    });
   }
 
   notify(message) {
