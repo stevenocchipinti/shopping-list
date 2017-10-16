@@ -18,8 +18,8 @@ exports.default = {
   spacing: _spacing2.default,
   fontFamily: "Roboto, sans-serif",
   palette: {
-    primary1Color: _colors.green600,
-    primary2Color: _colors.green700,
+    primary1Color: _colors.blueGrey600,
+    primary2Color: _colors.blueGrey700,
     primary3Color: _colors.grey400,
     accent1Color: _colors.redA200,
     accent2Color: _colors.grey100,
@@ -30,7 +30,7 @@ exports.default = {
     canvasColor: _colors.white,
     borderColor: _colors.grey300,
     disabledColor: (0, _colorManipulator.fade)(_colors.darkBlack, 0.3),
-    pickerHeaderColor: _colors.green600,
+    pickerHeaderColor: _colors.blueGrey600,
     clockCircleColor: (0, _colorManipulator.fade)(_colors.darkBlack, 0.07),
     shadowColor: _colors.fullBlack
   }
