@@ -1,75 +1,114 @@
-import { auth, database } from "firebase";
+import Firebase from 'firebase'
+import 'firebase/firestore'
 
-function mapFirebaseCheckins(checkins) {
-  if (!checkins) return [];
-  return Object.keys(checkins).reverse().map(k => {
-    return {
-      key: k,
-      date: checkins[k].createdAt,
-      weight: checkins[k].weight,
-      fat: checkins[k].fat,
-      waist: checkins[k].waist
-    };
-  }).sort(compareCheckins);
-}
-
-function compareCheckins(a, b, key="date") {
-  if (a[key] < b[key]) return 1;
-  if (a[key] > b[key]) return -1;
-  return 0;
-}
-
-let allCallbacks = {};
+// function mapFirebaseCheckins(checkins) {
+//   if (!checkins) return [];
+//   return Object.keys(checkins).reverse().map(k => {
+//     return {
+//       key: k,
+//       date: checkins[k].createdAt,
+//       weight: checkins[k].weight,
+//       fat: checkins[k].fat,
+//       waist: checkins[k].waist
+//     };
+//   })
+// }
 
 
 const backend = {
   init: (callbacks) => {
-    allCallbacks = callbacks;
+    const list = backend.listRef()
 
-    auth().onAuthStateChanged(user => {
-      callbacks.onAuthStateChanged(user);
+    list.collection("items").onSnapshot(querySnapshot => {
+      callbacks.onItemsChanged(querySnapshot.docs.map(d => d.data()));
+    });
 
-      if (!user) return;
-      backend.checkinsRef().on("value", snapshot => {
-        callbacks.onCheckinsChanged(mapFirebaseCheckins(snapshot.val()));
-      });
+    list.collection("catalogue").onSnapshot(querySnapshot => {
+      callbacks.onCatalogueChanged(querySnapshot.docs.map(d => d.data()));
     });
   },
 
-  signIn: () => {
-    let provider = new auth.GoogleAuthProvider();
-    auth().signInWithRedirect(provider);
+  listRef: () => {
+    // TODO: Get from the URL instead of hardcoding
+    return Firebase.firestore().collection(`lists`).doc("me");
   },
 
-  signOut: () => {
-    auth().signOut();
-    allCallbacks.onCheckinsChanged([]);
+  handleAdd: (itemName, catalogueEntry) => {
+    this.setState(
+      {
+        items: [...this.state.items, { label: itemName, done: false }],
+        catalogue: { ...this.state.catalogue, ...catalogueEntry }
+      },
+      () => this.notify("New Item Added!")
+    );
   },
 
-  currentUser: () => {
-    return auth().currentUser;
+  handleMove: (catalogueEntry) => {
+    this.setState(
+      {
+        catalogue: { ...this.state.catalogue, ...catalogueEntry }
+      },
+      () => this.notify("Item Moved!")
+    );
   },
 
-  checkinsRef: () => {
-    const user = backend.currentUser();
-    return database().ref(`/checkins/${user.uid}`);
+  handleUncheck: (itemName) => {
+    const index = this.state.items.findIndex(i => i.label === itemName);
+    this.setState(
+      {
+        items: [
+          ...this.state.items.slice(0, index),
+          { label: itemName, done: false },
+          ...this.state.items.slice(index + 1)
+        ]
+      },
+      () => this.notify("Item Unchecked!")
+    );
   },
 
-  addCheckin: (checkin) => {
-    if (!backend.currentUser()) return false;
-    let newCheckinRef = backend.checkinsRef().push();
-    return newCheckinRef.set({
-      createdAt: checkin.date.toISOString(),
-      weight: checkin.weight,
-      fat: checkin.fat,
-      waist: checkin.waist
+  handleMark: (item) => {
+    const index = this.state.items.findIndex(i => i.label === item.label);
+    this.setState({
+      items: [
+        ...this.state.items.slice(0, index),
+        { ...item, done: !item.done },
+        ...this.state.items.slice(index + 1)
+      ]
     });
   },
 
-  deleteCheckin: (checkinKey) => {
-    if (!backend.currentUser()) return false;
-    return backend.checkinsRef().child(checkinKey).remove();
+  handleSweep: () => {
+    this.setState({
+      items: this.state.items.filter(i => !i.done)
+    });
+  },
+
+  handleSubmit: (entry) => {
+    let catalogueEntry = {};
+    catalogueEntry[entry.item] = entry.section;
+
+    const itemOnList = this.state.items.find(i => i.label === entry.item);
+    const storedSection = this.state.catalogue[entry.item];
+
+    if (itemOnList && storedSection !== entry.section) {
+      this.handleMove(catalogueEntry);
+    } else if (itemOnList && storedSection === entry.section) {
+      this.handleUncheck(entry.item);
+    } else {
+      this.handleAdd(entry.item, catalogueEntry);
+    }
   }
+
+  // addCheckin: (checkin) => {
+  //   if (!backend.currentUser()) return false;
+  //   let newCheckinRef = backend.checkinsRef().push();
+  //   return newCheckinRef.set({
+  //     createdAt: checkin.date.toISOString(),
+  //     weight: checkin.weight,
+  //     fat: checkin.fat,
+  //     waist: checkin.waist
+  //   });
+  // }
 };
 
 export default backend;

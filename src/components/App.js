@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-// import backend from "../backend";
-import { loadState, saveState } from "../localStorage";
+import backend from "../backend";
+// import { loadState, saveState } from "../localStorage";
 import { registerServiceWorker } from "../registerServiceWorker";
 
 import AppBar from "./AppBar";
@@ -26,19 +26,21 @@ class App extends Component {
     };
   }
 
-  componentWillUpdate(props, state) {
-    saveState({ items: state.items, catalogue: state.catalogue });
-  }
+  // TODO: Firestore should do the offline caching once its configured!
+  // componentWillUpdate(props, state) {
+  //   saveState({ items: state.items, catalogue: state.catalogue });
+  // }
 
   componentDidMount() {
-    let persistedState = loadState();
-    if (persistedState) {
-      let { items, catalogue } = persistedState;
-      let uniqueItems = items.filter((i1,idx) => {
-        return items.findIndex(i2 => i1.label === i2.label) === idx;
-      });
-      this.setState({ ...this.state, items: uniqueItems, catalogue });
-    }
+    // TODO: Firestore should do the offline caching once its configured!
+    // let persistedState = loadState();
+    // if (persistedState) {
+    //   let { items, catalogue } = persistedState;
+    //   let uniqueItems = items.filter((i1,idx) => {
+    //     return items.findIndex(i2 => i1.label === i2.label) === idx;
+    //   });
+    //   this.setState({ ...this.state, items: uniqueItems, catalogue });
+    // }
 
     if (window) {
       window.addEventListener("online", () => {
@@ -56,28 +58,21 @@ class App extends Component {
       onUpdate: () => this.notify("Refresh for the new version")
     });
 
-    // backend.init({
-    //   onCheckinsChanged: checkins => {
-    //     this.setState({
-    //       ...this.state,
-    //       loading: false,
-    //       checkins
-    //     });
-    //   }
-    // });
+    backend.init({
+      onItemsChanged: items => {
+        this.setState({ items, loading: false });
+      },
+      onCatalogueChanged: catalogue => {
+        this.setState({ catalogue, loading: false });
+      },
+    });
   }
 
   notify(message) {
-    this.setState({
-      ...this.state,
-      notification: { message, visible: true }
-    });
+    this.setState({ notification: { message, visible: true } });
   }
   hideNotification() {
-    this.setState({
-      ...this.state,
-      notification: { message: "", visible: false }
-    });
+    this.setState({ notification: { message: "", visible: false } });
   }
 
   handleAdd(itemName, catalogueEntry) {
