@@ -78,7 +78,7 @@ class App extends Component {
   handleAdd(itemName, catalogueEntry) {
     this.setState(
       {
-        items: [...this.state.items, { label: itemName, done: false }],
+        items: [...this.state.items, { name: itemName, done: false }],
         catalogue: { ...this.state.catalogue, ...catalogueEntry }
       },
       () => this.notify("New Item Added!")
@@ -95,12 +95,12 @@ class App extends Component {
   }
 
   handleUncheck(itemName) {
-    const index = this.state.items.findIndex(i => i.label === itemName);
+    const index = this.state.items.findIndex(i => i.name === itemName);
     this.setState(
       {
         items: [
           ...this.state.items.slice(0, index),
-          { label: itemName, done: false },
+          { name: itemName, done: false },
           ...this.state.items.slice(index + 1)
         ]
       },
@@ -109,7 +109,7 @@ class App extends Component {
   }
 
   handleMark(item) {
-    const index = this.state.items.findIndex(i => i.label === item.label);
+    const index = this.state.items.findIndex(i => i.name === item.name);
     this.setState({
       items: [
         ...this.state.items.slice(0, index),
@@ -129,7 +129,7 @@ class App extends Component {
     let catalogueEntry = {};
     catalogueEntry[entry.item] = entry.section;
 
-    const itemOnList = this.state.items.find(i => i.label === entry.item);
+    const itemOnList = this.state.items.find(i => i.name === entry.item);
     const storedSection = this.state.catalogue[entry.item];
 
     if (itemOnList && storedSection !== entry.section) {

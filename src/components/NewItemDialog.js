@@ -73,7 +73,7 @@ export default class NewCheckinDialog extends Component {
       ...changes
     };
 
-    const itemOnList = this.props.items.find(i => i.label === newState.item)
+    const itemOnList = this.props.items.find(i => i.name === newState.item)
     const storedSection = this.props.catalogue[newState.item];
 
     if (newState.item.trim().length > 0) { newState.actionDisabled = false; }

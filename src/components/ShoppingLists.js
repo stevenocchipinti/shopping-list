@@ -34,7 +34,7 @@ class App extends Component {
 
   itemsBySection() {
     return this.props.items.reduce((a,item) => {
-      let section = this.props.catalogue[item.label] || "Uncategorized"
+      let section = this.props.catalogue[item.name] || "Uncategorized"
       if (Array.isArray(a[section])) {
         a[section].push(item);
       } else {
@@ -55,7 +55,7 @@ class App extends Component {
           style={this.styles.item}
           labelStyle={item.done ? this.styles.doneItemLabel : {}}
         >
-          {item.label}
+          {item.name}
         </Chip>
       );
     });
