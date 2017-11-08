@@ -64,7 +64,15 @@ class App extends Component {
 
   renderSections() {
     const data = this.itemsBySection()
-    return Object.keys(data).sort().map((section, index) => {
+
+    const notDone = Object.keys(data).filter(section => (
+      data[section].some(item => !item.done)
+    )).sort();
+    const done = Object.keys(data).filter(section => (
+      data[section].every(item => item.done)
+    )).sort();
+
+    return notDone.concat(done).map((section, index) => {
       return (
         <Paper key={index} style={this.styles.paper}>
           { section && <h2>{section}</h2> }
