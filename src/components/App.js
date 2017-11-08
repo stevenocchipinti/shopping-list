@@ -27,22 +27,7 @@ class App extends Component {
     };
   }
 
-  // TODO: Firestore should do the offline caching once its configured!
-  // componentWillUpdate(props, state) {
-  //   saveState({ items: state.items, catalogue: state.catalogue });
-  // }
-
   componentDidMount() {
-    // TODO: Firestore should do the offline caching once its configured!
-    // let persistedState = loadState();
-    // if (persistedState) {
-    //   let { items, catalogue } = persistedState;
-    //   let uniqueItems = items.filter((i1,idx) => {
-    //     return items.findIndex(i2 => i1.label === i2.label) === idx;
-    //   });
-    //   this.setState({ ...this.state, items: uniqueItems, catalogue });
-    // }
-
     if (window) {
       window.addEventListener("online", () => {
         this.notify("Connected to server!");

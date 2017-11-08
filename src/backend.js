@@ -4,6 +4,11 @@ import slugify from './helpers/slugify';
 
 export default class Backend {
   constructor(callbacks) {
+    this.database = Firebase.firestore();
+    Firebase.firestore().enablePersistence().then(() => {
+      this.database = Firebase.firestore();
+    });
+
     // TODO: Get from the URL instead of hardcoding
     this.listRef = Firebase.firestore().collection(`lists`).doc("me");
     this.itemsRef = this.listRef.collection("items");
@@ -12,13 +17,18 @@ export default class Backend {
     this.items = [];
     this.catalogue = {};
 
-    this.itemsRef.onSnapshot(querySnapshot => {
-      const items = querySnapshot.docs.map(d => d.data());
-      this.items = items;
-      callbacks.onItemsChanged(items);
-    });
+    this.itemsRef.onSnapshot(
+      { includeQueryMetadataChanges: true },
+      querySnapshot => {
+        const items = querySnapshot.docs.map(d => d.data());
+        this.items = items;
+        callbacks.onItemsChanged(items);
+      }
+    );
 
-    this.catalogueRef.onSnapshot(querySnapshot => {
+    this.catalogueRef.onSnapshot(
+      { includeQueryMetadataChanges: true },
+      querySnapshot => {
       const catalogue = querySnapshot.docs.reduce((a,d) => {
         a[d.id] = d.data().section;
         return a;
