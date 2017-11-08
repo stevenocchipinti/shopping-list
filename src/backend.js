@@ -9,17 +9,22 @@ export default class Backend {
     this.itemsRef = this.listRef.collection("items");
     this.catalogueRef = this.listRef.collection("catalogue");
 
+    this.items = [];
+    this.catalogue = {};
+
     this.itemsRef.onSnapshot(querySnapshot => {
-      callbacks.onItemsChanged(querySnapshot.docs.map(d => d.data()));
+      const items = querySnapshot.docs.map(d => d.data());
+      this.items = items;
+      callbacks.onItemsChanged(items);
     });
 
     this.catalogueRef.onSnapshot(querySnapshot => {
-      callbacks.onCatalogueChanged(
-        querySnapshot.docs.reduce((a,d) => {
-          a[d.id] = d.data().section;
-          return a;
-        }, {})
-      );
+      const catalogue = querySnapshot.docs.reduce((a,d) => {
+        a[d.id] = d.data().section;
+        return a;
+      }, {});
+      this.catalogue = catalogue;
+      callbacks.onCatalogueChanged(catalogue);
     });
   }
 
@@ -31,67 +36,16 @@ export default class Backend {
     batch.commit();
   }
 
-  handleMove(catalogueEntry) {
-    this.setState(
-      { catalogue: { ...this.state.catalogue, ...catalogueEntry } },
-      () => this.notify("Item Moved!")
-    );
-  }
-
-  handleUncheck(itemName) {
-    const index = this.state.items.findIndex(i => i.label === itemName);
-    this.setState(
-      {
-        items: [
-          ...this.state.items.slice(0, index),
-          { label: itemName, done: false },
-          ...this.state.items.slice(index + 1)
-        ]
-      },
-      () => this.notify("Item Unchecked!")
-    );
-  }
-
-  handleMark(itemName) {
-    const slug = slugify(itemName);
-    const ref = this.itemsRef.doc(slug);
-    Firebase.firestore().runTransaction(transaction => {
-      return transaction.get(ref).then(doc => {
-        transaction.update(ref, { done: !doc.data().done });
-      })
-    })
+  handleMark(item) {
+    const slug = slugify(item.name);
+    this.itemsRef.doc(slug).update({ done: !item.done });
   }
 
   handleSweep() {
-    this.setState({
-      items: this.state.items.filter(i => !i.done)
+    const batch = Firebase.firestore().batch();
+    this.items.filter(item => item.done).forEach(item => {
+      batch.delete(this.itemsRef.doc(slugify(item.name)));
     });
+    batch.commit();
   }
-
-  handleSubmit(entry) {
-    let catalogueEntry = {};
-    catalogueEntry[entry.item] = entry.section;
-
-    const itemOnList = this.state.items.find(i => i.label === entry.item);
-    const storedSection = this.state.catalogue[entry.item];
-
-    if (itemOnList && storedSection !== entry.section) {
-      this.handleMove(catalogueEntry);
-    } else if (itemOnList && storedSection === entry.section) {
-      this.handleUncheck(entry.item);
-    } else {
-      this.handleAdd(entry.item, catalogueEntry);
-    }
-  }
-
-  // addCheckin: (checkin) => {
-  //   if (!backend.currentUser()) return false;
-  //   let newCheckinRef = backend.checkinsRef().push();
-  //   return newCheckinRef.set({
-  //     createdAt: checkin.date.toISOString(),
-  //     weight: checkin.weight,
-  //     fat: checkin.fat,
-  //     waist: checkin.waist
-  //   });
-  // }
 };

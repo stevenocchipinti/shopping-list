@@ -76,50 +76,11 @@ class App extends Component {
     this.setState({ notification: { message: "", visible: false } });
   }
 
-  handleAdd(itemName, catalogueEntry) {
-    this.setState(
-      {
-        items: [...this.state.items, { name: itemName, done: false }],
-        catalogue: { ...this.state.catalogue, ...catalogueEntry }
-      },
-      () => this.notify("New Item Added!")
-    );
-  }
-
-  handleMove(catalogueEntry) {
-    this.setState(
-      {
-        catalogue: { ...this.state.catalogue, ...catalogueEntry }
-      },
-      () => this.notify("Item Moved!")
-    );
-  }
-
-  handleUncheck(itemName) {
-    const index = this.state.items.findIndex(i => i.name === itemName);
-    this.setState(
-      {
-        items: [
-          ...this.state.items.slice(0, index),
-          { name: itemName, done: false },
-          ...this.state.items.slice(index + 1)
-        ]
-      },
-      () => this.notify("Item Unchecked!")
-    );
-  }
-
-  handleSweep() {
-    this.setState({
-      items: this.state.items.filter(i => !i.done)
-    });
-  }
-
   shoppingLists() {
     return (
       <div>
         <AppBar
-          sweepItems={() => this.handleSweep()}
+          sweepItems={() => this.backend.handleSweep()}
           loading={this.state.user && this.state.loading}
           offline={this.state.offline}
           showImportExport={() => this.setState({ showImportExport: true })}
