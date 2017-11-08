@@ -17,6 +17,18 @@ export default class Backend {
     this.items = [];
     this.catalogue = {};
 
+    this.catalogueRef.onSnapshot(
+      { includeQueryMetadataChanges: true },
+      querySnapshot => {
+        const catalogue = querySnapshot.docs.reduce((a,d) => {
+          a[d.id] = d.data();
+          return a;
+        }, {});
+        this.catalogue = catalogue;
+        callbacks.onCatalogueChanged(catalogue);
+      }
+    );
+
     this.itemsRef.onSnapshot(
       { includeQueryMetadataChanges: true },
       querySnapshot => {
@@ -25,17 +37,6 @@ export default class Backend {
         callbacks.onItemsChanged(items);
       }
     );
-
-    this.catalogueRef.onSnapshot(
-      { includeQueryMetadataChanges: true },
-      querySnapshot => {
-      const catalogue = querySnapshot.docs.reduce((a,d) => {
-        a[d.id] = d.data().section;
-        return a;
-      }, {});
-      this.catalogue = catalogue;
-      callbacks.onCatalogueChanged(catalogue);
-    });
   }
 
   handleAdd(itemName, section) {
