@@ -25,8 +25,10 @@ export default class Backend {
 
   handleAdd(itemName, section) {
     const slug = slugify(itemName);
-    this.itemsRef.doc(slug).set({ name: itemName, done: false });
-    this.catalogueRef.doc(slug).set({ section });
+    const batch = Firebase.firestore().batch();
+    batch.set(this.itemsRef.doc(slug), { name: itemName, done: false });
+    batch.set(this.catalogueRef.doc(slug), { section });
+    batch.commit();
   }
 
   handleMove(catalogueEntry) {
