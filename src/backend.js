@@ -16,8 +16,7 @@ export default class Backend {
     this.catalogueRef.onSnapshot(querySnapshot => {
       callbacks.onCatalogueChanged(
         querySnapshot.docs.reduce((a,d) => {
-          const { item, section } = d.data();
-          a[item] = section;
+          a[d.id] = d.data().section;
           return a;
         }, {})
       );

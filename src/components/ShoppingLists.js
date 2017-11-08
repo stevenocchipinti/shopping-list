@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import NewItemDialog from "./NewItemDialog";
+import slugify from '../helpers/slugify';
 
 import Paper from "material-ui/Paper";
 import Chip from 'material-ui/Chip';
@@ -34,7 +35,7 @@ class App extends Component {
 
   itemsBySection() {
     return this.props.items.reduce((a,item) => {
-      let section = this.props.catalogue[item.name] || "Uncategorized"
+      let section = this.props.catalogue[slugify(item.name)] || "Uncategorized"
       if (Array.isArray(a[section])) {
         a[section].push(item);
       } else {
