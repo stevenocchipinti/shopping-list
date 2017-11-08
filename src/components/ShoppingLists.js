@@ -35,8 +35,8 @@ class App extends Component {
 
   itemsBySection() {
     return this.props.items.reduce((a,item) => {
-    const catalogueEntry = this.props.catalogue[slugify(item.name)];
-    const section = catalogueEntry ? catalogueEntry.section : "";
+      const catalogueEntry = this.props.catalogue[slugify(item.name)];
+      const section = catalogueEntry ? catalogueEntry.section : "";
       if (Array.isArray(a[section])) {
         a[section].push(item);
       } else {

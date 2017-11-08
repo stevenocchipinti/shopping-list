@@ -76,12 +76,15 @@ export default class NewCheckinDialog extends Component {
     };
 
     const itemOnList = this.props.items.find(i => i.name === newState.item)
-    const storedSection = this.props.catalogue[newState.item];
+    const catalogueEntry = Object.values(this.props.catalogue).find(e => (
+      e.name === newState.item
+    ));
+    const storedSection = catalogueEntry && catalogueEntry.section;
 
     if (newState.item.trim().length > 0) { newState.actionDisabled = false; }
     if (changes.item && storedSection) { newState.section = storedSection; }
 
-    if (itemOnList && newState.section !== storedSection) { 
+    if (itemOnList && newState.section !== storedSection) {
       newState.actionLabel = "Move";
     } else if (itemOnList && newState.section === storedSection) {
       if (itemOnList.done) {
@@ -104,6 +107,10 @@ export default class NewCheckinDialog extends Component {
   }
 
   render() {
+    const catalogueEntries = Object.values(this.props.catalogue);
+    const allItems = catalogueEntries.map(e => e.name);
+    const allSections = catalogueEntries.map(e => e.section).filter(x => x);
+
     const actions = [
       <FlatButton
         label="done"
@@ -139,7 +146,7 @@ export default class NewCheckinDialog extends Component {
             floatingLabelText="Item"
             fullWidth={true}
             filter={AutoComplete.fuzzyFilter}
-            dataSource={Object.keys(this.props.catalogue)}
+            dataSource={Array.from(new Set(allItems))}
             maxSearchResults={5}
             onUpdateInput={item => this.handleItemChange(item)}
             searchText={this.state.item}
@@ -150,7 +157,7 @@ export default class NewCheckinDialog extends Component {
             floatingLabelText="Section"
             fullWidth={true}
             filter={AutoComplete.fuzzyFilter}
-            dataSource={Array.from(new Set(Object.values(this.props.catalogue)))}
+            dataSource={Array.from(new Set(allSections))}
             maxSearchResults={5}
             onUpdateInput={section => this.handleSectionChange(section)}
             searchText={this.state.section}
