@@ -35,7 +35,7 @@ class App extends Component {
 
   itemsBySection() {
     return this.props.items.reduce((a,item) => {
-      let section = this.props.catalogue[slugify(item.name)] || "Uncategorized"
+      let section = this.props.catalogue[slugify(item.name)];
       if (Array.isArray(a[section])) {
         a[section].push(item);
       } else {
@@ -64,10 +64,10 @@ class App extends Component {
 
   renderSections() {
     const data = this.itemsBySection()
-    return Object.keys(data).map((section, index) => {
+    return Object.keys(data).sort().map((section, index) => {
       return (
         <Paper key={index} style={this.styles.paper}>
-          <h2>{section}</h2>
+          { section && <h2>{section}</h2> }
           <div style={this.styles.wrapper}>
             { this.renderItemsFor(data[section]) }
           </div>

@@ -50,6 +50,7 @@ export default class NewCheckinDialog extends Component {
 
   // TODO: Move this out to the helpers
   format(string) {
+    if (!string) return "";
     const capitalize = s => `${s[0].toUpperCase()}${s.slice(1)}`;
     return string.trim().split(/\s+/).map(capitalize).join(" ");
   }
