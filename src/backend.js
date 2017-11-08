@@ -5,12 +5,14 @@ export default class Backend {
   constructor(callbacks) {
     // TODO: Get from the URL instead of hardcoding
     this.listRef = Firebase.firestore().collection(`lists`).doc("me");
+    this.itemsRef = this.listRef.collection("items");
+    this.catalogueRef = this.listRef.collection("catalogue");
 
-    this.listRef.collection("items").onSnapshot(querySnapshot => {
+    this.itemsRef.onSnapshot(querySnapshot => {
       callbacks.onItemsChanged(querySnapshot.docs.map(d => d.data()));
     });
 
-    this.listRef.collection("catalogue").onSnapshot(querySnapshot => {
+    this.catalogueRef.onSnapshot(querySnapshot => {
       callbacks.onCatalogueChanged(
         querySnapshot.docs.reduce((a,d) => {
           const { item, section } = d.data();
@@ -21,13 +23,15 @@ export default class Backend {
     });
   }
 
+  getItem(item) {
+    return this.itemsRef.where("name", "==", item).limit(1).get();
+  }
+
   handleAdd(itemName, catalogueEntry) {
-    console.log("Adding", itemName, catalogueEntry);
-    console.log(this.listRef.collection(`lists`).doc("me")
-      .collection("items")
-      .where("name", "==", "Apples").get()
-      .then(d => console.log(d))
-    )
+    this.getItem(itemName).then(snap => {
+      const doc = snap.size === 1 ? snap.docs[0] : this.itemsRef.doc()
+      doc.set({ name: itemName, done: false });
+    });
   }
 
   handleMove(catalogueEntry) {
