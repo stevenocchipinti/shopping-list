@@ -1,5 +1,6 @@
 import Firebase from 'firebase'
 import 'firebase/firestore'
+import slugify from './helpers/slugify';
 
 export default class Backend {
   constructor(callbacks) {
@@ -23,14 +24,10 @@ export default class Backend {
     });
   }
 
-  getItem(item) {
-    return this.itemsRef.where("name", "==", item).limit(1).get();
-  }
-
   handleAdd(itemName, catalogueEntry) {
-    this.getItem(itemName).then(snap => {
-      const doc = snap.size === 1 ? snap.docs[0] : this.itemsRef.doc()
-      doc.set({ name: itemName, done: false });
+    this.itemsRef.doc(slugify(itemName)).set({
+      name: itemName,
+      done: false
     });
   }
 
