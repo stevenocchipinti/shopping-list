@@ -52,7 +52,7 @@ class App extends Component {
       return (
         <Chip
           key={index}
-          onClick={() => this.props.handleMark(item)}
+          onClick={() => this.props.handleMark(item.name)}
           style={this.styles.item}
           labelStyle={item.done ? this.styles.doneItemLabel : {}}
         >

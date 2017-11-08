@@ -52,15 +52,14 @@ export default class Backend {
     );
   }
 
-  handleMark(item) {
-    const index = this.state.items.findIndex(i => i.label === item.label);
-    this.setState({
-      items: [
-        ...this.state.items.slice(0, index),
-        { ...item, done: !item.done },
-        ...this.state.items.slice(index + 1)
-      ]
-    });
+  handleMark(itemName) {
+    const slug = slugify(itemName);
+    const ref = this.itemsRef.doc(slug);
+    Firebase.firestore().runTransaction(transaction => {
+      return transaction.get(ref).then(doc => {
+        transaction.update(ref, { done: !doc.data().done });
+      })
+    })
   }
 
   handleSweep() {

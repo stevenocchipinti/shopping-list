@@ -109,38 +109,10 @@ class App extends Component {
     );
   }
 
-  handleMark(item) {
-    const index = this.state.items.findIndex(i => i.name === item.name);
-    this.setState({
-      items: [
-        ...this.state.items.slice(0, index),
-        { ...item, done: !item.done },
-        ...this.state.items.slice(index + 1)
-      ]
-    });
-  }
-
   handleSweep() {
     this.setState({
       items: this.state.items.filter(i => !i.done)
     });
-  }
-
-  handleSubmit(entry) {
-    this.backend.handleAdd(entry.item, entry.section);
-    // let catalogueEntry = {};
-    // catalogueEntry[entry.item] = entry.section;
-
-    // const itemOnList = this.state.items.find(i => i.name === entry.item);
-    // const storedSection = this.state.catalogue[entry.item];
-
-    // if (itemOnList && storedSection !== entry.section) {
-    //   this.handleMove(catalogueEntry);
-    // } else if (itemOnList && storedSection === entry.section) {
-    //   this.handleUncheck(entry.item);
-    // } else {
-    //   this.backend.handleAdd(entry.item, catalogueEntry);
-    // }
   }
 
   shoppingLists() {
@@ -153,12 +125,10 @@ class App extends Component {
           showImportExport={() => this.setState({ showImportExport: true })}
         />
         <ShoppingLists
-          handleMark={item => this.handleMark(item)}
+          handleMark={item => this.backend.handleMark(item)}
           items={this.state.items}
           catalogue={this.state.catalogue}
-          onSubmit={entry => {
-            this.handleSubmit(entry);
-          }}
+          onSubmit={entry => this.backend.handleAdd(entry.item, entry.section)}
         />
       </div>
     );
