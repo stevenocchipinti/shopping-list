@@ -23,18 +23,15 @@ export default class Backend {
     });
   }
 
-  handleAdd(itemName, catalogueEntry) {
-    this.itemsRef.doc(slugify(itemName)).set({
-      name: itemName,
-      done: false
-    });
+  handleAdd(itemName, section) {
+    const slug = slugify(itemName);
+    this.itemsRef.doc(slug).set({ name: itemName, done: false });
+    this.catalogueRef.doc(slug).set({ section });
   }
 
   handleMove(catalogueEntry) {
     this.setState(
-      {
-        catalogue: { ...this.state.catalogue, ...catalogueEntry }
-      },
+      { catalogue: { ...this.state.catalogue, ...catalogueEntry } },
       () => this.notify("Item Moved!")
     );
   }

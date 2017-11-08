@@ -127,19 +127,20 @@ class App extends Component {
   }
 
   handleSubmit(entry) {
-    let catalogueEntry = {};
-    catalogueEntry[entry.item] = entry.section;
+    this.backend.handleAdd(entry.item, entry.section);
+    // let catalogueEntry = {};
+    // catalogueEntry[entry.item] = entry.section;
 
-    const itemOnList = this.state.items.find(i => i.name === entry.item);
-    const storedSection = this.state.catalogue[entry.item];
+    // const itemOnList = this.state.items.find(i => i.name === entry.item);
+    // const storedSection = this.state.catalogue[entry.item];
 
-    if (itemOnList && storedSection !== entry.section) {
-      this.handleMove(catalogueEntry);
-    } else if (itemOnList && storedSection === entry.section) {
-      this.handleUncheck(entry.item);
-    } else {
-      this.backend.handleAdd(entry.item, catalogueEntry);
-    }
+    // if (itemOnList && storedSection !== entry.section) {
+    //   this.handleMove(catalogueEntry);
+    // } else if (itemOnList && storedSection === entry.section) {
+    //   this.handleUncheck(entry.item);
+    // } else {
+    //   this.backend.handleAdd(entry.item, catalogueEntry);
+    // }
   }
 
   shoppingLists() {
