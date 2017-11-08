@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import backend from "../backend";
+import Backend from "../backend";
 // import { loadState, saveState } from "../localStorage";
 import { registerServiceWorker } from "../registerServiceWorker";
 
@@ -16,6 +16,7 @@ import NavigationClose from "material-ui/svg-icons/navigation/close";
 class App extends Component {
   constructor() {
     super();
+    this.backend = null;
     this.state = {
       items: [],
       catalogue: {},
@@ -58,7 +59,7 @@ class App extends Component {
       onUpdate: () => this.notify("Refresh for the new version")
     });
 
-    backend.init({
+    this.backend = new Backend({
       onItemsChanged: items => {
         this.setState({ items, loading: false });
       },
@@ -137,7 +138,7 @@ class App extends Component {
     } else if (itemOnList && storedSection === entry.section) {
       this.handleUncheck(entry.item);
     } else {
-      this.handleAdd(entry.item, catalogueEntry);
+      this.backend.handleAdd(entry.item, catalogueEntry);
     }
   }
 

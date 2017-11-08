@@ -1,58 +1,45 @@
 import Firebase from 'firebase'
 import 'firebase/firestore'
 
-// function mapFirebaseCheckins(checkins) {
-//   if (!checkins) return [];
-//   return Object.keys(checkins).reverse().map(k => {
-//     return {
-//       key: k,
-//       date: checkins[k].createdAt,
-//       weight: checkins[k].weight,
-//       fat: checkins[k].fat,
-//       waist: checkins[k].waist
-//     };
-//   })
-// }
+export default class Backend {
+  constructor(callbacks) {
+    // TODO: Get from the URL instead of hardcoding
+    this.listRef = Firebase.firestore().collection(`lists`).doc("me");
 
-
-const backend = {
-  init: (callbacks) => {
-    const list = backend.listRef()
-
-    list.collection("items").onSnapshot(querySnapshot => {
+    this.listRef.collection("items").onSnapshot(querySnapshot => {
       callbacks.onItemsChanged(querySnapshot.docs.map(d => d.data()));
     });
 
-    list.collection("catalogue").onSnapshot(querySnapshot => {
-      callbacks.onCatalogueChanged(querySnapshot.docs.map(d => d.data()));
+    this.listRef.collection("catalogue").onSnapshot(querySnapshot => {
+      callbacks.onCatalogueChanged(
+        querySnapshot.docs.reduce((a,d) => {
+          const { item, section } = d.data();
+          a[item] = section;
+          return a;
+        }, {})
+      );
     });
-  },
+  }
 
-  listRef: () => {
-    // TODO: Get from the URL instead of hardcoding
-    return Firebase.firestore().collection(`lists`).doc("me");
-  },
+  handleAdd(itemName, catalogueEntry) {
+    console.log("Adding", itemName, catalogueEntry);
+    console.log(this.listRef.collection(`lists`).doc("me")
+      .collection("items")
+      .where("name", "==", "Apples").get()
+      .then(d => console.log(d))
+    )
+  }
 
-  handleAdd: (itemName, catalogueEntry) => {
-    this.setState(
-      {
-        items: [...this.state.items, { label: itemName, done: false }],
-        catalogue: { ...this.state.catalogue, ...catalogueEntry }
-      },
-      () => this.notify("New Item Added!")
-    );
-  },
-
-  handleMove: (catalogueEntry) => {
+  handleMove(catalogueEntry) {
     this.setState(
       {
         catalogue: { ...this.state.catalogue, ...catalogueEntry }
       },
       () => this.notify("Item Moved!")
     );
-  },
+  }
 
-  handleUncheck: (itemName) => {
+  handleUncheck(itemName) {
     const index = this.state.items.findIndex(i => i.label === itemName);
     this.setState(
       {
@@ -64,9 +51,9 @@ const backend = {
       },
       () => this.notify("Item Unchecked!")
     );
-  },
+  }
 
-  handleMark: (item) => {
+  handleMark(item) {
     const index = this.state.items.findIndex(i => i.label === item.label);
     this.setState({
       items: [
@@ -75,15 +62,15 @@ const backend = {
         ...this.state.items.slice(index + 1)
       ]
     });
-  },
+  }
 
-  handleSweep: () => {
+  handleSweep() {
     this.setState({
       items: this.state.items.filter(i => !i.done)
     });
-  },
+  }
 
-  handleSubmit: (entry) => {
+  handleSubmit(entry) {
     let catalogueEntry = {};
     catalogueEntry[entry.item] = entry.section;
 
@@ -110,5 +97,3 @@ const backend = {
   //   });
   // }
 };
-
-export default backend;
