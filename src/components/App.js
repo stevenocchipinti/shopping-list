@@ -44,14 +44,17 @@ class App extends Component {
       onUpdate: () => this.notify("Refresh for the new version")
     });
 
-    this.backend = new Backend({
-      onItemsChanged: items => {
-        this.setState({ items, loading: false });
-      },
-      onCatalogueChanged: catalogue => {
-        this.setState({ catalogue, loading: false });
-      },
-    });
+    this.backend = new Backend(
+      "me",  // TODO: Get from the URL instead of hardcoding
+      {
+        onItemsChanged: items => {
+          this.setState({ items, loading: false });
+        },
+        onCatalogueChanged: catalogue => {
+          this.setState({ catalogue, loading: false });
+        },
+      }
+    );
   }
 
   notify(message) {

@@ -3,40 +3,57 @@ import 'firebase/firestore'
 import slugify from './helpers/slugify';
 
 export default class Backend {
-  constructor(callbacks) {
+  constructor(listName, callbacks) {
     this.database = Firebase.firestore();
     Firebase.firestore().enablePersistence().then(() => {
       this.database = Firebase.firestore();
     });
 
-    // TODO: Get from the URL instead of hardcoding
-    this.listRef = Firebase.firestore().collection(`lists`).doc("me");
-    this.itemsRef = this.listRef.collection("items");
-    this.catalogueRef = this.listRef.collection("catalogue");
+    this.unsubFunctions = [];
+    this.callbacks = callbacks;
+
+    this.connectToList(listName);
+  }
+
+  connectToList(listName) {
+    this.disconnect();
 
     this.items = [];
     this.catalogue = {};
 
-    this.catalogueRef.onSnapshot(
-      { includeQueryMetadataChanges: true },
-      querySnapshot => {
-        const catalogue = querySnapshot.docs.reduce((a,d) => {
-          a[d.id] = d.data();
-          return a;
-        }, {});
-        this.catalogue = catalogue;
-        callbacks.onCatalogueChanged(catalogue);
-      }
+    this.listRef = Firebase.firestore().collection("lists").doc(listName);
+    this.itemsRef = this.listRef.collection("items");
+    this.catalogueRef = this.listRef.collection("catalogue");
+
+    this.unsubFunctions.push(
+      this.catalogueRef.onSnapshot(
+        { includeQueryMetadataChanges: true },
+        querySnapshot => {
+          const catalogue = querySnapshot.docs.reduce((a,d) => {
+            a[d.id] = d.data();
+            return a;
+          }, {});
+          this.catalogue = catalogue;
+          this.callbacks.onCatalogueChanged(catalogue);
+        }
+      )
     );
 
-    this.itemsRef.onSnapshot(
-      { includeQueryMetadataChanges: true },
-      querySnapshot => {
-        const items = querySnapshot.docs.map(d => d.data());
-        this.items = items;
-        callbacks.onItemsChanged(items);
-      }
+    this.unsubFunctions.push(
+      this.itemsRef.onSnapshot(
+        { includeQueryMetadataChanges: true },
+        querySnapshot => {
+          const items = querySnapshot.docs.map(d => d.data());
+          this.items = items;
+          this.callbacks.onItemsChanged(items);
+        }
+      )
     );
+  }
+
+  disconnect() {
+    this.unsubFunctions.forEach(unsub => unsub());
+    this.unsubFunctions = [];
   }
 
   handleAdd(itemName, section) {
