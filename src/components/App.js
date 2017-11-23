@@ -27,16 +27,15 @@ class App extends Component {
   }
 
   componentDidMount() {
-    if (window) {
-      window.addEventListener("online", () => {
-        this.notify("Connected to server!");
-        this.setState({ ...this.state, offline: false });
-      });
-      window.addEventListener("offline", () => {
-        this.notify("Disconnected from server!");
-        this.setState({ ...this.state, offline: true });
-      });
-    }
+    window.addEventListener("online", () => {
+      this.notify("Connected to server!");
+      this.setState({ ...this.state, offline: false });
+    });
+    window.addEventListener("offline", () => {
+      this.notify("Disconnected from server!");
+      this.setState({ ...this.state, offline: true });
+    });
+    window.localStorage.setItem("listName", this.props.match.params.listId);
 
     registerServiceWorker({
       onInstall: () => this.notify("Now available offline"),

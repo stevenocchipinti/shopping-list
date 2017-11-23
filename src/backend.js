@@ -2,6 +2,10 @@ import Firebase from 'firebase'
 import 'firebase/firestore'
 import slugify from './helpers/slugify';
 
+export function generateListName() {
+  return Firebase.firestore().collection("lists").doc().id;
+};
+
 export default class Backend {
   constructor(listName, callbacks) {
     this.unsubFunctions = [];

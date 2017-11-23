@@ -1,8 +1,16 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import background from './../assets/images/background.jpg';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { generateListName } from "../backend";
 
-export default class App extends PureComponent {
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      listName: window.localStorage.getItem("listName")
+    };
+  }
+
   render() {
     const styles = {
       container: {
@@ -36,7 +44,8 @@ export default class App extends PureComponent {
     return (
       <main style={styles.container}>
         <h1 style={styles.heading}>Shopping List</h1>
-        <Link to="/list/demo" style={styles.cta}>Try the demo</Link>
+        <Link to={`/list/${generateListName()}`} style={styles.cta}>Get Started</Link>
+        { this.state.listName && <Redirect to={`/list/${this.state.listName}`} /> }
       </main>
     );
   }
