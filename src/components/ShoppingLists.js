@@ -16,7 +16,6 @@ class App extends Component {
       },
       doneItemLabel: {
         textDecorationLine: "line-through",
-        backgroundColor: "white",
         color: "#aaa"
       },
       heading: {

@@ -4,11 +4,6 @@ import slugify from './helpers/slugify';
 
 export default class Backend {
   constructor(listName, callbacks) {
-    this.database = Firebase.firestore();
-    Firebase.firestore().enablePersistence().then(() => {
-      this.database = Firebase.firestore();
-    });
-
     this.unsubFunctions = [];
     this.callbacks = callbacks;
 

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import Backend from "../backend";
-// import { loadState, saveState } from "../localStorage";
 import { registerServiceWorker } from "../registerServiceWorker";
 
 import AppBar from "./AppBar";
