@@ -1,75 +1,78 @@
-import { auth, database } from "firebase";
+import Firebase from 'firebase'
+import 'firebase/firestore'
+import slugify from './helpers/slugify';
 
-function mapFirebaseCheckins(checkins) {
-  if (!checkins) return [];
-  return Object.keys(checkins).reverse().map(k => {
-    return {
-      key: k,
-      date: checkins[k].createdAt,
-      weight: checkins[k].weight,
-      fat: checkins[k].fat,
-      waist: checkins[k].waist
-    };
-  }).sort(compareCheckins);
-}
-
-function compareCheckins(a, b, key="date") {
-  if (a[key] < b[key]) return 1;
-  if (a[key] > b[key]) return -1;
-  return 0;
-}
-
-let allCallbacks = {};
-
-
-const backend = {
-  init: (callbacks) => {
-    allCallbacks = callbacks;
-
-    auth().onAuthStateChanged(user => {
-      callbacks.onAuthStateChanged(user);
-
-      if (!user) return;
-      backend.checkinsRef().on("value", snapshot => {
-        callbacks.onCheckinsChanged(mapFirebaseCheckins(snapshot.val()));
-      });
-    });
-  },
-
-  signIn: () => {
-    let provider = new auth.GoogleAuthProvider();
-    auth().signInWithRedirect(provider);
-  },
-
-  signOut: () => {
-    auth().signOut();
-    allCallbacks.onCheckinsChanged([]);
-  },
-
-  currentUser: () => {
-    return auth().currentUser;
-  },
-
-  checkinsRef: () => {
-    const user = backend.currentUser();
-    return database().ref(`/checkins/${user.uid}`);
-  },
-
-  addCheckin: (checkin) => {
-    if (!backend.currentUser()) return false;
-    let newCheckinRef = backend.checkinsRef().push();
-    return newCheckinRef.set({
-      createdAt: checkin.date.toISOString(),
-      weight: checkin.weight,
-      fat: checkin.fat,
-      waist: checkin.waist
-    });
-  },
-
-  deleteCheckin: (checkinKey) => {
-    if (!backend.currentUser()) return false;
-    return backend.checkinsRef().child(checkinKey).remove();
-  }
+export function generateListName() {
+  return Firebase.firestore().collection("lists").doc().id;
 };
 
-export default backend;
+export default class Backend {
+  constructor(listName, callbacks) {
+    this.unsubFunctions = [];
+    this.callbacks = callbacks;
+
+    this.connectToList(listName);
+  }
+
+  connectToList(listName) {
+    this.disconnect();
+
+    this.items = [];
+    this.catalogue = {};
+
+    this.listRef = Firebase.firestore().collection("lists").doc(listName);
+    this.itemsRef = this.listRef.collection("items");
+    this.catalogueRef = this.listRef.collection("catalogue");
+
+    this.unsubFunctions.push(
+      this.catalogueRef.onSnapshot(
+        { includeQueryMetadataChanges: true },
+        querySnapshot => {
+          const catalogue = querySnapshot.docs.reduce((a,d) => {
+            a[d.id] = d.data();
+            return a;
+          }, {});
+          this.catalogue = catalogue;
+          this.callbacks.onCatalogueChanged(catalogue);
+        }
+      )
+    );
+
+    this.unsubFunctions.push(
+      this.itemsRef.onSnapshot(
+        { includeQueryMetadataChanges: true },
+        querySnapshot => {
+          const items = querySnapshot.docs.map(d => d.data());
+          this.items = items;
+          this.callbacks.onItemsChanged(items);
+        }
+      )
+    );
+  }
+
+  disconnect() {
+    this.unsubFunctions.forEach(unsub => unsub());
+    this.unsubFunctions = [];
+  }
+
+  handleAdd(itemName, section) {
+    const slug = slugify(itemName);
+    const batch = Firebase.firestore().batch();
+    batch.set(this.itemsRef.doc(slug), { name: itemName, done: false });
+    batch.set(this.catalogueRef.doc(slug), { section });
+    batch.commit();
+  }
+
+  handleMark(item) {
+    const slug = slugify(item.name);
+    this.itemsRef.doc(slug).update({ done: !item.done });
+  }
+
+  handleSweep() {
+    const batch = Firebase.firestore().batch();
+    this.items.filter(item => item.done).forEach(item => {
+      batch.delete(this.itemsRef.doc(slugify(item.name)));
+    });
+    batch.commit();
+  }
+};

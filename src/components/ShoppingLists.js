@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import NewItemDialog from "./NewItemDialog";
+import slugify from '../helpers/slugify';
 
 import Paper from "material-ui/Paper";
 import Chip from 'material-ui/Chip';
@@ -15,7 +16,6 @@ class App extends Component {
       },
       doneItemLabel: {
         textDecorationLine: "line-through",
-        backgroundColor: "white",
         color: "#aaa"
       },
       heading: {
@@ -34,7 +34,8 @@ class App extends Component {
 
   itemsBySection() {
     return this.props.items.reduce((a,item) => {
-      let section = this.props.catalogue[item.label] || "Uncategorized"
+      const catalogueEntry = this.props.catalogue[slugify(item.name)];
+      const section = catalogueEntry ? catalogueEntry.section : "";
       if (Array.isArray(a[section])) {
         a[section].push(item);
       } else {
@@ -55,7 +56,7 @@ class App extends Component {
           style={this.styles.item}
           labelStyle={item.done ? this.styles.doneItemLabel : {}}
         >
-          {item.label}
+          {item.name}
         </Chip>
       );
     });
@@ -63,10 +64,18 @@ class App extends Component {
 
   renderSections() {
     const data = this.itemsBySection()
-    return Object.keys(data).map((section, index) => {
+
+    const notDone = Object.keys(data).filter(section => (
+      data[section].some(item => !item.done)
+    )).sort();
+    const done = Object.keys(data).filter(section => (
+      data[section].every(item => item.done)
+    )).sort();
+
+    return notDone.concat(done).map((section, index) => {
       return (
         <Paper key={index} style={this.styles.paper}>
-          <h2>{section}</h2>
+          { section && <h2>{section}</h2> }
           <div style={this.styles.wrapper}>
             { this.renderItemsFor(data[section]) }
           </div>

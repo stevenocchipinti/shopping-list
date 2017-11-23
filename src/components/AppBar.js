@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
 import MuiAppBar from "material-ui/AppBar";
 import LinearProgress from "material-ui/LinearProgress";
@@ -6,7 +7,6 @@ import LinearProgress from "material-ui/LinearProgress";
 import IconButton from "material-ui/IconButton";
 import SweepIcon from "material-ui/svg-icons/content/delete-sweep";
 import ShareIcon from "material-ui/svg-icons/social/share";
-import ImportExportIcon from "material-ui/svg-icons/communication/import-export";
 import SwitchIcon from "material-ui/svg-icons/action/add-shopping-cart";
 
 import Drawer from "material-ui/Drawer";
@@ -51,13 +51,10 @@ class AppBar extends Component {
   }
 
   openNewList() {
-    let newListUrl = this.state.newListUrl;
-    try {
-      const url = new URL(newListUrl);
-      window.location.href = window.location.origin + url.pathname;
-    } catch (Exception) {
-      window.location.href = window.location.origin + `/${newListUrl}`;
-    }
+    let url = this.state.newListUrl;
+    try { url = new URL(url).pathname } catch(Exception) {}
+    window.localStorage.setItem("listName", url.replace(/[\s/]*/, ""));
+    this.props.history.push("/");
   }
 
   openDialog() {
@@ -146,20 +143,10 @@ class AppBar extends Component {
           </MenuItem>
           {this.openDialog()}
 
-          <MenuItem
-            onClick={e => {
-              this.props.showImportExport();
-              this.setState({ drawerOpen: false });
-            }}
-            leftIcon={<ImportExportIcon />}
-          >
-            Import / Export
-          </MenuItem>
-
         </Drawer>
       </div>
     );
   }
 }
 
-export default AppBar;
+export default withRouter(AppBar);
