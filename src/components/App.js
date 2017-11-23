@@ -44,7 +44,7 @@ class App extends Component {
     });
 
     this.backend = new Backend(
-      "me",  // TODO: Get from the URL instead of hardcoding
+      this.props.match.params.listId,
       {
         onItemsChanged: items => {
           this.setState({ items, loading: false });

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
 import MuiAppBar from "material-ui/AppBar";
 import LinearProgress from "material-ui/LinearProgress";
@@ -7,22 +8,18 @@ import IconButton from "material-ui/IconButton";
 import SweepIcon from "material-ui/svg-icons/content/delete-sweep";
 import ShareIcon from "material-ui/svg-icons/social/share";
 import ImportExportIcon from "material-ui/svg-icons/communication/import-export";
-import SwitchIcon from "material-ui/svg-icons/action/add-shopping-cart";
 
 import Drawer from "material-ui/Drawer";
 import MenuItem from "material-ui/MenuItem";
 import Dialog from "material-ui/Dialog";
 import TextField from "material-ui/TextField";
-import FlatButton from "material-ui/FlatButton";
 
 class AppBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       drawerOpen: false,
-      shareDialogOpen: false,
-      openDialogOpen: false,
-      newListUrl: ""
+      shareDialogOpen: false
     };
   }
 
@@ -50,49 +47,12 @@ class AppBar extends Component {
     );
   }
 
-  openNewList() {
-    let newListUrl = this.state.newListUrl;
-    try {
-      const url = new URL(newListUrl);
-      window.location.href = window.location.origin + url.pathname;
-    } catch (Exception) {
-      window.location.href = window.location.origin + `/${newListUrl}`;
-    }
-  }
-
-  openDialog() {
-    const button = (
-      <FlatButton
-        label="Open"
-        primary={true}
-        keyboardFocused={true}
-        onClick={e => this.openNewList()}
-      />
-    );
-    return (
-      <Dialog
-        title="Open another list"
-        modal={false}
-        actions={button}
-        open={this.state.openDialogOpen}
-        onRequestClose={() => this.setState({ openDialogOpen: false })}
-      >
-        To open another list, paste the URL or id here
-        <TextField
-          onChange={e => this.setState({ newListUrl: e.target.value })}
-          value={this.state.newListUrl}
-          id="open"
-          fullWidth={true}
-        />
-      </Dialog>
-    );
-  }
-
   render() {
     return (
       <div>
         <MuiAppBar
           title="Shopping List"
+          onTitleTouchTap={() => this.props.history.push("/")}
           iconElementRight={
             <IconButton>
               <SweepIcon />
@@ -138,16 +98,6 @@ class AppBar extends Component {
 
           <MenuItem
             onClick={e => {
-              this.setState({ drawerOpen: false, openDialogOpen: true });
-            }}
-            leftIcon={<SwitchIcon />}
-          >
-            Open Another List
-          </MenuItem>
-          {this.openDialog()}
-
-          <MenuItem
-            onClick={e => {
               this.props.showImportExport();
               this.setState({ drawerOpen: false });
             }}
@@ -162,4 +112,4 @@ class AppBar extends Component {
   }
 }
 
-export default AppBar;
+export default withRouter(AppBar);

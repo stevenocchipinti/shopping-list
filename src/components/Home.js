@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import background from './../assets/images/background.jpg';
+import { Link } from "react-router-dom";
 
 export default class App extends PureComponent {
   render() {
@@ -35,7 +36,7 @@ export default class App extends PureComponent {
     return (
       <main style={styles.container}>
         <h1 style={styles.heading}>Shopping List</h1>
-        <a href="/list/demo" style={styles.cta}>Try the demo</a>
+        <Link to="/list/demo" style={styles.cta}>Try the demo</Link>
       </main>
     );
   }
