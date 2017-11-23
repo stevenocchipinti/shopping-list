@@ -5,12 +5,8 @@ import { registerServiceWorker } from "../registerServiceWorker";
 
 import AppBar from "./AppBar";
 import ShoppingLists from "./ShoppingLists";
-import ImportExport from "./ImportExport";
 
 import Snackbar from "material-ui/Snackbar";
-import MuiAppBar from "material-ui/AppBar";
-import IconButton from "material-ui/IconButton";
-import NavigationClose from "material-ui/svg-icons/navigation/close";
 
 class App extends Component {
   constructor() {
@@ -19,7 +15,6 @@ class App extends Component {
     this.state = {
       items: [],
       catalogue: {},
-      showImportExport: false,
       notification: { message: "", visible: false },
       loading: true,
       offline: !navigator.onLine,
@@ -62,60 +57,21 @@ class App extends Component {
     this.setState({ notification: { message: "", visible: false } });
   }
 
-  shoppingLists() {
+  render() {
     return (
       <div>
         <AppBar
           sweepItems={() => this.backend.handleSweep()}
           loading={this.state.user && this.state.loading}
           offline={this.state.offline}
-          showImportExport={() => this.setState({ showImportExport: true })}
         />
+
         <ShoppingLists
           handleMark={item => this.backend.handleMark(item)}
           items={this.state.items}
           catalogue={this.state.catalogue}
           onSubmit={entry => this.backend.handleAdd(entry.item, entry.section)}
         />
-      </div>
-    );
-  }
-
-  importExport() {
-    return (
-      <div>
-        <MuiAppBar
-          title="Import / Export"
-          style={this.props.offline ? { backgroundColor: "#666" } : {}}
-          iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-          onLeftIconButtonTouchTap={
-            () => this.setState({ showImportExport: false })
-          }
-        />
-        <ImportExport
-          data={{
-            items: this.state.items,
-            catalogue: this.state.catalogue
-          }}
-          onImport={(data) => {
-            this.setState({
-              items: data.items,
-              catalogue: data.catalogue
-            }, () => this.notify("Data imported!"));
-          }}
-        />
-      </div>
-    );
-  }
-
-  render() {
-    return (
-      <div>
-        {
-          this.state.showImportExport
-          ? this.importExport()
-          : this.shoppingLists()
-        }
 
         <Snackbar
           open={this.state.notification.visible}
