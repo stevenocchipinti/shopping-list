@@ -97,8 +97,8 @@ class AppBar extends Component {
               <SweepIcon />
             </IconButton>
           }
-          onLeftIconButtonTouchTap={() => this.setState({drawerOpen: true})}
-          onRightIconButtonTouchTap={() => this.props.sweepItems()}
+          onLeftIconButtonClick={() => this.setState({drawerOpen: true})}
+          onRightIconButtonClick={() => this.props.sweepItems()}
           style={this.props.offline ? {backgroundColor: '#666'} : {}}
         />
         {this.loadingIndicator()}
@@ -111,7 +111,7 @@ class AppBar extends Component {
           <MuiAppBar
             title="Shopping List"
             style={this.props.offline ? {backgroundColor: '#666'} : {}}
-            onLeftIconButtonTouchTap={() => this.setState({drawerOpen: false})}
+            onLeftIconButtonClick={() => this.setState({drawerOpen: false})}
           />
 
           <MenuItem

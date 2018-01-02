@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 
 import Backend from '../backend'
-import {registerServiceWorker} from '../registerServiceWorker'
 
 import AppBar from './AppBar'
 import ShoppingLists from './ShoppingLists'
@@ -31,11 +30,6 @@ class App extends Component {
       this.setState({...this.state, offline: true})
     })
     window.localStorage.setItem('listName', this.props.match.params.listId)
-
-    registerServiceWorker({
-      onInstall: () => this.notify('Now available offline'),
-      onUpdate: () => this.notify('Refresh for the new version'),
-    })
 
     this.backend = new Backend(this.props.match.params.listId, {
       onItemsChanged: items => {

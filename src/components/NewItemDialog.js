@@ -42,7 +42,7 @@ export default class NewCheckinDialog extends Component {
   }
 
   handleOpen() {
-    this.setState({...this.defaults, open: true}, () => this.focus())
+    this.setState({...this.defaults, open: true})
   }
 
   handleClose() {
@@ -50,7 +50,7 @@ export default class NewCheckinDialog extends Component {
   }
 
   focus() {
-    this.autoCompleteInput.refs.searchTextField.input.focus()
+    this.refs.autoCompleteInput.refs.searchTextField.input.focus()
   }
 
   handleSubmit() {
@@ -115,14 +115,14 @@ export default class NewCheckinDialog extends Component {
     const actions = [
       <FlatButton
         label="done"
-        onTouchTap={() => this.setState({open: false})}
+        onClick={() => this.setState({open: false})}
         tabIndex={4}
       />,
       <RaisedButton
         label={this.state.actionLabel}
         disabled={this.state.actionDisabled}
         primary={true}
-        onTouchTap={() => this.handleSubmit()}
+        onClick={() => this.handleSubmit()}
         tabIndex={3}
       />,
     ]
@@ -143,7 +143,8 @@ export default class NewCheckinDialog extends Component {
           actions={actions}
         >
           <AutoComplete
-            ref={input => (this.autoCompleteInput = input)}
+            autoFocus
+            ref="autoCompleteInput"
             floatingLabelText="Item"
             fullWidth={true}
             filter={AutoComplete.fuzzyFilter}

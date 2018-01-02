@@ -1,81 +1,108 @@
-/**
- * Copyright 2015 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Changes include: modularizing, adding callbacks and linting
- */
+// In production, we register a service worker to serve assets from local cache.
 
-export function registerServiceWorker(callbacks) {
-  if (
-    'serviceWorker' in navigator &&
-    // See http://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features
-    (window.location.protocol === 'https:' ||
-      window.location.hostname === 'localhost' ||
-      window.location.hostname.indexOf('127.') === 0)
-  ) {
-    // Your service-worker.js *must* be located at the top-level directory
-    // relative to your site. It won"t be able to control pages unless it"s
-    // located at the same level or higher than them. *Don"t* register service
-    // worker file in, e.g., a scripts/ sub-directory! See
-    // https://github.com/slightlyoff/ServiceWorker/issues/468
-    navigator.serviceWorker
-      .register('service-worker.js', {
-        scope: './',
-      })
-      .then(function(registration) {
-        // Check to see if there"s an updated version of service-worker.js with
-        // new files to cache:
-        // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-registration-update-method
-        if (typeof registration.update === 'function') {
-          registration.update()
-        }
+// This lets the app load faster on subsequent visits in production, and gives
+// it offline capabilities. However, it also means that developers (and users)
+// will only see deployed updates on the "N+1" visit to a page, since previously
+// cached resources are updated in the background.
 
-        // updatefound is fired if service-worker.js changes.
-        registration.onupdatefound = function() {
-          // The updatefound event implies that registration.installing is set; see
-          // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
-          var installingWorker = registration.installing
+// To learn more about the benefits of this model, read https://goo.gl/KwvDNy.
+// This link also includes instructions on opting out of this behavior.
 
-          installingWorker.onstatechange = function() {
-            if (installingWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // At this point, the old content will have been purged and the
-                // fresh content will have been added to the cache. It"s the
-                // perfect time to display a "New content is available; please
-                // refresh." message in the page"s interface.
+const isLocalhost = Boolean(
+  window.location.hostname === 'localhost' ||
+    // [::1] is the IPv6 localhost address.
+    window.location.hostname === '[::1]' ||
+    // 127.0.0.1/8 is considered localhost for IPv4.
+    window.location.hostname.match(
+      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+    )
+);
 
-                if (typeof callbacks.onUpdate === 'function') {
-                  callbacks.onUpdate()
-                }
-              } else {
-                // At this point, everything has been precached, but the service
-                // worker is not controlling the page. The service worker will
-                // not take control until the next reload or navigation to a page
-                // under the registered scope. It"s the perfect time to display a
-                // "Content is cached for offline use." message.
-                if (typeof callbacks.onInstall === 'function') {
-                  callbacks.onInstall()
-                }
-              }
-            } else if (installingWorker.state === 'redundant') {
-              console.error('The installing service worker became redundant.')
+export default function register() {
+  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+    // The URL constructor is available in all browsers that support SW.
+    const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
+    if (publicUrl.origin !== window.location.origin) {
+      // Our service worker won't work if PUBLIC_URL is on a different origin
+      // from what our page is served on. This might happen if a CDN is used to
+      // serve assets; see https://github.com/facebookincubator/create-react-app/issues/2374
+      return;
+    }
+
+    window.addEventListener('load', () => {
+      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+
+      if (isLocalhost) {
+        // This is running on localhost. Lets check if a service worker still exists or not.
+        checkValidServiceWorker(swUrl);
+      } else {
+        // Is not local host. Just register service worker
+        registerValidSW(swUrl);
+      }
+    });
+  }
+}
+
+function registerValidSW(swUrl) {
+  navigator.serviceWorker
+    .register(swUrl)
+    .then(registration => {
+      registration.onupdatefound = () => {
+        const installingWorker = registration.installing;
+        installingWorker.onstatechange = () => {
+          if (installingWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              // At this point, the old content will have been purged and
+              // the fresh content will have been added to the cache.
+              // It's the perfect time to display a "New content is
+              // available; please refresh." message in your web app.
+              console.log('New content is available; please refresh.');
+            } else {
+              // At this point, everything has been precached.
+              // It's the perfect time to display a
+              // "Content is cached for offline use." message.
+              console.log('Content is cached for offline use.');
             }
           }
-        }
-      })
-      .catch(function(e) {
-        console.error('Error during service worker registration:', e)
-      })
+        };
+      };
+    })
+    .catch(error => {
+      console.error('Error during service worker registration:', error);
+    });
+}
+
+function checkValidServiceWorker(swUrl) {
+  // Check if the service worker can be found. If it can't reload the page.
+  fetch(swUrl)
+    .then(response => {
+      // Ensure service worker exists, and that we really are getting a JS file.
+      if (
+        response.status === 404 ||
+        response.headers.get('content-type').indexOf('javascript') === -1
+      ) {
+        // No service worker found. Probably a different app. Reload the page.
+        navigator.serviceWorker.ready.then(registration => {
+          registration.unregister().then(() => {
+            window.location.reload();
+          });
+        });
+      } else {
+        // Service worker found. Proceed as normal.
+        registerValidSW(swUrl);
+      }
+    })
+    .catch(() => {
+      console.log(
+        'No internet connection found. App is running in offline mode.'
+      );
+    });
+}
+
+export function unregister() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.unregister();
+    });
   }
 }

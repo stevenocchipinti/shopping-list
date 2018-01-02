@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Firebase from 'firebase'
-import injectTapEventPlugin from 'react-tap-event-plugin'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import App from './components/App'
 import Home from './components/Home'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import theme from './theme'
+import registerServiceWorker from './registerServiceWorker'
 import './index.css'
 
 Firebase.initializeApp({
@@ -20,8 +20,6 @@ Firebase.initializeApp({
 })
 Firebase.firestore().enablePersistence()
 
-injectTapEventPlugin()
-
 ReactDOM.render(
   <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
     <Router>
@@ -33,3 +31,4 @@ ReactDOM.render(
   </MuiThemeProvider>,
   document.getElementById('root'),
 )
+registerServiceWorker()
