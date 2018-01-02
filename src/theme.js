@@ -1,13 +1,15 @@
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Object.defineProperty(exports, '__esModule', {
+  value: true,
+})
 
-var _colors = require("material-ui/styles/colors");
-var _colorManipulator = require("material-ui/utils/colorManipulator");
-var _spacing = require("material-ui/styles/spacing");
-var _spacing2 = _interopRequireDefault(_spacing);
+var _colors = require('material-ui/styles/colors')
+var _colorManipulator = require('material-ui/utils/colorManipulator')
+var _spacing = require('material-ui/styles/spacing')
+var _spacing2 = _interopRequireDefault(_spacing)
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {default: obj}
+}
 
 /**
  *  Light Theme is the default theme used in material-ui. It is guaranteed to
@@ -16,7 +18,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 exports.default = {
   spacing: _spacing2.default,
-  fontFamily: "Roboto, sans-serif",
+  fontFamily: 'Roboto, sans-serif',
   palette: {
     primary1Color: _colors.blueGrey600,
     primary2Color: _colors.blueGrey700,
@@ -32,6 +34,6 @@ exports.default = {
     disabledColor: (0, _colorManipulator.fade)(_colors.darkBlack, 0.3),
     pickerHeaderColor: _colors.blueGrey600,
     clockCircleColor: (0, _colorManipulator.fade)(_colors.darkBlack, 0.07),
-    shadowColor: _colors.fullBlack
-  }
-};
+    shadowColor: _colors.fullBlack,
+  },
+}

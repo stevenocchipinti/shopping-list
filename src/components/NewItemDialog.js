@@ -1,70 +1,74 @@
-import React, { Component } from "react";
-import Dialog from "material-ui/Dialog";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import ContentAddIcon from "material-ui/svg-icons/content/add";
-import RaisedButton from "material-ui/RaisedButton";
-import FlatButton from "material-ui/FlatButton";
-import AutoComplete from "material-ui/AutoComplete";
+import React, {Component} from 'react'
+import Dialog from 'material-ui/Dialog'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAddIcon from 'material-ui/svg-icons/content/add'
+import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
+import AutoComplete from 'material-ui/AutoComplete'
 
 const styles = {
   wrapper: {
-    overflow: "hidden",
-    margin: "20px",
-    padding: "20px"
+    overflow: 'hidden',
+    margin: '20px',
+    padding: '20px',
   },
   submitButton: {
-    marginTop: "20px",
-    float: "right"
+    marginTop: '20px',
+    float: 'right',
   },
   floatingButton: {
-    position: "fixed",
-    bottom: "20px",
-    right: "20px",
-    zIndex: 1
-  }
-};
+    position: 'fixed',
+    bottom: '20px',
+    right: '20px',
+    zIndex: 1,
+  },
+}
 
 export default class NewCheckinDialog extends Component {
   constructor() {
-    super();
+    super()
     this.defaults = {
-      item: "",
-      section: "",
-      itemError: "",
-      actionLabel: "Add",
-      actionDisabled: true
-    };
+      item: '',
+      section: '',
+      itemError: '',
+      actionLabel: 'Add',
+      actionDisabled: true,
+    }
     this.state = {
       ...this.defaults,
-      open: false
-    };
+      open: false,
+    }
   }
 
   handleOpen() {
-    this.setState({...this.defaults, open: true}, () => this.focus());
+    this.setState({...this.defaults, open: true}, () => this.focus())
   }
 
   handleClose() {
-    this.setState({ open: false });
+    this.setState({open: false})
   }
 
   // TODO: Move this out to the helpers
   format(string) {
-    if (!string) return "";
-    const capitalize = s => `${s[0].toUpperCase()}${s.slice(1)}`;
-    return string.trim().split(/\s+/).map(capitalize).join(" ");
+    if (!string) return ''
+    const capitalize = s => `${s[0].toUpperCase()}${s.slice(1)}`
+    return string
+      .trim()
+      .split(/\s+/)
+      .map(capitalize)
+      .join(' ')
   }
 
   focus() {
-    this.autoCompleteInput.refs.searchTextField.input.focus();
+    this.autoCompleteInput.refs.searchTextField.input.focus()
   }
 
   handleSubmit() {
     this.props.onSubmit({
       item: this.format(this.state.item),
-      section: this.format(this.state.section)
-    });
-    this.setState(this.defaults, () => this.focus());
+      section: this.format(this.state.section),
+    })
+    this.setState(this.defaults, () => this.focus())
   }
 
   update(changes) {
@@ -72,49 +76,53 @@ export default class NewCheckinDialog extends Component {
       ...this.defaults,
       item: this.state.item,
       section: this.state.section,
-      ...changes
-    };
+      ...changes,
+    }
 
     const itemOnList = this.props.items.find(i => i.name === newState.item)
-    const catalogueEntry = Object.values(this.props.catalogue).find(e => (
-      e.name === newState.item
-    ));
-    const storedSection = catalogueEntry && catalogueEntry.section;
+    const catalogueEntry = Object.values(this.props.catalogue).find(
+      e => e.name === newState.item,
+    )
+    const storedSection = catalogueEntry && catalogueEntry.section
 
-    if (newState.item.trim().length > 0) { newState.actionDisabled = false; }
-    if (changes.item && storedSection) { newState.section = storedSection; }
+    if (newState.item.trim().length > 0) {
+      newState.actionDisabled = false
+    }
+    if (changes.item && storedSection) {
+      newState.section = storedSection
+    }
 
     if (itemOnList && newState.section !== storedSection) {
-      newState.actionLabel = "Move";
+      newState.actionLabel = 'Move'
     } else if (itemOnList && newState.section === storedSection) {
       if (itemOnList.done) {
-        newState.actionLabel = "Uncheck";
-        newState.actionDisabled = false;
+        newState.actionLabel = 'Uncheck'
+        newState.actionDisabled = false
       } else {
-        newState.actionLabel = "Already exists!";
-        newState.actionDisabled = true;
+        newState.actionLabel = 'Already exists!'
+        newState.actionDisabled = true
       }
     }
-    this.setState(newState);
+    this.setState(newState)
   }
 
   handleItemChange(item) {
-    this.update({item});
+    this.update({item})
   }
 
   handleSectionChange(section) {
-    this.update({section});
+    this.update({section})
   }
 
   render() {
-    const catalogueEntries = Object.values(this.props.catalogue);
-    const allItems = catalogueEntries.map(e => e.name);
-    const allSections = catalogueEntries.map(e => e.section).filter(x => x);
+    const catalogueEntries = Object.values(this.props.catalogue)
+    const allItems = catalogueEntries.map(e => e.name)
+    const allSections = catalogueEntries.map(e => e.section).filter(x => x)
 
     const actions = [
       <FlatButton
         label="done"
-        onTouchTap={() => this.setState({ open: false })}
+        onTouchTap={() => this.setState({open: false})}
         tabIndex={4}
       />,
       <RaisedButton
@@ -123,15 +131,15 @@ export default class NewCheckinDialog extends Component {
         primary={true}
         onTouchTap={() => this.handleSubmit()}
         tabIndex={3}
-      />
-    ];
+      />,
+    ]
 
     return (
       <div>
         <FloatingActionButton
           onClick={() => this.handleOpen()}
           style={styles.floatingButton}
-          >
+        >
           <ContentAddIcon />
         </FloatingActionButton>
 
@@ -142,7 +150,7 @@ export default class NewCheckinDialog extends Component {
           actions={actions}
         >
           <AutoComplete
-            ref={input => this.autoCompleteInput = input}
+            ref={input => (this.autoCompleteInput = input)}
             floatingLabelText="Item"
             fullWidth={true}
             filter={AutoComplete.fuzzyFilter}
@@ -165,6 +173,6 @@ export default class NewCheckinDialog extends Component {
           />
         </Dialog>
       </div>
-    );
+    )
   }
 }
