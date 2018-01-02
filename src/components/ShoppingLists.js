@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 
 import NewItemDialog from './NewItemDialog'
-import slugify from '../helpers/slugify'
+import {slugify} from '../helpers'
 
 import Paper from 'material-ui/Paper'
 import Chip from 'material-ui/Chip'

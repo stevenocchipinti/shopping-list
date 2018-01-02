@@ -1,6 +1,6 @@
 import Firebase from 'firebase'
 import 'firebase/firestore'
-import slugify from './helpers/slugify'
+import {slugify} from './helpers'
 
 export function generateListName() {
   return Firebase.firestore()

@@ -5,6 +5,7 @@ import ContentAddIcon from 'material-ui/svg-icons/content/add'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import AutoComplete from 'material-ui/AutoComplete'
+import {slugify, format, capitalize} from '../helpers'
 
 const styles = {
   wrapper: {
@@ -48,25 +49,14 @@ export default class NewCheckinDialog extends Component {
     this.setState({open: false})
   }
 
-  // TODO: Move this out to the helpers
-  format(string) {
-    if (!string) return ''
-    const capitalize = s => `${s[0].toUpperCase()}${s.slice(1)}`
-    return string
-      .trim()
-      .split(/\s+/)
-      .map(capitalize)
-      .join(' ')
-  }
-
   focus() {
     this.autoCompleteInput.refs.searchTextField.input.focus()
   }
 
   handleSubmit() {
     this.props.onSubmit({
-      item: this.format(this.state.item),
-      section: this.format(this.state.section),
+      item: format(this.state.item),
+      section: format(this.state.section),
     })
     this.setState(this.defaults, () => this.focus())
   }
@@ -80,9 +70,7 @@ export default class NewCheckinDialog extends Component {
     }
 
     const itemOnList = this.props.items.find(i => i.name === newState.item)
-    const catalogueEntry = Object.values(this.props.catalogue).find(
-      e => e.name === newState.item,
-    )
+    const catalogueEntry = this.props.catalogue[slugify(newState.item)]
     const storedSection = catalogueEntry && catalogueEntry.section
 
     if (newState.item.trim().length > 0) {
@@ -116,7 +104,12 @@ export default class NewCheckinDialog extends Component {
 
   render() {
     const catalogueEntries = Object.values(this.props.catalogue)
-    const allItems = catalogueEntries.map(e => e.name)
+    const allItems = Object.keys(this.props.catalogue).map(item =>
+      item
+        .split('-')
+        .map(capitalize)
+        .join(' '),
+    )
     const allSections = catalogueEntries.map(e => e.section).filter(x => x)
 
     const actions = [
