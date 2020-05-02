@@ -1,30 +1,23 @@
-import React, {Component} from 'react'
+import React, { Component } from "react"
 
-import NewItemDialog from './NewItemDialog'
-import {slugify} from '../helpers'
+import NewItemDialog from "./NewItemDialog"
+import { slugify } from "../helpers"
 
-import Paper from 'material-ui/Paper'
-import Chip from 'material-ui/Chip'
+import Paper from "material-ui/Paper"
+import Chip from "./Chip"
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.styles = {
-      item: {
-        margin: 4,
-      },
-      doneItemLabel: {
-        textDecorationLine: 'line-through',
-        color: '#aaa',
-      },
       heading: {},
       paper: {
         margin: 10,
         padding: 10,
       },
       wrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
+        display: "flex",
+        flexWrap: "wrap",
       },
     }
   }
@@ -32,7 +25,7 @@ class App extends Component {
   itemsBySection() {
     return this.props.items.reduce((a, item) => {
       const catalogueEntry = this.props.catalogue[slugify(item.name)]
-      const section = catalogueEntry ? catalogueEntry.section : ''
+      const section = catalogueEntry ? catalogueEntry.section : ""
       if (Array.isArray(a[section])) {
         a[section].push(item)
       } else {
@@ -50,8 +43,8 @@ class App extends Component {
         <Chip
           key={index}
           onClick={() => this.props.handleMark(item)}
-          style={this.styles.item}
-          labelStyle={item.done ? this.styles.doneItemLabel : {}}
+          qty={item.quantity}
+          done={item.done}
         >
           {item.name}
         </Chip>
@@ -83,7 +76,7 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{marginBottom: 100}}>
+      <div style={{ marginBottom: 100 }}>
         {this.renderSections()}
         <NewItemDialog
           items={this.props.items}
