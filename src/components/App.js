@@ -1,80 +1,69 @@
-import React, {Component} from 'react'
+import React, { useState, useEffect, useRef } from "react"
 
-import Backend from '../backend'
+import Backend from "../backend"
 
-import AppBar from './AppBar'
-import ShoppingLists from './ShoppingLists'
+import AppBar from "./AppBar"
+import ShoppingLists from "./ShoppingLists"
 
-import Snackbar from 'material-ui/Snackbar'
+import Snackbar from "@material-ui/core/Snackbar"
 
-class App extends Component {
-  constructor() {
-    super()
-    this.backend = null
-    this.state = {
-      items: [],
-      catalogue: {},
-      notification: {message: '', visible: false},
-      loading: true,
-      offline: !navigator.onLine,
-    }
-  }
+const App = props => {
+  const backend = useRef()
 
-  componentDidMount() {
-    window.addEventListener('online', () => {
-      this.notify('Connected to server!')
-      this.setState({...this.state, offline: false})
+  const [items, setItems] = useState([])
+  const [catalogue, setCatalogue] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [offline, setOffline] = useState(!navigator.onLine)
+  const [notification, setNotification] = useState({
+    message: "",
+    visible: false,
+  })
+
+  useEffect(() => {
+    window.addEventListener("online", () => {
+      setNotification({ message: "You are now online!", visible: true })
+      setOffline(false)
     })
-    window.addEventListener('offline', () => {
-      this.notify('Disconnected from server!')
-      this.setState({...this.state, offline: true})
+    window.addEventListener("offline", () => {
+      setNotification({ message: "You have been disconnected", visible: true })
+      setOffline(true)
     })
-    window.localStorage.setItem('listName', this.props.match.params.listId)
+    window.localStorage.setItem("listName", props.match.params.listId)
 
-    this.backend = new Backend(this.props.match.params.listId, {
+    backend.current = new Backend(props.match.params.listId, {
       onItemsChanged: items => {
-        this.setState({items, loading: false})
+        setItems(items)
+        setLoading(false)
       },
       onCatalogueChanged: catalogue => {
-        this.setState({catalogue, loading: false})
+        setCatalogue(catalogue)
+        setLoading(false)
       },
     })
-  }
+  }, [props.match.params.listId])
 
-  notify(message) {
-    this.setState({notification: {message, visible: true}})
-  }
-  hideNotification() {
-    this.setState({notification: {message: '', visible: false}})
-  }
+  return (
+    <div>
+      <AppBar
+        sweepItems={() => backend.current.handleSweep()}
+        loading={loading}
+        offline={offline}
+      />
 
-  render() {
-    return (
-      <div>
-        <AppBar
-          sweepItems={() => this.backend.handleSweep()}
-          loading={this.state.user && this.state.loading}
-          offline={this.state.offline}
-        />
+      <ShoppingLists
+        handleMark={item => backend.current.handleMark(item)}
+        items={items}
+        catalogue={catalogue}
+        onSubmit={entry => backend.current.handleAdd(entry.item, entry.section)}
+      />
 
-        <ShoppingLists
-          handleMark={item => this.backend.handleMark(item)}
-          items={this.state.items}
-          catalogue={this.state.catalogue}
-          onSubmit={entry => this.backend.handleAdd(entry.item, entry.section)}
-        />
-
-        <Snackbar
-          open={this.state.notification.visible}
-          message={this.state.notification.message}
-          style={{textAlign: 'center'}}
-          autoHideDuration={3000}
-          onRequestClose={() => {
-            this.hideNotification()
-          }}
-        />
-      </div>
-    )
-  }
+      <Snackbar
+        open={notification.visible}
+        message={notification.message}
+        autoHideDuration={3000}
+        onClose={() => setNotification({ message: "", visible: false })}
+      />
+    </div>
+  )
 }
 export default App

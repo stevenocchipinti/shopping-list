@@ -1,76 +1,69 @@
-import React, {Component} from 'react'
-import Dialog from 'material-ui/Dialog'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAddIcon from 'material-ui/svg-icons/content/add'
-import RaisedButton from 'material-ui/RaisedButton'
-import FlatButton from 'material-ui/FlatButton'
-import AutoComplete from 'material-ui/AutoComplete'
-import {slugify, format, capitalize} from '../helpers'
+import React, { useState, useRef, forwardRef } from "react"
+import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import FAB from "@material-ui/core/FAB"
+import Slide from "@material-ui/core/Slide"
+import ContentAddIcon from "@material-ui/icons/Add"
+import Button from "@material-ui/core/Button"
+import AutoComplete from "./AutoComplete"
+import { slugify, format, capitalize } from "../helpers"
 
 const styles = {
-  wrapper: {
-    overflow: 'hidden',
-    margin: '20px',
-    padding: '20px',
-  },
-  submitButton: {
-    marginTop: '20px',
-    float: 'right',
-  },
   floatingButton: {
-    position: 'fixed',
-    bottom: '20px',
-    right: '20px',
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
     zIndex: 1,
   },
 }
 
-export default class NewCheckinDialog extends Component {
-  constructor() {
-    super()
-    this.defaults = {
-      item: '',
-      section: '',
-      itemError: '',
-      actionLabel: 'Add',
-      actionDisabled: true,
-    }
-    this.state = {
-      ...this.defaults,
-      open: false,
-    }
+const Transition = forwardRef((props, ref) => (
+  <Slide direction="up" ref={ref} {...props} />
+))
+
+const NewItemDialog = props => {
+  const defaultState = {
+    item: "",
+    section: "",
+    itemError: "",
+    actionLabel: "Add",
+    actionDisabled: true,
   }
 
-  handleOpen() {
-    this.setState({...this.defaults, open: true})
+  const [open, setOpen] = useState(false)
+  const [state, setState] = useState(defaultState)
+  const itemInputRef = useRef()
+
+  const handleOpen = () => {
+    setState(defaultState)
+    setOpen(true)
   }
 
-  handleClose() {
-    this.setState({open: false})
+  const handleClose = () => {
+    setOpen(false)
   }
 
-  focus() {
-    this.refs.autoCompleteInput.refs.searchTextField.input.focus()
-  }
-
-  handleSubmit() {
-    this.props.onSubmit({
-      item: format(this.state.item),
-      section: format(this.state.section),
+  const handleSubmit = () => {
+    props.onSubmit({
+      item: format(state.item),
+      section: format(state.section),
     })
-    this.setState(this.defaults, () => this.focus())
+    setState(defaultState)
+    itemInputRef.current.focus()
   }
 
-  update(changes) {
+  const update = changes => {
     let newState = {
-      ...this.defaults,
-      item: this.state.item,
-      section: this.state.section,
+      ...defaultState,
+      item: state.item,
+      section: state.section,
       ...changes,
     }
 
-    const itemOnList = this.props.items.find(i => i.name === newState.item)
-    const catalogueEntry = this.props.catalogue[slugify(newState.item)]
+    const itemOnList = props.items.find(i => i.name === newState.item)
+    const catalogueEntry = props.catalogue[slugify(newState.item)]
     const storedSection = catalogueEntry && catalogueEntry.section
 
     if (newState.item.trim().length > 0) {
@@ -81,92 +74,73 @@ export default class NewCheckinDialog extends Component {
     }
 
     if (itemOnList && newState.section !== storedSection) {
-      newState.actionLabel = 'Move'
+      newState.actionLabel = "Move"
     } else if (itemOnList && newState.section === storedSection) {
       if (itemOnList.done) {
-        newState.actionLabel = 'Uncheck'
+        newState.actionLabel = "Uncheck"
         newState.actionDisabled = false
       } else {
-        newState.actionLabel = 'Already exists!'
+        newState.actionLabel = "Already exists!"
         newState.actionDisabled = true
       }
     }
-    this.setState(newState)
+    setState(newState)
   }
 
-  handleItemChange(item) {
-    this.update({item})
-  }
+  const catalogueEntries = Object.values(props.catalogue)
+  const allItems = Object.keys(props.catalogue).map(item =>
+    item.split("-").map(capitalize).join(" ")
+  )
+  const allSections = catalogueEntries.map(e => e.section).filter(x => x)
 
-  handleSectionChange(section) {
-    this.update({section})
-  }
+  return (
+    <div>
+      <FAB
+        onClick={() => handleOpen()}
+        style={styles.floatingButton}
+        color="primary"
+        tabIndex={1}
+      >
+        <ContentAddIcon />
+      </FAB>
 
-  render() {
-    const catalogueEntries = Object.values(this.props.catalogue)
-    const allItems = Object.keys(this.props.catalogue).map(item =>
-      item
-        .split('-')
-        .map(capitalize)
-        .join(' '),
-    )
-    const allSections = catalogueEntries.map(e => e.section).filter(x => x)
-
-    const actions = [
-      <FlatButton
-        label="done"
-        onClick={() => this.setState({open: false})}
-        tabIndex={4}
-      />,
-      <RaisedButton
-        label={this.state.actionLabel}
-        disabled={this.state.actionDisabled}
-        primary={true}
-        onClick={() => this.handleSubmit()}
-        tabIndex={3}
-      />,
-    ]
-
-    return (
-      <div>
-        <FloatingActionButton
-          onClick={() => this.handleOpen()}
-          style={styles.floatingButton}
-        >
-          <ContentAddIcon />
-        </FloatingActionButton>
-
-        <Dialog
-          title="Add Items"
-          open={this.state.open}
-          onRequestClose={() => this.handleClose()}
-          actions={actions}
-        >
+      <Dialog
+        fullScreen
+        TransitionComponent={Transition}
+        title="Add Items"
+        open={open}
+        onClose={() => handleClose()}
+      >
+        <DialogTitle>Add items</DialogTitle>
+        <DialogContent>
           <AutoComplete
+            label="Item"
+            options={Array.from(new Set(allItems))}
+            onChange={value => update({ item: value })}
+            value={state.item}
+            ref={itemInputRef}
             autoFocus
-            ref="autoCompleteInput"
-            floatingLabelText="Item"
-            fullWidth={true}
-            filter={AutoComplete.fuzzyFilter}
-            dataSource={Array.from(new Set(allItems))}
-            maxSearchResults={5}
-            onUpdateInput={item => this.handleItemChange(item)}
-            searchText={this.state.item}
-            errorText={this.state.itemError}
-            tabIndex={1}
           />
           <AutoComplete
-            floatingLabelText="Section"
-            fullWidth={true}
-            filter={AutoComplete.fuzzyFilter}
-            dataSource={Array.from(new Set(allSections))}
-            maxSearchResults={5}
-            onUpdateInput={section => this.handleSectionChange(section)}
-            searchText={this.state.section}
-            tabIndex={2}
+            label="Section"
+            options={Array.from(new Set(allSections))}
+            onChange={value => update({ section: value })}
+            value={state.section}
           />
-        </Dialog>
-      </div>
-    )
-  }
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            disabled={state.actionDisabled}
+            onClick={() => handleSubmit()}
+          >
+            {state.actionLabel}
+          </Button>
+          <Button onClick={() => handleClose()}>Done</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  )
 }
+
+export default NewItemDialog

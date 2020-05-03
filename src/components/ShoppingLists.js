@@ -1,48 +1,41 @@
-import React, { Component } from "react"
+import React from "react"
+import styled from "styled-components"
 
 import NewItemDialog from "./NewItemDialog"
+import Chip from "./Chip"
 import { slugify } from "../helpers"
 
-import Paper from "material-ui/Paper"
-import Chip from "./Chip"
+import Paper from "@material-ui/core/Paper"
 
-class App extends Component {
-  constructor(props) {
-    super(props)
-    this.styles = {
-      heading: {},
-      paper: {
-        margin: 10,
-        padding: 10,
-      },
-      wrapper: {
-        display: "flex",
-        flexWrap: "wrap",
-      },
-    }
-  }
+const Container = styled.div`
+  margin-bottom: 100px;
+`
 
-  itemsBySection() {
-    return this.props.items.reduce((a, item) => {
-      const catalogueEntry = this.props.catalogue[slugify(item.name)]
-      const section = catalogueEntry ? catalogueEntry.section : ""
-      if (Array.isArray(a[section])) {
-        a[section].push(item)
-      } else {
-        a[section] = [item]
-      }
-      return a
-    }, {})
-  }
+const Card = styled(Paper)`
+  margin: 10px;
+  padding: 10px;
+`
 
-  renderItemsFor(section) {
+const Items = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+
+const SectionTitle = styled.h2`
+  font-size: 16px;
+  margin: 0 0 10px;
+  font-weight: normal;
+`
+
+const App = props => {
+  const renderItemsFor = section => {
     const notDone = section.filter(i => !i.done).sort()
     const done = section.filter(i => i.done).sort()
     return notDone.concat(done).map((item, index) => {
       return (
         <Chip
           key={index}
-          onClick={() => this.props.handleMark(item)}
+          onClick={() => props.handleMark(item)}
           qty={item.quantity}
           done={item.done}
         >
@@ -52,41 +45,39 @@ class App extends Component {
     })
   }
 
-  renderSections() {
-    const data = this.itemsBySection()
+  const data = props.items.reduce((a, item) => {
+    const catalogueEntry = props.catalogue[slugify(item.name)]
+    const section = catalogueEntry ? catalogueEntry.section : ""
+    if (Array.isArray(a[section])) {
+      a[section].push(item)
+    } else {
+      a[section] = [item]
+    }
+    return a
+  }, {})
 
-    const notDone = Object.keys(data)
-      .filter(section => data[section].some(item => !item.done))
-      .sort()
-    const done = Object.keys(data)
-      .filter(section => data[section].every(item => item.done))
-      .sort()
+  const notDone = Object.keys(data)
+    .filter(section => data[section].some(item => !item.done))
+    .sort()
+  const done = Object.keys(data)
+    .filter(section => data[section].every(item => item.done))
+    .sort()
 
-    return notDone.concat(done).map((section, index) => {
-      return (
-        <Paper key={index} style={this.styles.paper}>
-          {section && <h2>{section}</h2>}
-          <div style={this.styles.wrapper}>
-            {this.renderItemsFor(data[section])}
-          </div>
-        </Paper>
-      )
-    })
-  }
-
-  render() {
-    return (
-      <div style={{ marginBottom: 100 }}>
-        {this.renderSections()}
-        <NewItemDialog
-          items={this.props.items}
-          catalogue={this.props.catalogue}
-          onSubmit={entry => {
-            this.props.onSubmit(entry)
-          }}
-        />
-      </div>
-    )
-  }
+  return (
+    <Container>
+      {notDone.concat(done).map((section, index) => (
+        <Card key={index}>
+          {section && <SectionTitle>{section}</SectionTitle>}
+          <Items>{renderItemsFor(data[section])}</Items>
+        </Card>
+      ))}
+      <NewItemDialog
+        items={props.items}
+        catalogue={props.catalogue}
+        onSubmit={entry => props.onSubmit(entry)}
+      />
+    </Container>
+  )
 }
+
 export default App
