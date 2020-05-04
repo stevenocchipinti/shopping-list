@@ -54,7 +54,7 @@ const App = props => {
         handleMark={item => backend.current.handleMark(item)}
         items={items}
         catalogue={catalogue}
-        onSubmit={entry => backend.current.handleAdd(entry.item, entry.section)}
+        onSubmit={entry => backend.current.handleAdd(entry)}
       />
 
       <Snackbar

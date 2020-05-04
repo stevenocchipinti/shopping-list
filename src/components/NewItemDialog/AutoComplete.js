@@ -4,7 +4,7 @@ import MuiAutoComplete from "@material-ui/lab/Autocomplete"
 import TextField from "@material-ui/core/TextField"
 
 const StyledAutoComplete = styled(MuiAutoComplete)`
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 `
 
 const AutoComplete = forwardRef(({ value, onChange, ...props }, ref) => {
