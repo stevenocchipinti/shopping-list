@@ -4,6 +4,7 @@ import { ThemeProvider, createGlobalStyle } from "styled-components"
 import { BrowserRouter as Router, Route } from "react-router-dom"
 import * as Firebase from "firebase/app"
 import "firebase/firestore"
+import * as serviceWorker from "./serviceWorker"
 
 import {
   ThemeProvider as MuiThemeProvider,
@@ -14,7 +15,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery"
 
 import App from "./components/App"
 import Home from "./components/Home"
-import registerServiceWorker from "./registerServiceWorker"
 
 Firebase.initializeApp({
   apiKey: "AIzaSyCtgligqZSkUwWkWIAcMOW0nIW2mfgVdcw",
@@ -68,4 +68,4 @@ const Root = () => {
 }
 
 ReactDOM.render(<Root />, document.getElementById("root"))
-registerServiceWorker()
+serviceWorker.unregister()
