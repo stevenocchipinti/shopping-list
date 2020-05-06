@@ -2,7 +2,7 @@
   "name": "Shopping List",
   "short_name": "ShoppingList",
   "start_url": "https://shopping.stevenocchipinti.com",
-  "theme_color": "#ffffff",
+  "theme_color": "#009688",
   "background_color": "#ffffff",
   "display": "standalone",
   "icons": [

@@ -1,152 +1,182 @@
-import React, {Component} from 'react'
-import {withRouter} from 'react-router-dom'
+import React, { useState } from "react"
+import styled from "styled-components"
+import { withRouter } from "react-router-dom"
 
-import MuiAppBar from 'material-ui/AppBar'
-import LinearProgress from 'material-ui/LinearProgress'
+import MuiAppBar from "@material-ui/core/AppBar"
+import LinearProgress from "@material-ui/core/LinearProgress"
 
-import IconButton from 'material-ui/IconButton'
-import SweepIcon from 'material-ui/svg-icons/content/delete-sweep'
-import ShareIcon from 'material-ui/svg-icons/social/share'
-import SwitchIcon from 'material-ui/svg-icons/action/add-shopping-cart'
+import IconButton from "@material-ui/core/IconButton"
+import SweepIcon from "@material-ui/icons/DeleteSweep"
+import ShareIcon from "@material-ui/icons/Share"
+import SwitchIcon from "@material-ui/icons/AddShoppingCart"
+import MenuIcon from "@material-ui/icons/Menu"
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 
-import Drawer from 'material-ui/Drawer'
-import MenuItem from 'material-ui/MenuItem'
-import Dialog from 'material-ui/Dialog'
-import TextField from 'material-ui/TextField'
-import FlatButton from 'material-ui/FlatButton'
+import Drawer from "@material-ui/core/Drawer"
+import Divider from "@material-ui/core/Divider"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
+import ListItemIcon from "@material-ui/core/ListItemIcon"
+import ListItemText from "@material-ui/core/ListItemText"
+import Dialog from "@material-ui/core/Dialog"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogContentText from "@material-ui/core/DialogContentText"
+import DialogActions from "@material-ui/core/DialogActions"
+import TextField from "@material-ui/core/TextField"
+import Button from "@material-ui/core/Button"
 
-class AppBar extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      drawerOpen: false,
-      shareDialogOpen: false,
-      openDialogOpen: false,
-      newListUrl: '',
-    }
-  }
+import Toolbar from "@material-ui/core/Toolbar"
+import Typography from "@material-ui/core/Typography"
 
-  loadingIndicator() {
-    if (this.props.loading) {
-      return <LinearProgress mode="indeterminate" />
-    } else {
-      // This keeps the height consistent instead of jumping by 4 pixels
-      return <div style={{height: '4px'}} />
-    }
-  }
+const DrawHeader = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`
 
-  shareDialog() {
-    return (
-      <Dialog
-        title="Share Live List URL"
-        modal={false}
-        open={this.state.shareDialogOpen}
-        onRequestClose={() => this.setState({shareDialogOpen: false})}
-      >
-        WARNING: Anyone who has this URL will be able to view and modify this
-        list!
-        <TextField id="share" fullWidth={true} value={window.location.href} />
-      </Dialog>
+const AppBar = props => {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [shareDialogOpen, setShareDialogOpen] = useState(false)
+  const [openDialogOpen, setOpenDialogOpen] = useState(false)
+  const [newListUrl, setNewListUrl] = useState("")
+
+  // This keeps the height consistent instead of jumping by 4 pixels
+  const loadingIndicator = () =>
+    props.loading ? (
+      <LinearProgress mode="indeterminate" />
+    ) : (
+      <div style={{ height: "4px" }} />
     )
-  }
 
-  openNewList() {
-    let url = this.state.newListUrl
+  const openNewList = () => {
+    let url = newListUrl
     try {
       url = new URL(url).pathname
     } catch (Exception) {}
-    window.localStorage.setItem('listName', url.replace(/[\s/]*/, ''))
-    this.props.history.push('/')
+    window.localStorage.setItem("listName", url.replace(/[\s/]*/, ""))
+    props.history.push("/")
   }
 
-  openDialog() {
-    const button = (
-      <FlatButton
-        label="Open"
-        primary={true}
-        keyboardFocused={true}
-        onClick={e => this.openNewList()}
-      />
-    )
-    return (
-      <Dialog
-        title="Open another list"
-        modal={false}
-        actions={button}
-        open={this.state.openDialogOpen}
-        onRequestClose={() => this.setState({openDialogOpen: false})}
-      >
-        To open another list, paste the URL or id here
+  const openDialog = () => (
+    <Dialog open={openDialogOpen} onClose={() => setOpenDialogOpen(false)}>
+      <DialogTitle>Open another list</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          To open another list, paste the URL or id here
+        </DialogContentText>
         <TextField
-          onChange={e => this.setState({newListUrl: e.target.value})}
-          value={this.state.newListUrl}
+          autoFocus
+          onChange={e => setNewListUrl(e.target.value)}
+          value={newListUrl}
           id="open"
           fullWidth={true}
         />
-      </Dialog>
-    )
-  }
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={e => setOpenDialogOpen(false)}>Cancel</Button>
+        <Button color="primary" onClick={e => openNewList()}>
+          Open
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
 
-  render() {
-    return (
-      <div>
-        <MuiAppBar
-          title="Shopping List"
-          iconElementRight={
-            <IconButton>
-              <SweepIcon />
+  const shareDialog = () => (
+    <Dialog open={shareDialogOpen} onClose={() => setShareDialogOpen(false)}>
+      <DialogTitle>Share Live List URL</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          WARNING: Anyone who has this URL will be able to view and modify this
+          list!
+        </DialogContentText>
+        <TextField fullWidth={true} value={window.location.href} />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={e => setShareDialogOpen(false)}>Done</Button>
+      </DialogActions>
+    </Dialog>
+  )
+
+  return (
+    <div>
+      <MuiAppBar position="static">
+        <Toolbar>
+          <IconButton
+            onClick={() => setDrawerOpen(true)}
+            color="inherit"
+            edge="start"
+            aria-label="menu"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography style={{ flexGrow: 1 }} variant="h6" component="h1">
+            Shopping list
+          </Typography>
+          <IconButton
+            onClick={() => props.sweepItems()}
+            color="inherit"
+            edge="end"
+            aria-label="Sweep"
+          >
+            <SweepIcon />
+          </IconButton>
+        </Toolbar>
+      </MuiAppBar>
+
+      {loadingIndicator()}
+      {openDialog()}
+      {shareDialog()}
+
+      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <List component="nav">
+          <DrawHeader>
+            <IconButton onClick={() => setDrawerOpen(false)}>
+              <ChevronLeftIcon />
             </IconButton>
-          }
-          onLeftIconButtonClick={() => this.setState({drawerOpen: true})}
-          onRightIconButtonClick={() => this.props.sweepItems()}
-          style={this.props.offline ? {backgroundColor: '#666'} : {}}
-        />
-        {this.loadingIndicator()}
-
-        <Drawer
-          open={this.state.drawerOpen}
-          docked={false}
-          onRequestChange={open => this.setState({drawerOpen: open})}
-        >
-          <MuiAppBar
-            title="Shopping List"
-            style={this.props.offline ? {backgroundColor: '#666'} : {}}
-            onLeftIconButtonClick={() => this.setState({drawerOpen: false})}
-          />
-
-          <MenuItem
+          </DrawHeader>
+          <Divider />
+          <ListItem
+            button
             onClick={e => {
-              this.props.sweepItems()
-              this.setState({drawerOpen: false})
+              props.sweepItems()
+              setDrawerOpen(false)
             }}
-            leftIcon={<SweepIcon />}
           >
-            Clear Done Items
-          </MenuItem>
+            <ListItemIcon>
+              <SweepIcon />
+            </ListItemIcon>
+            <ListItemText>Clear Done Items</ListItemText>
+          </ListItem>
 
-          <MenuItem
+          <ListItem
+            button
             onClick={e => {
-              this.setState({drawerOpen: false, shareDialogOpen: true})
+              setDrawerOpen(false)
+              setShareDialogOpen(true)
             }}
-            leftIcon={<ShareIcon />}
           >
-            Share Live List
-          </MenuItem>
-          {this.shareDialog()}
+            <ListItemIcon>
+              <ShareIcon />
+            </ListItemIcon>
+            <ListItemText>Share Live List</ListItemText>
+          </ListItem>
 
-          <MenuItem
+          <ListItem
+            button
             onClick={e => {
-              this.setState({drawerOpen: false, openDialogOpen: true})
+              setDrawerOpen(false)
+              setOpenDialogOpen(true)
             }}
-            leftIcon={<SwitchIcon />}
           >
-            Open Another List
-          </MenuItem>
-          {this.openDialog()}
-        </Drawer>
-      </div>
-    )
-  }
+            <ListItemIcon>
+              <SwitchIcon />
+            </ListItemIcon>
+            <ListItemText>Open Another List</ListItemText>
+          </ListItem>
+        </List>
+      </Drawer>
+    </div>
+  )
 }
 
 export default withRouter(AppBar)

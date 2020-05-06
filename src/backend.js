@@ -1,11 +1,9 @@
-import Firebase from 'firebase'
-import 'firebase/firestore'
-import {slugify} from './helpers'
+import * as Firebase from "firebase/app"
+import "firebase/firestore"
+import { slugify } from "./helpers"
 
 export function generateListName() {
-  return Firebase.firestore()
-    .collection('lists')
-    .doc().id
+  return Firebase.firestore().collection("lists").doc().id
 }
 
 export default class Backend {
@@ -22,15 +20,13 @@ export default class Backend {
     this.items = []
     this.catalogue = {}
 
-    this.listRef = Firebase.firestore()
-      .collection('lists')
-      .doc(listName)
-    this.itemsRef = this.listRef.collection('items')
-    this.catalogueRef = this.listRef.collection('catalogue')
+    this.listRef = Firebase.firestore().collection("lists").doc(listName)
+    this.itemsRef = this.listRef.collection("items")
+    this.catalogueRef = this.listRef.collection("catalogue")
 
     this.unsubFunctions.push(
       this.catalogueRef.onSnapshot(
-        {includeQueryMetadataChanges: true},
+        { includeMetadataChanges: true },
         querySnapshot => {
           const catalogue = querySnapshot.docs.reduce((a, d) => {
             a[d.id] = d.data()
@@ -38,19 +34,19 @@ export default class Backend {
           }, {})
           this.catalogue = catalogue
           this.callbacks.onCatalogueChanged(catalogue)
-        },
-      ),
+        }
+      )
     )
 
     this.unsubFunctions.push(
       this.itemsRef.onSnapshot(
-        {includeQueryMetadataChanges: true},
+        { includeMetadataChanges: true },
         querySnapshot => {
           const items = querySnapshot.docs.map(d => d.data())
           this.items = items
           this.callbacks.onItemsChanged(items)
-        },
-      ),
+        }
+      )
     )
   }
 
@@ -59,24 +55,26 @@ export default class Backend {
     this.unsubFunctions = []
   }
 
-  handleAdd(itemName, section) {
-    const slug = slugify(itemName)
+  handleAdd({ item: name, section, quantity = 1 }) {
+    const slug = slugify(name)
     const batch = Firebase.firestore().batch()
-    batch.set(this.itemsRef.doc(slug), {name: itemName, done: false})
-    batch.set(this.catalogueRef.doc(slug), {section})
+    batch.set(this.itemsRef.doc(slug), { name, quantity, done: false })
+    batch.set(this.catalogueRef.doc(slug), { section })
     batch.commit()
   }
 
   handleMark(item) {
     const slug = slugify(item.name)
-    this.itemsRef.doc(slug).update({done: !item.done})
+    this.itemsRef.doc(slug).update({ done: !item.done })
   }
 
   handleSweep() {
     const batch = Firebase.firestore().batch()
-    this.items.filter(item => item.done).forEach(item => {
-      batch.delete(this.itemsRef.doc(slugify(item.name)))
-    })
+    this.items
+      .filter(item => item.done)
+      .forEach(item => {
+        batch.delete(this.itemsRef.doc(slugify(item.name)))
+      })
     batch.commit()
   }
 }
