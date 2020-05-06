@@ -155,6 +155,7 @@ const NewItemDialog = props => {
         </DialogContent>
         <DialogActions>
           <Button
+            variant="contained"
             color="primary"
             disabled={state.actionDisabled}
             onClick={() => handleSubmit()}
