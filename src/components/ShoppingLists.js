@@ -9,6 +9,8 @@ import Paper from "@material-ui/core/Paper"
 
 const Container = styled.div`
   margin-bottom: 100px;
+  margin: 0 auto;
+  max-width: 1000px;
 `
 
 const Card = styled(Paper)`
@@ -65,7 +67,7 @@ const App = props => {
 
   return (
     <Container>
-      {notDone.concat(done).map((section, index) => (
+      {[...notDone, ...done].map((section, index) => (
         <Card key={index}>
           {section && <SectionTitle>{section}</SectionTitle>}
           <Items>{renderItemsFor(data[section])}</Items>

@@ -4,7 +4,7 @@ import MuiDialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
-import FAB from "@material-ui/core/FAB"
+import FloatingActionButton from "@material-ui/core/FAB"
 import Slide from "@material-ui/core/Slide"
 import ContentAddIcon from "@material-ui/icons/Add"
 import Button from "@material-ui/core/Button"
@@ -21,14 +21,24 @@ const Dialog = styled(MuiDialog)`
   }
 `
 
-const styles = {
-  floatingButton: {
-    position: "fixed",
-    bottom: "20px",
-    right: "20px",
-    zIndex: 1,
-  },
-}
+const FAB = styled(FloatingActionButton)`
+  && {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1;
+  }
+`
+
+// The form is nessesary to get the mobile keyboards to tab through the
+// fields and the styling is needed because the DialogTitle, DialogContent,
+// DialogActions, etc. are expected to be flex children of the Dialog
+// component but now they are children of the form element
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`
 
 const Transition = forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
@@ -60,7 +70,7 @@ const NewItemDialog = props => {
     setOpen(false)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = e => {
     props.onSubmit({
       item: format(state.item),
       section: format(state.section),
@@ -68,6 +78,7 @@ const NewItemDialog = props => {
     })
     setState(defaultState)
     itemInputRef.current.focus()
+    e.preventDefault()
   }
 
   const update = changes => {
@@ -116,12 +127,7 @@ const NewItemDialog = props => {
 
   return (
     <div>
-      <FAB
-        onClick={() => handleOpen()}
-        style={styles.floatingButton}
-        color="primary"
-        tabIndex={1}
-      >
+      <FAB onClick={handleOpen} color="primary" tabIndex={1}>
         <ContentAddIcon />
       </FAB>
 
@@ -130,40 +136,49 @@ const NewItemDialog = props => {
         TransitionComponent={Transition}
         title="Add Items"
         open={open}
-        onClose={() => handleClose()}
+        onClose={handleClose}
       >
-        <DialogTitle>Add items</DialogTitle>
-        <DialogContent>
-          <AutoComplete
-            label="Item"
-            options={Array.from(new Set(allItems))}
-            onChange={item => update({ item })}
-            value={state.item}
-            ref={itemInputRef}
-            autoFocus
-          />
-          <AutoComplete
-            label="Section"
-            options={Array.from(new Set(allSections))}
-            onChange={section => update({ section })}
-            value={state.section}
-          />
-          <NumberPicker
-            value={state.quantity}
-            onChange={quantity => update({ quantity })}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={state.actionDisabled}
-            onClick={() => handleSubmit()}
-          >
-            {state.actionLabel}
-          </Button>
-          <Button onClick={() => handleClose()}>Done</Button>
-        </DialogActions>
+        <Form
+          style={{ display: "flex", flexDirection: "column", height: "100%" }}
+          onSubmit={handleSubmit}
+          autoComplete="off"
+        >
+          <DialogTitle>Add items</DialogTitle>
+          <DialogContent>
+            {/* Having `-search` in the id stops lastpass autocomplete */}
+            <AutoComplete
+              label="Item"
+              id="item-search"
+              options={Array.from(new Set(allItems))}
+              onChange={item => update({ item })}
+              value={state.item}
+              ref={itemInputRef}
+              autoFocus
+            />
+            <AutoComplete
+              label="Section"
+              id="section-search"
+              options={Array.from(new Set(allSections))}
+              onChange={section => update({ section })}
+              value={state.section}
+            />
+            <NumberPicker
+              value={state.quantity}
+              onChange={quantity => update({ quantity })}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={state.actionDisabled}
+            >
+              {state.actionLabel}
+            </Button>
+            <Button onClick={handleClose}>Done</Button>
+          </DialogActions>
+        </Form>
       </Dialog>
     </div>
   )
