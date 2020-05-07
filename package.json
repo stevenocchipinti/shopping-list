@@ -2,6 +2,9 @@
   "name": "shopping-list",
   "version": "0.1.0",
   "private": true,
+  "engines" : {
+    "node" : ">=14.0"
+  },
   "dependencies": {
     "@material-ui/core": "^4.9.12",
     "@material-ui/icons": "^4.9.1",
@@ -13,10 +16,13 @@
     "react-scripts": "^3.4.1",
     "styled-components": "^5.1.0"
   },
+  "devDependencies": {
+    "firebase-tools": "^8.2.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "true",
     "eject": "react-scripts eject",
     "deploy": "yarn build && firebase deploy"
   },
@@ -31,8 +37,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "firebase-tools": "^8.2.0"
   }
 }
