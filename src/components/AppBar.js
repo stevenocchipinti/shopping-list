@@ -13,8 +13,8 @@ import MenuIcon from "@material-ui/icons/Menu"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 
 import Drawer from "@material-ui/core/Drawer"
-import Divider from "@material-ui/core/Divider"
-import List from "@material-ui/core/List"
+import MuiDivider from "@material-ui/core/Divider"
+import MuiList from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
@@ -29,9 +29,24 @@ import Button from "@material-ui/core/Button"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 
+import { DarkModeToggle } from "./ThemeProvider"
+
+const Divider = styled(MuiDivider)`
+  && {
+    margin-bottom: 8px;
+  }
+`
+
+const List = styled(MuiList)`
+  && {
+    padding: 0;
+  }
+`
+
 const DrawHeader = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin: 4px;
 `
 
 const AppBar = props => {
@@ -174,6 +189,8 @@ const AppBar = props => {
             <ListItemText>Open Another List</ListItemText>
           </ListItem>
         </List>
+
+        <DarkModeToggle />
       </Drawer>
     </div>
   )

@@ -1,20 +1,14 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import { ThemeProvider, createGlobalStyle } from "styled-components"
+import { createGlobalStyle } from "styled-components"
 import { BrowserRouter as Router, Route } from "react-router-dom"
 import * as Firebase from "firebase/app"
 import "firebase/firestore"
 import * as serviceWorker from "./serviceWorker"
 
-import {
-  ThemeProvider as MuiThemeProvider,
-  createMuiTheme,
-} from "@material-ui/core/styles"
-import teal from "@material-ui/core/colors/teal"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
-
 import App from "./components/App"
 import Home from "./components/Home"
+import { ThemeProvider } from "./components/ThemeProvider"
 
 Firebase.initializeApp({
   apiKey: "AIzaSyCtgligqZSkUwWkWIAcMOW0nIW2mfgVdcw",
@@ -40,29 +34,15 @@ const GlobalStyle = createGlobalStyle`
 `
 
 const Root = () => {
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
-  const theme = React.useMemo(
-    () =>
-      createMuiTheme({
-        palette: {
-          type: prefersDarkMode ? "dark" : "light",
-          primary: teal,
-        },
-      }),
-    [prefersDarkMode]
-  )
-
   return (
-    <ThemeProvider theme={theme}>
-      <MuiThemeProvider theme={theme}>
-        <Router>
-          <>
-            <GlobalStyle />
-            <Route path="/" exact={true} component={Home} />
-            <Route path="/list/:listId" component={App} />
-          </>
-        </Router>
-      </MuiThemeProvider>
+    <ThemeProvider>
+      <Router>
+        <>
+          <GlobalStyle />
+          <Route path="/" exact={true} component={Home} />
+          <Route path="/list/:listId" component={App} />
+        </>
+      </Router>
     </ThemeProvider>
   )
 }
