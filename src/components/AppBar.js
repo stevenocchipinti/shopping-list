@@ -12,7 +12,7 @@ import SwitchIcon from "@material-ui/icons/AddShoppingCart"
 import MenuIcon from "@material-ui/icons/Menu"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 
-import Drawer from "@material-ui/core/Drawer"
+import Drawer from "@material-ui/core/SwipeableDrawer"
 import MuiDivider from "@material-ui/core/Divider"
 import MuiList from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
@@ -142,7 +142,11 @@ const AppBar = props => {
       {openDialog()}
       {shareDialog()}
 
-      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+      <Drawer
+        open={drawerOpen}
+        onOpen={() => setDrawerOpen(true)}
+        onClose={() => setDrawerOpen(false)}
+      >
         <List component="nav">
           <DrawHeader>
             <IconButton onClick={() => setDrawerOpen(false)}>
