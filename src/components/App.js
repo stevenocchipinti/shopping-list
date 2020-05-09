@@ -52,10 +52,10 @@ const App = props => {
       />
 
       <ShoppingLists
-        handleMark={item => backend.current.handleMark(item)}
         items={items}
         catalogue={catalogue}
-        onSubmit={entry => backend.current.handleAdd(entry)}
+        handleMark={item => backend.current.handleMark(item)}
+        loading={loading}
       />
 
       <NewItemDialog

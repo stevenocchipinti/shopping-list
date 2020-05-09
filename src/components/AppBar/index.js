@@ -8,28 +8,23 @@ import LinearProgress from "@material-ui/core/LinearProgress"
 import IconButton from "@material-ui/core/IconButton"
 import SweepIcon from "@material-ui/icons/DeleteSweep"
 import ShareIcon from "@material-ui/icons/Share"
-import SwitchIcon from "@material-ui/icons/AddShoppingCart"
+import SwitchIcon from "@material-ui/icons/SwapHoriz"
 import MenuIcon from "@material-ui/icons/Menu"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 
 import Drawer from "@material-ui/core/SwipeableDrawer"
 import MuiDivider from "@material-ui/core/Divider"
 import MuiList from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
+import MuiListItem from "@material-ui/core/ListItem"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
-import Dialog from "@material-ui/core/Dialog"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
-import DialogActions from "@material-ui/core/DialogActions"
-import TextField from "@material-ui/core/TextField"
-import Button from "@material-ui/core/Button"
 
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 
-import { DarkModeToggle } from "./ThemeProvider"
+import OpenDialog from "./OpenDialog"
+import ShareDialog from "./ShareDialog"
+import { DarkModeToggle } from "../ThemeProvider"
 
 const Divider = styled(MuiDivider)`
   && {
@@ -43,6 +38,12 @@ const List = styled(MuiList)`
   }
 `
 
+const ListItem = styled(MuiListItem)`
+  && {
+    padding-right: 3rem;
+  }
+`
+
 const DrawHeader = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -53,7 +54,6 @@ const AppBar = props => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const [openDialogOpen, setOpenDialogOpen] = useState(false)
-  const [newListUrl, setNewListUrl] = useState("")
 
   // This keeps the height consistent instead of jumping by 4 pixels
   const loadingIndicator = () =>
@@ -62,55 +62,6 @@ const AppBar = props => {
     ) : (
       <div style={{ height: "4px" }} />
     )
-
-  const openNewList = () => {
-    let url = newListUrl
-    try {
-      url = new URL(url).pathname
-    } catch (Exception) {}
-    window.localStorage.setItem("listName", url.replace(/[\s/]*/, ""))
-    props.history.push("/")
-  }
-
-  const openDialog = () => (
-    <Dialog open={openDialogOpen} onClose={() => setOpenDialogOpen(false)}>
-      <DialogTitle>Open another list</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          To open another list, paste the URL or id here
-        </DialogContentText>
-        <TextField
-          autoFocus
-          onChange={e => setNewListUrl(e.target.value)}
-          value={newListUrl}
-          id="open"
-          fullWidth={true}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={e => setOpenDialogOpen(false)}>Cancel</Button>
-        <Button color="primary" onClick={e => openNewList()}>
-          Open
-        </Button>
-      </DialogActions>
-    </Dialog>
-  )
-
-  const shareDialog = () => (
-    <Dialog open={shareDialogOpen} onClose={() => setShareDialogOpen(false)}>
-      <DialogTitle>Share Live List URL</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          WARNING: Anyone who has this URL will be able to view and modify this
-          list!
-        </DialogContentText>
-        <TextField fullWidth={true} value={window.location.href} />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={e => setShareDialogOpen(false)}>Done</Button>
-      </DialogActions>
-    </Dialog>
-  )
 
   return (
     <div>
@@ -139,8 +90,16 @@ const AppBar = props => {
       </MuiAppBar>
 
       {loadingIndicator()}
-      {openDialog()}
-      {shareDialog()}
+
+      <OpenDialog
+        open={openDialogOpen}
+        onClose={() => setOpenDialogOpen(false)}
+      />
+
+      <ShareDialog
+        open={shareDialogOpen}
+        onClose={() => setShareDialogOpen(false)}
+      />
 
       <Drawer
         open={drawerOpen}
@@ -190,7 +149,7 @@ const AppBar = props => {
             <ListItemIcon>
               <SwitchIcon />
             </ListItemIcon>
-            <ListItemText>Open Another List</ListItemText>
+            <ListItemText>Change list</ListItemText>
           </ListItem>
         </List>
 

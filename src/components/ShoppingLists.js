@@ -17,6 +17,18 @@ const Card = styled(Paper)`
   padding: 10px;
 `
 
+const Placeholder = styled(Paper)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4rem;
+  margin: 10px;
+  padding: 10px;
+  && {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
+`
+
 const Items = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -28,7 +40,7 @@ const SectionTitle = styled.h2`
   font-weight: normal;
 `
 
-const App = props => {
+const ShoppingLists = ({ handleMark, items, catalogue, loading }) => {
   const renderItemsFor = section => {
     const notDone = section.filter(i => !i.done).sort()
     const done = section.filter(i => i.done).sort()
@@ -36,7 +48,7 @@ const App = props => {
       return (
         <Chip
           key={index}
-          onClick={() => props.handleMark(item)}
+          onClick={() => handleMark(item)}
           qty={item.quantity}
           done={item.done}
         >
@@ -46,8 +58,8 @@ const App = props => {
     })
   }
 
-  const data = props.items.reduce((a, item) => {
-    const catalogueEntry = props.catalogue[slugify(item.name)]
+  const data = items.reduce((a, item) => {
+    const catalogueEntry = catalogue[slugify(item.name)]
     const section = catalogueEntry ? catalogueEntry.section : ""
     if (Array.isArray(a[section])) {
       a[section].push(item)
@@ -64,16 +76,22 @@ const App = props => {
     .filter(section => data[section].every(item => item.done))
     .sort()
 
+  const sections = [...notDone, ...done]
+
   return (
     <Container>
-      {[...notDone, ...done].map((section, index) => (
+      {sections.map((section, index) => (
         <Card key={index}>
           {section && <SectionTitle>{section}</SectionTitle>}
           <Items>{renderItemsFor(data[section])}</Items>
         </Card>
       ))}
+
+      {!loading && sections.length === 0 && (
+        <Placeholder>No items yet</Placeholder>
+      )}
     </Container>
   )
 }
 
-export default App
+export default ShoppingLists

@@ -124,6 +124,7 @@ const NewItemDialog = ({ items, catalogue, onSubmit }) => {
             />
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleClose}>Close</Button>
             <Button
               type="submit"
               variant="contained"
@@ -132,7 +133,6 @@ const NewItemDialog = ({ items, catalogue, onSubmit }) => {
             >
               {dialogState.actionLabel}
             </Button>
-            <Button onClick={handleClose}>Close</Button>
           </DialogActions>
         </Form>
       </Dialog>
