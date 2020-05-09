@@ -176,7 +176,7 @@ const NewItemDialog = props => {
             >
               {state.actionLabel}
             </Button>
-            <Button onClick={handleClose}>Done</Button>
+            <Button onClick={handleClose}>Close</Button>
           </DialogActions>
         </Form>
       </Dialog>
