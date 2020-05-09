@@ -1,7 +1,7 @@
 import { useReducer } from "react"
 import { slugify } from "../../helpers"
 
-const defaultState = {
+export const defaultState = {
   item: "",
   section: "",
   quantity: 1,
@@ -10,7 +10,7 @@ const defaultState = {
   actionDisabled: true,
 }
 
-const addReducer = (
+export const addReducer = (
   state,
   { type, items, catalogue, newItem, newSection, newQuantity }
 ) => {
@@ -56,5 +56,4 @@ const addReducer = (
 // The "type" will eventually be passed to the reducer to differentiate between
 // "add" and "edit"
 const useDialogState = type => useReducer(addReducer, defaultState)
-
 export default useDialogState
