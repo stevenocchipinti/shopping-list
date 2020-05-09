@@ -11,9 +11,10 @@ import Button from "@material-ui/core/Button"
 import useMediaQuery from "@material-ui/core/useMediaQuery"
 import { useTheme } from "@material-ui/core/styles"
 
+import useDialogState from "./useDialogState"
 import AutoComplete from "./AutoComplete"
 import NumberPicker from "./NumberPicker"
-import { slugify, format, capitalize } from "../../helpers"
+import { unslugify, prettify } from "../../helpers"
 
 const Dialog = styled(MuiDialog)`
   & .MuiDialog-paper:not(.MuiDialog-paperFullScreen) {
@@ -44,25 +45,16 @@ const Transition = forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
 ))
 
-const NewItemDialog = props => {
-  const defaultState = {
-    item: "",
-    section: "",
-    quantity: 1,
-    itemError: "",
-    actionLabel: "Add",
-    actionDisabled: true,
-  }
-
+const NewItemDialog = ({ items, catalogue, onSubmit }) => {
   const [open, setOpen] = useState(false)
-  const [state, setState] = useState(defaultState)
+  const [dialogState, dispatch] = useDialogState("add")
   const itemInputRef = useRef()
 
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"))
 
   const handleOpen = () => {
-    setState(defaultState)
+    dispatch({ type: "reset" })
     setOpen(true)
   }
 
@@ -71,59 +63,27 @@ const NewItemDialog = props => {
   }
 
   const handleSubmit = e => {
-    props.onSubmit({
-      item: format(state.item),
-      section: format(state.section),
-      quantity: parseInt(state.quantity),
+    onSubmit({
+      item: prettify(dialogState.item),
+      section: prettify(dialogState.section),
+      quantity: parseInt(dialogState.quantity),
     })
-    setState(defaultState)
+    dispatch({ type: "reset" })
     itemInputRef.current.focus()
     e.preventDefault()
   }
 
-  const update = changes => {
-    let newState = {
-      ...defaultState,
-      item: state.item,
-      section: state.section,
-      quantity: state.quantity,
-      ...changes,
-    }
+  const allItems = Object.keys(catalogue).map(unslugify)
+  const allSections = Object.values(catalogue)
+    .map(e => e.section)
+    .filter(Boolean)
 
-    const itemOnList = props.items.find(i => i.name === newState.item)
-    const catalogueEntry = props.catalogue[slugify(newState.item)]
-    const storedSection = catalogueEntry && catalogueEntry.section
-    const storedQuantity = itemOnList?.quantity
-
-    if (newState.item.trim().length > 0) newState.actionDisabled = false
-    if (changes.item && storedSection) newState.section = storedSection
-    if (changes.item && storedQuantity) newState.quantity = storedQuantity
-
-    if (itemOnList && newState.section !== storedSection) {
-      newState.actionLabel = "Move"
-    } else if (
-      itemOnList &&
-      newState.section === storedSection &&
-      newState.quantity === (storedQuantity || 1)
-    ) {
-      if (itemOnList.done) {
-        newState.actionLabel = "Uncheck"
-        newState.actionDisabled = false
-      } else {
-        newState.actionLabel = "Already exists!"
-        newState.actionDisabled = true
-      }
-    } else if (itemOnList && storedQuantity !== newState?.quantity) {
-      newState.actionLabel = "Update"
-    }
-    setState(newState)
-  }
-
-  const catalogueEntries = Object.values(props.catalogue)
-  const allItems = Object.keys(props.catalogue).map(item =>
-    item.split("-").map(capitalize).join(" ")
-  )
-  const allSections = catalogueEntries.map(e => e.section).filter(x => x)
+  const updateItem = newItem =>
+    dispatch({ type: "item", newItem, items, catalogue })
+  const updateSection = newSection =>
+    dispatch({ type: "section", newSection, items, catalogue })
+  const updateQuantity = newQuantity =>
+    dispatch({ type: "quantity", newQuantity, items, catalogue })
 
   return (
     <div>
@@ -138,11 +98,7 @@ const NewItemDialog = props => {
         open={open}
         onClose={handleClose}
       >
-        <Form
-          style={{ display: "flex", flexDirection: "column", height: "100%" }}
-          onSubmit={handleSubmit}
-          autoComplete="off"
-        >
+        <Form onSubmit={handleSubmit} autoComplete="off">
           <DialogTitle>Add items</DialogTitle>
           <DialogContent>
             {/* Having `-search` in the id stops lastpass autocomplete */}
@@ -150,8 +106,8 @@ const NewItemDialog = props => {
               label="Item"
               id="item-search"
               options={Array.from(new Set(allItems))}
-              onChange={item => update({ item })}
-              value={state.item}
+              onChange={updateItem}
+              value={dialogState.item}
               ref={itemInputRef}
               autoFocus
             />
@@ -159,12 +115,12 @@ const NewItemDialog = props => {
               label="Section"
               id="section-search"
               options={Array.from(new Set(allSections))}
-              onChange={section => update({ section })}
-              value={state.section}
+              onChange={updateSection}
+              value={dialogState.section}
             />
             <NumberPicker
-              value={state.quantity}
-              onChange={quantity => update({ quantity })}
+              value={dialogState.quantity}
+              onChange={updateQuantity}
             />
           </DialogContent>
           <DialogActions>
@@ -172,9 +128,9 @@ const NewItemDialog = props => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={state.actionDisabled}
+              disabled={dialogState.actionDisabled}
             >
-              {state.actionLabel}
+              {dialogState.actionLabel}
             </Button>
             <Button onClick={handleClose}>Close</Button>
           </DialogActions>

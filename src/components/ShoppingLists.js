@@ -1,7 +1,6 @@
 import React from "react"
 import styled from "styled-components"
 
-import NewItemDialog from "./NewItemDialog"
 import Chip from "./Chip"
 import { slugify } from "../helpers"
 
@@ -73,11 +72,6 @@ const App = props => {
           <Items>{renderItemsFor(data[section])}</Items>
         </Card>
       ))}
-      <NewItemDialog
-        items={props.items}
-        catalogue={props.catalogue}
-        onSubmit={entry => props.onSubmit(entry)}
-      />
     </Container>
   )
 }

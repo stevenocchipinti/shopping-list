@@ -1,21 +1,14 @@
-export function capitalize(s) {
-  return `${s[0].toUpperCase()}${s.slice(1)}`
-}
+export const capitalize = s => `${s[0].toUpperCase()}${s.slice(1)}`
 
-export function format(string) {
-  if (!string) return ''
-  return string
-    .trim()
-    .split(/\s+/)
-    .map(capitalize)
-    .join(' ')
-}
+export const prettify = s =>
+  s ? s.trim().split(/\s+/).map(capitalize).join(" ") : ""
 
-export function slugify(string) {
-  return string
+export const unslugify = s => s.split("-").map(capitalize).join(" ")
+
+export const slugify = s =>
+  s
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/[\s\W-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
+    .replace(/[\s\W-]+/g, "-")
+    .replace(/^-+|-+$/g, "")

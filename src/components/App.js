@@ -4,6 +4,7 @@ import Backend from "../backend"
 
 import AppBar from "./AppBar"
 import ShoppingLists from "./ShoppingLists"
+import NewItemDialog from "./NewItemDialog"
 
 import Snackbar from "@material-ui/core/Snackbar"
 
@@ -52,6 +53,12 @@ const App = props => {
 
       <ShoppingLists
         handleMark={item => backend.current.handleMark(item)}
+        items={items}
+        catalogue={catalogue}
+        onSubmit={entry => backend.current.handleAdd(entry)}
+      />
+
+      <NewItemDialog
         items={items}
         catalogue={catalogue}
         onSubmit={entry => backend.current.handleAdd(entry)}
