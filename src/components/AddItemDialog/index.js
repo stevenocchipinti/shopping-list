@@ -1,12 +1,10 @@
-import React, { useState, useRef, forwardRef } from "react"
+import React, { useRef, forwardRef } from "react"
 import styled from "styled-components"
 import MuiDialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
-import FloatingActionButton from "@material-ui/core/Fab"
 import Slide from "@material-ui/core/Slide"
-import ContentAddIcon from "@material-ui/icons/Add"
 import Button from "@material-ui/core/Button"
 import useMediaQuery from "@material-ui/core/useMediaQuery"
 import { useTheme } from "@material-ui/core/styles"
@@ -19,15 +17,6 @@ import { unslugify, prettify } from "../../helpers"
 const Dialog = styled(MuiDialog)`
   & .MuiDialog-paper:not(.MuiDialog-paperFullScreen) {
     min-width: 400px;
-  }
-`
-
-const FAB = styled(FloatingActionButton)`
-  && {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1;
   }
 `
 
@@ -45,22 +34,12 @@ const Transition = forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
 ))
 
-const NewItemDialog = ({ items, catalogue, onSubmit }) => {
-  const [open, setOpen] = useState(false)
+const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
   const [dialogState, dispatch] = useDialogState("add")
   const itemInputRef = useRef()
 
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"))
-
-  const handleOpen = () => {
-    dispatch({ type: "reset" })
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
 
   const handleSubmit = e => {
     onSubmit({
@@ -87,16 +66,12 @@ const NewItemDialog = ({ items, catalogue, onSubmit }) => {
 
   return (
     <div>
-      <FAB onClick={handleOpen} color="primary" tabIndex={1}>
-        <ContentAddIcon />
-      </FAB>
-
       <Dialog
         fullScreen={fullScreen}
         TransitionComponent={Transition}
         title="Add Items"
         open={open}
-        onClose={handleClose}
+        onClose={onClose}
       >
         <Form onSubmit={handleSubmit} autoComplete="off">
           <DialogTitle>Add items</DialogTitle>
@@ -124,7 +99,7 @@ const NewItemDialog = ({ items, catalogue, onSubmit }) => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Close</Button>
+            <Button onClick={onClose}>Close</Button>
             <Button
               type="submit"
               variant="contained"
@@ -140,4 +115,4 @@ const NewItemDialog = ({ items, catalogue, onSubmit }) => {
   )
 }
 
-export default NewItemDialog
+export default AddItemDialog

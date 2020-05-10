@@ -40,7 +40,7 @@ const SectionTitle = styled.h2`
   font-weight: normal;
 `
 
-const ShoppingLists = ({ handleMark, items, catalogue, loading }) => {
+const ShoppingLists = ({ onMark, onEdit, items, catalogue, loading }) => {
   const renderItemsFor = section => {
     const notDone = section.filter(i => !i.done).sort()
     const done = section.filter(i => i.done).sort()
@@ -48,7 +48,8 @@ const ShoppingLists = ({ handleMark, items, catalogue, loading }) => {
       return (
         <Chip
           key={index}
-          onClick={() => handleMark(item)}
+          onClick={() => onMark(item)}
+          onLongPress={() => onEdit(item)}
           qty={item.quantity}
           done={item.done}
         >

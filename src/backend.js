@@ -64,6 +64,8 @@ export default class Backend {
   }
 
   handleEdit({ item, newItem, newSection, newQuantity = 1 }) {
+    console.log({ item, newItem, newSection, newQuantity })
+    return
     const existingSlug = slugify(item)
     const newSlug = slugify(newItem)
     const batch = Firebase.firestore().batch()

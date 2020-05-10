@@ -1,6 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 
+import useLongPress from "./useLongPress"
+
 // This is a color helper to handle light and dark mode
 const greys = (light, dark) => ({ theme }) =>
   theme.palette.type === "light"
@@ -45,14 +47,17 @@ const X = () => (
   </Svg>
 )
 
-export default ({ done, qty, children, ...props }) => (
-  <Chip done={done} {...props}>
-    <Value done={done}>{children}</Value>
-    {qty && qty > 1 && (
-      <Qty>
-        <X />
-        {qty}
-      </Qty>
-    )}
-  </Chip>
-)
+export default ({ done, qty, children, onLongPress, ...props }) => {
+  const longPress = useLongPress(onLongPress)
+  return (
+    <Chip done={done} {...longPress} {...props}>
+      <Value done={done}>{children}</Value>
+      {qty && qty > 1 && (
+        <Qty>
+          <X />
+          {qty}
+        </Qty>
+      )}
+    </Chip>
+  )
+}

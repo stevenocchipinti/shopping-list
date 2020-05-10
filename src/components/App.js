@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useRef } from "react"
-
-import Backend from "../backend"
-
-import AppBar from "./AppBar"
-import ShoppingLists from "./ShoppingLists"
-import NewItemDialog from "./NewItemDialog"
+import styled from "styled-components"
 
 import Snackbar from "@material-ui/core/Snackbar"
+import FloatingActionButton from "@material-ui/core/Fab"
+import ContentAddIcon from "@material-ui/icons/Add"
+
+import Backend from "../backend"
+import AppBar from "./AppBar"
+import ShoppingLists from "./ShoppingLists"
+import AddItemDialog from "./AddItemDialog"
+import EditItemDialog from "./EditItemDialog"
+
+const FAB = styled(FloatingActionButton)`
+  && {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1;
+  }
+`
 
 const App = props => {
   const backend = useRef()
@@ -15,6 +27,9 @@ const App = props => {
   const [catalogue, setCatalogue] = useState({})
   const [loading, setLoading] = useState(true)
   const [offline, setOffline] = useState(!navigator.onLine)
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [itemToEdit, setItemToEdit] = useState()
   const [notification, setNotification] = useState({
     message: "",
     visible: false,
@@ -43,6 +58,12 @@ const App = props => {
     })
   }, [props.match.params.listId])
 
+  const handleEdit = item => {
+    setItemToEdit(item)
+    setEditDialogOpen(true)
+  }
+
+  // handleEdit={item => backend.current.handleEdit(item)}
   return (
     <div>
       <AppBar
@@ -54,14 +75,30 @@ const App = props => {
       <ShoppingLists
         items={items}
         catalogue={catalogue}
-        handleMark={item => backend.current.handleMark(item)}
+        onMark={item => backend.current.handleMark(item)}
+        onEdit={handleEdit}
         loading={loading}
       />
 
-      <NewItemDialog
+      <FAB onClick={() => setAddDialogOpen(true)} color="primary" tabIndex={1}>
+        <ContentAddIcon />
+      </FAB>
+
+      <AddItemDialog
+        open={addDialogOpen}
+        onSubmit={entry => backend.current.handleAdd(entry)}
+        onClose={() => setAddDialogOpen(false)}
         items={items}
         catalogue={catalogue}
-        onSubmit={entry => backend.current.handleAdd(entry)}
+      />
+
+      <EditItemDialog
+        open={editDialogOpen}
+        item={itemToEdit}
+        onSubmit={entry => backend.current.handleEdit(entry)}
+        onClose={() => setAddDialogOpen(false)}
+        items={items}
+        catalogue={catalogue}
       />
 
       <Snackbar
