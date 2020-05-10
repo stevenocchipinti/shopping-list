@@ -55,11 +55,27 @@ export default class Backend {
     this.unsubFunctions = []
   }
 
-  handleAdd({ item: name, section, quantity = 1 }) {
-    const slug = slugify(name)
+  handleAdd({ item, section, quantity = 1 }) {
+    const slug = slugify(item)
     const batch = Firebase.firestore().batch()
-    batch.set(this.itemsRef.doc(slug), { name, quantity, done: false })
+    batch.set(this.itemsRef.doc(slug), { name: item, quantity, done: false })
     batch.set(this.catalogueRef.doc(slug), { section })
+    batch.commit()
+  }
+
+  handleEdit({ item, newItem, newSection, newQuantity = 1 }) {
+    const existingSlug = slugify(item)
+    const newSlug = slugify(newItem)
+    const batch = Firebase.firestore().batch()
+    // Delete first
+    batch.delete(this.itemsRef.doc(existingSlug))
+    // Add item
+    batch.set(this.itemsRef.doc(newSlug), {
+      name: newItem,
+      quantity: newQuantity,
+      done: false,
+    })
+    batch.set(this.catalogueRef.doc(newSlug), { section: newSection })
     batch.commit()
   }
 
