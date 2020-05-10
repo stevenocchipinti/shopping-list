@@ -17,13 +17,13 @@ const Card = styled(Paper)`
   padding: 10px;
 `
 
-const Placeholder = styled(Paper)`
+const Placeholder = styled(Paper).attrs({ elevation: 0, variant: "outlined" })`
   display: flex;
   align-items: center;
   justify-content: center;
   height: 4rem;
   margin: 10px;
-  padding: 10px;
+  padding: 3rem;
   && {
     color: ${({ theme }) => theme.palette.text.secondary};
   }

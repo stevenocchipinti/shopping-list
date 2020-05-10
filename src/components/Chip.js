@@ -28,10 +28,9 @@ const Qty = styled.span`
   align-items: center;
   line-height: 16px;
   background-color: ${greys("200", "800")};
-  border: 1px solid ${greys("400", "900")};
   border-radius: 0 18px 18px 0;
   padding: 4px 7px 4px 6px;
-  margin: 0 -9px 0 7px;
+  margin: 0 -7px 0 7px;
 `
 
 const Svg = styled.svg`
