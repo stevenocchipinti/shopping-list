@@ -7,20 +7,20 @@ const StyledAutoComplete = styled(MuiAutoComplete)`
   margin-bottom: 2rem;
 `
 
+const caseInsensitiveCompare = (option, value) =>
+  option.toLowerCase() === value.toLowerCase()
+
+const fuzzy = (options, { inputValue }) => {
+  const r = new RegExp(".*" + inputValue.split("").join(".*") + ".*", "i")
+  return options.filter(o => r.exec(o))
+}
+
 const AutoComplete = forwardRef(({ value, onChange, ...props }, ref) => {
-  const caseInsensitiveCompare = (option, value) =>
-    option.toLowerCase() === value.toLowerCase()
-
-  const fuzzy = (options, { inputValue }) => {
-    const r = new RegExp(".*" + inputValue.split("").join(".*") + ".*", "i")
-    return options.filter(o => r.exec(o))
-  }
-
   return (
     <StyledAutoComplete
       freeSolo
       inputValue={value}
-      onInputChange={(_, newValue) => onChange(newValue)}
+      onInputChange={(e, newValue) => e && onChange(newValue)}
       getOptionSelected={caseInsensitiveCompare}
       filterOptions={fuzzy}
       renderInput={params => (

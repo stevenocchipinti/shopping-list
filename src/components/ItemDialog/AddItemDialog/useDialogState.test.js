@@ -1,4 +1,4 @@
-import { addReducer, defaultState } from "./useDialogState"
+import { reducer, defaultState } from "./useDialogState"
 
 const items = [
   { name: "Apples", qty: 5, done: false },
@@ -12,9 +12,7 @@ const catalogue = {
   asparagus: { section: "Fresh Produce" },
 }
 
-describe("addReducer", () => {
-  const reducer = addReducer
-
+describe("reducer", () => {
   describe("default state", () => {
     it("has empty fields and quantity=1", () => {
       expect(defaultState).toHaveProperty("item", "")

@@ -8,8 +8,7 @@ import ContentAddIcon from "@material-ui/icons/Add"
 import Backend from "../backend"
 import AppBar from "./AppBar"
 import ShoppingLists from "./ShoppingLists"
-import AddItemDialog from "./AddItemDialog"
-import EditItemDialog from "./EditItemDialog"
+import { AddItemDialog, EditItemDialog } from "./ItemDialog"
 
 const FAB = styled(FloatingActionButton)`
   && {
@@ -63,7 +62,6 @@ const App = props => {
     setEditDialogOpen(true)
   }
 
-  // handleEdit={item => backend.current.handleEdit(item)}
   return (
     <div>
       <AppBar
@@ -93,10 +91,10 @@ const App = props => {
       />
 
       <EditItemDialog
-        open={editDialogOpen}
         item={itemToEdit}
+        open={editDialogOpen}
         onSubmit={entry => backend.current.handleEdit(entry)}
-        onClose={() => setAddDialogOpen(false)}
+        onClose={() => setEditDialogOpen(false)}
         items={items}
         catalogue={catalogue}
       />
