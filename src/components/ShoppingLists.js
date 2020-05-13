@@ -61,7 +61,7 @@ const ShoppingLists = ({ onMark, onEdit, items, catalogue, loading }) => {
 
   const data = items.reduce((a, item) => {
     const catalogueEntry = catalogue[slugify(item.name)]
-    const section = catalogueEntry ? catalogueEntry.section : ""
+    const section = catalogueEntry?.section || ""
     if (Array.isArray(a[section])) {
       a[section].push(item)
     } else {

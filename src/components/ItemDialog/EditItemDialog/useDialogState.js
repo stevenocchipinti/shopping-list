@@ -22,7 +22,7 @@ export const reducer = (state, event) => {
 
   const originalName = item.name
   const originalSection = catalogue[slugify(item.name)]?.section
-  const originalQuantity = item.quantity
+  const originalQuantity = item.quantity || 1
 
   if (type === "reset") return defaultState
   if (type === "set") {

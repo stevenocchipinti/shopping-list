@@ -1,4 +1,4 @@
-export const capitalize = s => `${s[0]?.toUpperCase()}${s?.slice(1)}`
+export const capitalize = s => `${s[0]?.toUpperCase() || ""}${s?.slice(1)}`
 
 export const prettify = s =>
   s?.trim()?.split(/\s+/)?.map(capitalize)?.join(" ") || ""
