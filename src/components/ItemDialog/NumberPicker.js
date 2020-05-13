@@ -20,7 +20,7 @@ const Qty = styled(TextField)`
 
 const NumberPicker = ({ onChange, value, ...props }) => {
   const val = parseInt(value)
-  const dec = newValue => val - 1 >= 0 && onChange(val - 1)
+  const dec = newValue => val - 1 > 0 && onChange(val - 1)
   const inc = newValue => onChange(val + 1)
 
   return (
@@ -30,6 +30,10 @@ const NumberPicker = ({ onChange, value, ...props }) => {
       </IconButton>
       <Qty
         type="tel"
+        inputProps={{
+          pattern: "[0-9]+",
+          required: true,
+        }}
         label="Quantity"
         variant="outlined"
         onChange={e => onChange(e.target.value)}
