@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import styled from "styled-components"
-import { withRouter } from "react-router-dom"
+import { Link, withRouter, useParams } from "react-router-dom"
 
 import MuiAppBar from "@material-ui/core/AppBar"
 import LinearProgress from "@material-ui/core/LinearProgress"
@@ -11,6 +11,7 @@ import ShareIcon from "@material-ui/icons/Share"
 import SwitchIcon from "@material-ui/icons/SwapHoriz"
 import MenuIcon from "@material-ui/icons/Menu"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
+import HistoryIcon from "@material-ui/icons/History"
 
 import Drawer from "@material-ui/core/SwipeableDrawer"
 import MuiDivider from "@material-ui/core/Divider"
@@ -54,6 +55,8 @@ const AppBar = props => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const [openDialogOpen, setOpenDialogOpen] = useState(false)
+
+  let { listId } = useParams()
 
   // This keeps the height consistent instead of jumping by 4 pixels
   const loadingIndicator = () =>
@@ -150,6 +153,13 @@ const AppBar = props => {
               <SwitchIcon />
             </ListItemIcon>
             <ListItemText>Change list</ListItemText>
+          </ListItem>
+
+          <ListItem button component={Link} to={`/list/${listId}/catalogue`}>
+            <ListItemIcon>
+              <HistoryIcon />
+            </ListItemIcon>
+            <ListItemText>History</ListItemText>
           </ListItem>
         </List>
 
