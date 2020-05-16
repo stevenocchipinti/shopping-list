@@ -84,6 +84,10 @@ export default class Backend {
     this.itemsRef.doc(slug).update({ done: !item.done })
   }
 
+  handleCatalogueDelete(item) {
+    this.catalogueRef.doc(item).delete()
+  }
+
   handleSweep() {
     const batch = Firebase.firestore().batch()
     this.items

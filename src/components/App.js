@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react"
 import styled from "styled-components"
+import { Switch, Route } from "react-router-dom"
 
-import Snackbar from "@material-ui/core/Snackbar"
 import FloatingActionButton from "@material-ui/core/Fab"
 import ContentAddIcon from "@material-ui/icons/Add"
 
+import Catalogue from "./Catalogue"
 import Backend from "../backend"
 import AppBar from "./AppBar"
 import ShoppingLists from "./ShoppingLists"
-import { AddItemDialog, EditItemDialog } from "./ItemDialog"
+import { AddItemDialog } from "./ItemDialog"
 
 const FAB = styled(FloatingActionButton)`
   && {
@@ -19,33 +20,17 @@ const FAB = styled(FloatingActionButton)`
   }
 `
 
-const App = props => {
+const App = ({ match }) => {
   const backend = useRef()
 
   const [items, setItems] = useState([])
   const [catalogue, setCatalogue] = useState({})
   const [loading, setLoading] = useState(true)
-  const [offline, setOffline] = useState(!navigator.onLine)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [itemToEdit, setItemToEdit] = useState()
-  const [notification, setNotification] = useState({
-    message: "",
-    visible: false,
-  })
 
   useEffect(() => {
-    window.addEventListener("online", () => {
-      setNotification({ message: "You are now online!", visible: true })
-      setOffline(false)
-    })
-    window.addEventListener("offline", () => {
-      setNotification({ message: "You have been disconnected", visible: true })
-      setOffline(true)
-    })
-    window.localStorage.setItem("listName", props.match.params.listId)
-
-    backend.current = new Backend(props.match.params.listId, {
+    window.localStorage.setItem("listName", match.params.listId)
+    backend.current = new Backend(match.params.listId, {
       onItemsChanged: items => {
         setItems(items)
         setLoading(false)
@@ -55,57 +40,54 @@ const App = props => {
         setLoading(false)
       },
     })
-  }, [props.match.params.listId])
-
-  const handleEdit = item => {
-    setItemToEdit(item)
-    setEditDialogOpen(true)
-  }
+  }, [match.params.listId])
 
   return (
-    <div>
-      <AppBar
-        sweepItems={() => backend.current.handleSweep()}
-        loading={loading}
-        offline={offline}
-      />
+    <>
+      <Switch>
+        <Route path={`${match.path}/catalogue`}>
+          <AppBar loading={loading} title="History" />
 
-      <ShoppingLists
-        items={items}
-        catalogue={catalogue}
-        onMark={item => backend.current.handleMark(item)}
-        onEdit={handleEdit}
-        loading={loading}
-      />
+          <Catalogue
+            catalogue={catalogue}
+            onDelete={item => backend.current.handleCatalogueDelete(item)}
+            loading={loading}
+          />
+        </Route>
 
-      <FAB onClick={() => setAddDialogOpen(true)} color="primary" tabIndex={1}>
-        <ContentAddIcon />
-      </FAB>
+        <Route path={match.path}>
+          <AppBar
+            variant="main"
+            sweepItems={() => backend.current.handleSweep()}
+            loading={loading}
+          />
 
-      <AddItemDialog
-        open={addDialogOpen}
-        onSubmit={entry => backend.current.handleAdd(entry)}
-        onClose={() => setAddDialogOpen(false)}
-        items={items}
-        catalogue={catalogue}
-      />
+          <ShoppingLists
+            items={items}
+            catalogue={catalogue}
+            onMark={item => backend.current.handleMark(item)}
+            onEdit={entry => backend.current.handleEdit(entry)}
+            loading={loading}
+          />
 
-      <EditItemDialog
-        item={itemToEdit}
-        open={editDialogOpen}
-        onSubmit={entry => backend.current.handleEdit(entry)}
-        onClose={() => setEditDialogOpen(false)}
-        items={items}
-        catalogue={catalogue}
-      />
+          <FAB
+            onClick={() => setAddDialogOpen(true)}
+            color="primary"
+            tabIndex={1}
+          >
+            <ContentAddIcon />
+          </FAB>
 
-      <Snackbar
-        open={notification.visible}
-        message={notification.message}
-        autoHideDuration={3000}
-        onClose={() => setNotification({ message: "", visible: false })}
-      />
-    </div>
+          <AddItemDialog
+            open={addDialogOpen}
+            onSubmit={entry => backend.current.handleAdd(entry)}
+            onClose={() => setAddDialogOpen(false)}
+            items={items}
+            catalogue={catalogue}
+          />
+        </Route>
+      </Switch>
+    </>
   )
 }
 export default App
