@@ -8,7 +8,7 @@ import { EditItemDialog } from "../ItemDialog"
 import Paper from "@material-ui/core/Paper"
 
 const Container = styled.div`
-  margin-bottom: 100px;
+  padding-bottom: 100px;
   margin: 0 auto;
   max-width: 1000px;
 `
