@@ -19,7 +19,23 @@ const Wrapper = styled.div`
   padding: 10px;
 `
 
-const Catalogue = ({ catalogue, onDelete }) => {
+const Placeholder = styled(TableCell).attrs({
+  colSpan: 3,
+  component: "th",
+  scope: "row",
+  children: "No history yet",
+})`
+  &&& {
+    border: none;
+    text-align: center;
+    height: 4rem;
+    margin: 10px;
+    padding: 3rem;
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
+`
+
+const Catalogue = ({ catalogue, loading, onDelete }) => {
   return (
     <Wrapper>
       <TableContainer component={Paper}>
@@ -32,6 +48,11 @@ const Catalogue = ({ catalogue, onDelete }) => {
             </TableRow>
           </TableHead>
           <TableBody>
+            {!loading && Object.keys(catalogue).length === 0 && (
+              <TableRow>
+                <Placeholder />
+              </TableRow>
+            )}
             {Object.keys(catalogue).map(item => (
               <TableRow key={item}>
                 <TableCell component="th" scope="row">

@@ -1,14 +1,9 @@
 import React, { useState, useEffect, useRef } from "react"
 import styled from "styled-components"
-import { Switch, Link, Route } from "react-router-dom"
+import { Switch, Route } from "react-router-dom"
 
 import FloatingActionButton from "@material-ui/core/Fab"
 import ContentAddIcon from "@material-ui/icons/Add"
-import MuiAppBar from "@material-ui/core/AppBar"
-import Toolbar from "@material-ui/core/Toolbar"
-import IconButton from "@material-ui/core/IconButton"
-import BackIcon from "@material-ui/icons/ArrowBack"
-import Typography from "@material-ui/core/Typography"
 
 import Catalogue from "./Catalogue"
 import Backend from "../backend"
@@ -51,23 +46,8 @@ const App = ({ match }) => {
     <>
       <Switch>
         <Route path={`${match.path}/catalogue`}>
-          {/* TODO: Reuse AppBar to get loading state */}
-          <MuiAppBar position="static">
-            <Toolbar>
-              <IconButton
-                component={Link}
-                to={`/list/${match.params.listId}`}
-                color="inherit"
-                edge="start"
-                aria-label="back"
-              >
-                <BackIcon />
-              </IconButton>
-              <Typography style={{ flexGrow: 1 }} variant="h6" component="h1">
-                History
-              </Typography>
-            </Toolbar>
-          </MuiAppBar>
+          <AppBar loading={loading} title="History" />
+
           <Catalogue
             catalogue={catalogue}
             onDelete={item => backend.current.handleCatalogueDelete(item)}
@@ -77,6 +57,7 @@ const App = ({ match }) => {
 
         <Route path={match.path}>
           <AppBar
+            variant="main"
             sweepItems={() => backend.current.handleSweep()}
             loading={loading}
           />
