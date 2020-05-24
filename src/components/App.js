@@ -45,6 +45,7 @@ const App = ({ match }) => {
 
   const [items, setItems] = useState([])
   const [catalogue, setCatalogue] = useState({})
+  const [planner, setPlanner] = useState({})
   const [loading, setLoading] = useState(true)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
 
@@ -63,14 +64,23 @@ const App = ({ match }) => {
         setCatalogue(catalogue)
         setLoading(false)
       },
+      onPlannerChanged: planner => {
+        setPlanner(planner)
+        setLoading(false)
+      },
     })
+    return () => backend.disconnect()
   }, [match.params.listId])
+
+  const hasSomeTickedItems = items.some(item => item.done)
+  const hasSomePlannedItems = Object.values(planner).some(
+    day => day?.items?.length > 0
+  )
 
   return (
     <Switch>
       <Route path={`${match.path}/catalogue`}>
         <AppBar loading={loading} title="History" />
-
         <Catalogue
           catalogue={catalogue}
           onDelete={item => backend.current.handleCatalogueDelete(item)}
@@ -83,18 +93,19 @@ const App = ({ match }) => {
           <AppBar
             variant="main"
             actions={
-              <IconButton
-                onClick={() => backend.current.handleSweep()}
-                color="inherit"
-                edge="end"
-                aria-label="Sweep"
-              >
-                <SweepIcon />
-              </IconButton>
+              hasSomeTickedItems && (
+                <IconButton
+                  onClick={() => backend.current.handleSweep()}
+                  color="inherit"
+                  edge="end"
+                  aria-label="Sweep"
+                >
+                  <SweepIcon />
+                </IconButton>
+              )
             }
             loading={loading}
           />
-
           <ShoppingLists
             items={items}
             catalogue={catalogue}
@@ -102,7 +113,6 @@ const App = ({ match }) => {
             onEdit={entry => backend.current.handleEdit(entry)}
             loading={loading}
           />
-
           <FAB
             onClick={() => setAddDialogOpen(true)}
             color="primary"
@@ -110,6 +120,13 @@ const App = ({ match }) => {
           >
             <ContentAddIcon />
           </FAB>
+          <AddItemDialog
+            open={addDialogOpen}
+            onSubmit={entry => backend.current.handleAdd(entry)}
+            onClose={() => setAddDialogOpen(false)}
+            items={items}
+            catalogue={catalogue}
+          />
         </Route>
 
         <Route path={`${match.path}/planner`}>
@@ -118,15 +135,30 @@ const App = ({ match }) => {
             variant="main"
             loading={loading}
             actions={
-              <IconButton color="inherit" edge="end" aria-label="Clear">
-                <SweepIcon />
-              </IconButton>
+              hasSomePlannedItems && (
+                <IconButton
+                  onClick={() => backend.current.handleClearPlanner()}
+                  color="inherit"
+                  edge="end"
+                  aria-label="Clear"
+                >
+                  <SweepIcon />
+                </IconButton>
+              )
             }
           />
-
-          <Planner catalogue={catalogue} loading={loading} />
-
-          <FAB color="primary" tabIndex={1}>
+          <Planner
+            onAdd={entry => backend.current.handleAddToPlanner(entry)}
+            onEdit={item => console.log("Edit", item)}
+            planner={planner}
+            catalogue={catalogue}
+            loading={loading}
+          />
+          <FAB
+            onClick={() => console.log("Add stuff to the list")}
+            color="primary"
+            tabIndex={1}
+          >
             <AddShoppingCartIcon />
           </FAB>
         </Route>
@@ -140,22 +172,16 @@ const App = ({ match }) => {
             icon={<ListIcon />}
             component={Link}
             to={tabUrls[0]}
+            replace
           />
           <BottomNavigationAction
             label="Planner"
             icon={<PlannerIcon />}
             component={Link}
             to={tabUrls[1]}
+            replace
           />
         </BottomNavigation>
-
-        <AddItemDialog
-          open={addDialogOpen}
-          onSubmit={entry => backend.current.handleAdd(entry)}
-          onClose={() => setAddDialogOpen(false)}
-          items={items}
-          catalogue={catalogue}
-        />
       </Route>
     </Switch>
   )

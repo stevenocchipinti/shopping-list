@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 
 import Table from "@material-ui/core/Table"
@@ -10,8 +10,9 @@ import Paper from "@material-ui/core/Paper"
 import IconButton from "@material-ui/core/IconButton"
 import AddIcon from "@material-ui/icons/Add"
 
+import { AddPlannerItemDialog } from "./ItemDialog"
 import Chip from "./Chip"
-// import { unslugify } from "../helpers"
+import { unslugify } from "../helpers"
 
 const Wrapper = styled.div`
   max-width: 1000px;
@@ -19,20 +20,16 @@ const Wrapper = styled.div`
   padding: 10px 10px 100px 10px;
 `
 
-const Placeholder = styled(TableCell).attrs({
-  colSpan: 3,
-  component: "th",
-  scope: "row",
-  children: "Nothing yet",
-})`
-  &&& {
-    border: none;
-    text-align: center;
-    height: 4rem;
-    margin: 10px;
-    padding: 3rem;
-    color: ${({ theme }) => theme.palette.text.secondary};
-  }
+const ChipContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+`
+
+const ChipTableCell = styled(TableCell)`
+  padding-left: 0;
+  height: 74px;
+  width: 100%;
 `
 
 const AddButton = styled(IconButton).attrs({
@@ -56,67 +53,57 @@ const days = [
   "Sunday",
 ]
 
-// Dummy
-const data = {
-  Monday: [
-    { name: "Salmon", quantity: 1 },
-    { name: "Sweet potato", quantity: 1 },
-  ],
-  Tuesday: [],
-  Wednesday: [
-    { name: "Salmon", quantity: 1 },
-    { name: "Sweet potato", quantity: 1 },
-    { name: "Beans", quantity: 1 },
-  ],
-  Thursday: [],
-  Friday: [],
-  Saturday: [],
-  Sunday: [],
-}
+const Planner = ({ onAdd, onEdit, planner, catalogue, loading }) => {
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [dayToAddTo, setDayToAddTo] = useState(null)
 
-const Planner = ({ catalogue, loading }) => {
   return (
     <Wrapper>
       <TableContainer component={Paper}>
         <Table aria-label="Planner table">
           <TableBody>
-            {!loading && Object.keys(catalogue).length === 0 && (
-              <TableRow>
-                <Placeholder />
-              </TableRow>
-            )}
             {days.map(day => (
               <TableRow key={day}>
                 <TableCell component="th" scope="row">
                   {day}
                 </TableCell>
-                <TableCell style={{ paddingLeft: 0, height: 72 }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      alignItems: "center",
-                    }}
-                  >
-                    {data[day]?.map((item, index) => (
+                <ChipTableCell>
+                  <ChipContainer>
+                    {planner?.[day]?.items?.map((item, index) => (
                       <Chip
                         key={index}
-                        onClick={() => {}}
-                        onLongPress={() => {}}
-                        qty={item.quantity}
-                        done={item.done}
+                        onClick={() => console.log("Goto", item)}
+                        onLongPress={() => onEdit(item)}
                       >
-                        {item.name}
+                        {unslugify(item)}
                       </Chip>
                     ))}
-                    <AddButton />
-                  </div>
-                </TableCell>
+                    {!loading && (
+                      <AddButton
+                        onClick={() => {
+                          setDayToAddTo(day)
+                          setAddDialogOpen(true)
+                        }}
+                      />
+                    )}
+                  </ChipContainer>
+                </ChipTableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <AddPlannerItemDialog
+        day={dayToAddTo}
+        open={addDialogOpen}
+        onSubmit={entry => onAdd(entry)}
+        onClose={() => {
+          setAddDialogOpen(false)
+          setDayToAddTo(null)
+        }}
+        planner={planner}
+        catalogue={catalogue}
+      />
     </Wrapper>
   )
 }

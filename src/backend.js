@@ -19,21 +19,22 @@ export default class Backend {
 
     this.items = []
     this.catalogue = {}
+    this.planner = {}
 
     this.listRef = Firebase.firestore().collection("lists").doc(listName)
     this.itemsRef = this.listRef.collection("items")
     this.catalogueRef = this.listRef.collection("catalogue")
+    this.plannerRef = this.listRef.collection("planner")
 
     this.unsubFunctions.push(
       this.catalogueRef.onSnapshot(
         { includeMetadataChanges: true },
         querySnapshot => {
-          const catalogue = querySnapshot.docs.reduce((a, d) => {
-            a[d.id] = d.data()
-            return a
-          }, {})
-          this.catalogue = catalogue
-          this.callbacks.onCatalogueChanged(catalogue)
+          this.catalogue = querySnapshot.docs.reduce(
+            (a, doc) => ({ ...a, [doc.id]: doc.data() }),
+            {}
+          )
+          this.callbacks.onCatalogueChanged(this.catalogue)
         }
       )
     )
@@ -42,9 +43,21 @@ export default class Backend {
       this.itemsRef.onSnapshot(
         { includeMetadataChanges: true },
         querySnapshot => {
-          const items = querySnapshot.docs.map(d => d.data())
-          this.items = items
-          this.callbacks.onItemsChanged(items)
+          this.items = querySnapshot.docs.map(d => d.data())
+          this.callbacks.onItemsChanged(this.items)
+        }
+      )
+    )
+
+    this.unsubFunctions.push(
+      this.plannerRef.onSnapshot(
+        { includeMetadataChanges: true },
+        querySnapshot => {
+          this.planner = querySnapshot.docs.reduce(
+            (a, doc) => ({ ...a, [doc.id]: doc.data() }),
+            {}
+          )
+          this.callbacks.onPlannerChanged(this.planner)
         }
       )
     )
@@ -95,6 +108,19 @@ export default class Backend {
       .forEach(item => {
         batch.delete(this.itemsRef.doc(slugify(item.name)))
       })
+    batch.commit()
+  }
+
+  handleAddToPlanner({ item, day }) {
+    const plannedItems = this.planner?.[day]?.items || []
+    this.plannerRef.doc(day).set({ items: [...plannedItems, item] })
+  }
+
+  handleClearPlanner() {
+    const batch = Firebase.firestore().batch()
+    Object.keys(this.planner).forEach(day => {
+      batch.delete(this.plannerRef.doc(day))
+    })
     batch.commit()
   }
 }
