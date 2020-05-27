@@ -48,6 +48,7 @@ const AddPlannerItemDialog = ({
     onSubmit({ item: itemToEdit, newItem: item, newDay: day })
     onClose()
   }
+
   const handleDelete = e => {
     e.preventDefault()
     onDelete({ item, day })

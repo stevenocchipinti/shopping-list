@@ -117,6 +117,7 @@ const App = ({ match }) => {
             catalogue={catalogue}
             onMark={item => backend.current.handleMark(item)}
             onEdit={entry => backend.current.handleEdit(entry)}
+            onDelete={entry => backend.current.handleDelete(entry)}
             loading={loading}
           />
           <FAB

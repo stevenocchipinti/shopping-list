@@ -110,6 +110,11 @@ export default class Backend {
     this.itemsRef.doc(slug).update({ done: !item.done })
   }
 
+  handleDelete({ name }) {
+    const slug = slugify(name)
+    this.itemsRef.doc(slug).delete()
+  }
+
   handleCatalogueDelete(item) {
     this.catalogueRef.doc(item).delete()
   }

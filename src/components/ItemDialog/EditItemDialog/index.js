@@ -16,6 +16,7 @@ const EditItemDialog = ({
   catalogue,
   open,
   onSubmit,
+  onDelete,
   onClose,
 }) => {
   const [dialogState, dispatch] = useDialogState()
@@ -24,7 +25,14 @@ const EditItemDialog = ({
     item && dispatch({ type: "set", item, items, catalogue })
   }, [dispatch, item, items, catalogue, open])
 
+  const handleDelete = e => {
+    e.preventDefault()
+    onDelete(item)
+    onClose()
+  }
+
   const handleSubmit = e => {
+    e.preventDefault()
     onSubmit({
       item,
       newItem: prettify(dialogState.item),
@@ -32,7 +40,6 @@ const EditItemDialog = ({
       newQuantity: parseInt(dialogState.quantity),
     })
     onClose()
-    e.preventDefault()
   }
 
   const allItems = Object.keys(catalogue).map(unslugify)
@@ -76,6 +83,7 @@ const EditItemDialog = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
+        <Button onClick={handleDelete}>Delete</Button>
         <Button
           type="submit"
           variant="contained"

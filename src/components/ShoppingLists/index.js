@@ -45,6 +45,7 @@ const SectionTitle = styled.h2`
 const ShoppingLists = ({
   onMark,
   onEdit,
+  onDelete,
   items,
   catalogue,
   loading,
@@ -116,6 +117,7 @@ const ShoppingLists = ({
         item={itemToEdit}
         open={editDialogOpen}
         onSubmit={onEdit}
+        onDelete={onDelete}
         onClose={() => setEditDialogOpen(false)}
         items={items}
         catalogue={catalogue}
