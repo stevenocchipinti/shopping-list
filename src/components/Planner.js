@@ -95,7 +95,9 @@ const Planner = ({ onAdd, onEdit, planner, catalogue, loading }) => {
       </TableContainer>
       <AddPlannerItemDialog
         day={dayToAddTo}
+        days={days}
         open={addDialogOpen}
+        onChangeDay={day => setDayToAddTo(day)}
         onSubmit={entry => onAdd(entry)}
         onClose={() => {
           setAddDialogOpen(false)
