@@ -14,6 +14,7 @@ const Chip = styled.span`
   padding: 0 12px;
   margin: 0.25rem;
   color: ${({ done, theme }) => (done ? theme.palette.grey.A200 : "inherit")};
+  cursor: pointer;
 `
 
 const Value = styled.span`
