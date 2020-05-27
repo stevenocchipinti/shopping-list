@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from "react"
 import styled from "styled-components"
-import { Switch, Link, Route, useLocation, useParams } from "react-router-dom"
+import {
+  Switch,
+  Link,
+  Route,
+  useLocation,
+  useHistory,
+  useParams,
+} from "react-router-dom"
 
 import IconButton from "@material-ui/core/IconButton"
 import FloatingActionButton from "@material-ui/core/Fab"
@@ -56,24 +63,17 @@ const App = ({ match }) => {
   const [addPlanToListDialogOpen, setAddPlanToListDialogOpen] = useState(false)
 
   const { pathname } = useLocation()
+  const history = useHistory()
   const { listId } = useParams()
   const tabUrls = [`/list/${listId}`, `/list/${listId}/planner`]
 
   useEffect(() => {
     window.localStorage.setItem("listName", match.params.listId)
     backend.current = new Backend(match.params.listId, {
-      onItemsChanged: items => {
-        setItems(items)
-        setLoading(false)
-      },
-      onCatalogueChanged: catalogue => {
-        setCatalogue(catalogue)
-        setLoading(false)
-      },
-      onPlannerChanged: planner => {
-        setPlanner(planner)
-        setLoading(false)
-      },
+      onItemsChanged: items => setItems(items),
+      onCatalogueChanged: catalogue => setCatalogue(catalogue),
+      onPlannerChanged: planner => setPlanner(planner),
+      onLoadingChanged: loading => setLoading(loading),
     })
     return () => backend.disconnect()
   }, [match.params.listId])
@@ -162,7 +162,7 @@ const App = ({ match }) => {
             loading={loading}
           />
           <FAB
-            disabled={loading}
+            disabled={loading || !hasSomePlannedItems}
             onClick={() => setAddPlanToListDialogOpen(true)}
             color="primary"
             tabIndex={1}
@@ -171,7 +171,10 @@ const App = ({ match }) => {
           </FAB>
           <AddPlanToListDialog
             open={addPlanToListDialogOpen}
-            onSubmit={entry => backend.current.handleAddPlanToList(entry)}
+            onSubmit={entry => {
+              backend.current.handleAddPlanToList(entry)
+              history.replace(tabUrls[0])
+            }}
             onClose={() => setAddPlanToListDialogOpen(false)}
             planner={planner}
             items={items}

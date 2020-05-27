@@ -11,6 +11,7 @@ import { unslugify } from "../../../helpers"
 
 const AddPlanToListDialog = ({
   planner,
+  items,
   catalogue,
   open,
   onSubmit,
@@ -20,10 +21,28 @@ const AddPlanToListDialog = ({
   const plannedItems = Object.values(planner)
     .map(p => p.items)
     .flat()
-    .map(n => ({
-      name: unslugify(n),
-      done: ignoredItems.includes(unslugify(n)),
-    }))
+    .map(slug => {
+      const name = unslugify(slug)
+      const existingItem = items.find(item => item.name === name)
+      const existingQty =
+        existingItem && !existingItem?.done ? existingItem?.quantity || 1 : 0
+      return {
+        name,
+        section: catalogue[slug]?.section || "",
+        quantity: existingQty + 1,
+        done: ignoredItems.includes(unslugify(slug)),
+      }
+    })
+
+  const itemsToAdd = plannedItems
+    .filter(i => !i.done)
+    .map(({ name, section, quantity }) => ({ name, section, quantity }))
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    onSubmit(itemsToAdd)
+    onClose()
+  }
 
   const handleMark = ({ name }) =>
     setIgnoredItems(
@@ -31,11 +50,6 @@ const AddPlanToListDialog = ({
         ? ignoredItems.filter(i => i !== name)
         : [...ignoredItems, name]
     )
-
-  const handleSubmit = e => {
-    e.preventDefault()
-    onSubmit(plannedItems.filter(i => !i.done).map(({ name }) => name))
-  }
 
   return (
     <Dialog
@@ -57,12 +71,12 @@ const AddPlanToListDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={onClose}>Cancel</Button>
         <Button
           type="submit"
           variant="contained"
           color="primary"
-          disabled={plannedItems.length === 0}
+          disabled={itemsToAdd.length === 0}
         >
           Add
         </Button>

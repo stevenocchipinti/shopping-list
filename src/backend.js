@@ -26,6 +26,8 @@ export default class Backend {
     this.catalogueRef = this.listRef.collection("catalogue")
     this.plannerRef = this.listRef.collection("planner")
 
+    this.setLoading()
+
     this.unsubFunctions.push(
       this.catalogueRef.onSnapshot(
         { includeMetadataChanges: true },
@@ -35,6 +37,7 @@ export default class Backend {
             {}
           )
           this.callbacks.onCatalogueChanged(this.catalogue)
+          this.setDone()
         }
       )
     )
@@ -45,6 +48,7 @@ export default class Backend {
         querySnapshot => {
           this.items = querySnapshot.docs.map(d => d.data())
           this.callbacks.onItemsChanged(this.items)
+          this.setDone()
         }
       )
     )
@@ -58,6 +62,7 @@ export default class Backend {
             {}
           )
           this.callbacks.onPlannerChanged(this.planner)
+          this.setDone()
         }
       )
     )
@@ -68,15 +73,25 @@ export default class Backend {
     this.unsubFunctions = []
   }
 
+  setLoading() {
+    this.callbacks.onLoadingChanged(true)
+  }
+
+  setDone() {
+    this.callbacks.onLoadingChanged(false)
+  }
+
   handleAdd({ item, section, quantity = 1 }) {
+    this.setLoading()
     const slug = slugify(item)
     const batch = Firebase.firestore().batch()
     batch.set(this.itemsRef.doc(slug), { name: item, quantity, done: false })
     batch.set(this.catalogueRef.doc(slug), { section })
-    batch.commit()
+    batch.commit().then(() => this.setDone())
   }
 
   handleEdit({ item, newItem, newSection, newQuantity = 1 }) {
+    this.setLoading()
     const existingSlug = slugify(item.name)
     const newSlug = slugify(newItem)
     const batch = Firebase.firestore().batch()
@@ -89,45 +104,63 @@ export default class Backend {
       done: false,
     })
     batch.set(this.catalogueRef.doc(newSlug), { section: newSection })
-    batch.commit()
+    batch.commit().then(() => this.setDone())
   }
 
   handleMark(item) {
+    this.setLoading()
     const slug = slugify(item.name)
-    this.itemsRef.doc(slug).update({ done: !item.done })
+    this.itemsRef
+      .doc(slug)
+      .update({ done: !item.done })
+      .then(() => this.setDone())
   }
 
   handleCatalogueDelete(item) {
-    this.catalogueRef.doc(item).delete()
+    this.setLoading()
+    this.catalogueRef
+      .doc(item)
+      .delete()
+      .then(() => this.setDone())
   }
 
   handleSweep() {
+    this.setLoading()
     const batch = Firebase.firestore().batch()
     this.items
       .filter(item => item.done)
       .forEach(item => {
         batch.delete(this.itemsRef.doc(slugify(item.name)))
       })
-    batch.commit()
+    batch.commit().then(() => this.setDone())
   }
 
   handleAddToPlanner({ item, day }) {
+    this.setLoading()
     const plannedItems = this.planner?.[day]?.items || []
-    this.plannerRef.doc(day).set({ items: [...plannedItems, item] })
+    this.plannerRef
+      .doc(day)
+      .set({ items: [...plannedItems, item] })
+      .then(() => this.setDone())
   }
 
   handleClearPlanner() {
+    this.setLoading()
     const batch = Firebase.firestore().batch()
     Object.keys(this.planner).forEach(day => {
       batch.delete(this.plannerRef.doc(day))
     })
-    batch.commit()
+    batch.commit().then(() => this.setDone())
   }
 
-  handleAddPlanToList(names) {
-    console.log("Backend to add plan:", names)
-    // TODO: Make this work
-    // const plannedItems = this.planner?.[day]?.items || []
-    // this.plannerRef.doc(day).set({ items: [...plannedItems, item] })
+  handleAddPlanToList(items) {
+    this.setLoading()
+    const batch = Firebase.firestore().batch()
+    items.forEach(({ name, section, quantity }) => {
+      const slug = slugify(name)
+      batch.set(this.itemsRef.doc(slug), { name, quantity, done: false })
+      batch.set(this.catalogueRef.doc(slug), { section })
+    })
+    batch.commit().finally(() => this.setDone())
   }
 }
