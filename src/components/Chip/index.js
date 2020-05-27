@@ -2,12 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 import useLongPress from "./useLongPress"
-
-// This is a color helper to handle light and dark mode
-const greys = (light, dark) => ({ theme }) =>
-  theme.palette.type === "light"
-    ? theme.palette.grey[light]
-    : theme.palette.grey[dark]
+import { greys } from "../../helpers"
 
 const Chip = styled.span`
   display: flex;

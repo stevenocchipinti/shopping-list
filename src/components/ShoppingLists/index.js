@@ -8,14 +8,15 @@ import { EditItemDialog } from "../ItemDialog"
 import Paper from "@material-ui/core/Paper"
 
 const Container = styled.div`
-  margin-bottom: 100px;
+  padding: ${({ variant }) =>
+    variant === "embedded" ? "0 0 100px" : "0 10px 100px"};
   margin: 0 auto;
   max-width: 1000px;
 `
 
 const Card = styled(Paper)`
-  margin: 10px;
-  padding: 10px;
+  margin: 10px 0;
+  padding: ${({ variant }) => (variant === "embedded" ? "0" : "10px")};
 `
 
 const Placeholder = styled(Paper).attrs({ elevation: 0, variant: "outlined" })`
@@ -41,13 +42,22 @@ const SectionTitle = styled.h2`
   font-weight: normal;
 `
 
-const ShoppingLists = ({ onMark, onEdit, items, catalogue, loading }) => {
+const ShoppingLists = ({
+  onMark,
+  onEdit,
+  items,
+  catalogue,
+  loading,
+  variant = "main",
+}) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [itemToEdit, setItemToEdit] = useState()
 
   const handleEdit = item => {
-    setItemToEdit(item)
-    setEditDialogOpen(true)
+    if (onEdit) {
+      setItemToEdit(item)
+      setEditDialogOpen(true)
+    }
   }
 
   const renderItemsFor = section => {
@@ -86,9 +96,12 @@ const ShoppingLists = ({ onMark, onEdit, items, catalogue, loading }) => {
 
   return (
     <>
-      <Container>
+      <Container variant={variant}>
         {sections.map((section, index) => (
-          <Card key={index}>
+          <Card
+            variant={variant === "embedded" ? "outlined" : "elevation"}
+            key={index}
+          >
             {section && <SectionTitle>{section}</SectionTitle>}
             <Items>{renderItemsFor(itemsBySection[section])}</Items>
           </Card>

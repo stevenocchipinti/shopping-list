@@ -19,21 +19,25 @@ export default class Backend {
 
     this.items = []
     this.catalogue = {}
+    this.planner = {}
 
     this.listRef = Firebase.firestore().collection("lists").doc(listName)
     this.itemsRef = this.listRef.collection("items")
     this.catalogueRef = this.listRef.collection("catalogue")
+    this.plannerRef = this.listRef.collection("planner")
+
+    this.setLoading()
 
     this.unsubFunctions.push(
       this.catalogueRef.onSnapshot(
         { includeMetadataChanges: true },
         querySnapshot => {
-          const catalogue = querySnapshot.docs.reduce((a, d) => {
-            a[d.id] = d.data()
-            return a
-          }, {})
-          this.catalogue = catalogue
-          this.callbacks.onCatalogueChanged(catalogue)
+          this.catalogue = querySnapshot.docs.reduce(
+            (a, doc) => ({ ...a, [doc.id]: doc.data() }),
+            {}
+          )
+          this.callbacks.onCatalogueChanged(this.catalogue)
+          this.setDone()
         }
       )
     )
@@ -42,9 +46,23 @@ export default class Backend {
       this.itemsRef.onSnapshot(
         { includeMetadataChanges: true },
         querySnapshot => {
-          const items = querySnapshot.docs.map(d => d.data())
-          this.items = items
-          this.callbacks.onItemsChanged(items)
+          this.items = querySnapshot.docs.map(d => d.data())
+          this.callbacks.onItemsChanged(this.items)
+          this.setDone()
+        }
+      )
+    )
+
+    this.unsubFunctions.push(
+      this.plannerRef.onSnapshot(
+        { includeMetadataChanges: true },
+        querySnapshot => {
+          this.planner = querySnapshot.docs.reduce(
+            (a, doc) => ({ ...a, [doc.id]: doc.data() }),
+            {}
+          )
+          this.callbacks.onPlannerChanged(this.planner)
+          this.setDone()
         }
       )
     )
@@ -53,6 +71,14 @@ export default class Backend {
   disconnect() {
     this.unsubFunctions.forEach(unsub => unsub())
     this.unsubFunctions = []
+  }
+
+  setLoading() {
+    this.callbacks.onLoadingChanged(true)
+  }
+
+  setDone() {
+    this.callbacks.onLoadingChanged(false)
   }
 
   handleAdd({ item, section, quantity = 1 }) {
@@ -95,6 +121,78 @@ export default class Backend {
       .forEach(item => {
         batch.delete(this.itemsRef.doc(slugify(item.name)))
       })
+    batch.commit()
+  }
+
+  handleAddToPlanner({ item, day }) {
+    const plannedItems = this.planner?.[day]?.items || []
+    this.plannerRef.doc(day).set({ items: [...plannedItems, item] })
+  }
+
+  handleDeleteFromPlanner({ item, day }) {
+    const existingSlug = slugify(item)
+    const existingItemsForExistingDay = this.planner?.[day]?.items || []
+    const newItemsForExistingDay = existingItemsForExistingDay.filter(
+      slug => slug !== existingSlug
+    )
+    const existingDayNowEmpty = newItemsForExistingDay.length === 0
+
+    if (existingDayNowEmpty) {
+      this.plannerRef.doc(day).delete()
+    } else {
+      this.plannerRef.doc(day).set({
+        items: newItemsForExistingDay,
+      })
+    }
+  }
+
+  handleEditPlannerItem({ item, newItem, newDay }) {
+    const existingSlug = slugify(item.name)
+    const newSlug = slugify(newItem)
+    const editingTheSameDay = item.day === newDay
+
+    const existingItemsForExistingDay = this.planner?.[item?.day]?.items || []
+    const newItemsForExistingDay = existingItemsForExistingDay.filter(
+      slug => slug !== existingSlug
+    )
+    const existingDayNowEmpty = newItemsForExistingDay.length === 0
+
+    const existingItemsForNewDay = this.planner?.[newDay]?.items || []
+    const newItemsForNewDay = editingTheSameDay
+      ? [...newItemsForExistingDay, newSlug]
+      : [...existingItemsForNewDay, newSlug]
+
+    const batch = Firebase.firestore().batch()
+    // Delete first
+    if (existingDayNowEmpty) {
+      batch.delete(this.plannerRef.doc(item?.day))
+    } else {
+      batch.set(this.plannerRef.doc(item?.day), {
+        items: newItemsForExistingDay,
+      })
+    }
+    // Add item
+    batch.set(this.plannerRef.doc(newDay), {
+      items: newItemsForNewDay,
+    })
+    batch.commit()
+  }
+
+  handleClearPlanner() {
+    const batch = Firebase.firestore().batch()
+    Object.keys(this.planner).forEach(day => {
+      batch.delete(this.plannerRef.doc(day))
+    })
+    batch.commit()
+  }
+
+  handleAddPlanToList(items) {
+    const batch = Firebase.firestore().batch()
+    items.forEach(({ name, section, quantity }) => {
+      const slug = slugify(name)
+      batch.set(this.itemsRef.doc(slug), { name, quantity, done: false })
+      batch.set(this.catalogueRef.doc(slug), { section })
+    })
     batch.commit()
   }
 }

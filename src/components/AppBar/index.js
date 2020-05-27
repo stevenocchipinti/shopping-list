@@ -7,13 +7,17 @@ import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 
 import IconButton from "@material-ui/core/IconButton"
-import SweepIcon from "@material-ui/icons/DeleteSweep"
 import MenuIcon from "@material-ui/icons/Menu"
 import BackIcon from "@material-ui/icons/ArrowBack"
 
 import Menu from "./Menu"
 
-const AppBar = ({ title = "Shopping List", variant, loading, sweepItems }) => {
+const AppBar = ({
+  title = "Shopping List",
+  variant,
+  loading,
+  actions = [],
+}) => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const { listId } = useParams()
 
@@ -53,23 +57,13 @@ const AppBar = ({ title = "Shopping List", variant, loading, sweepItems }) => {
           <Typography style={{ flexGrow: 1 }} variant="h6" component="h1">
             {title}
           </Typography>
-          {variant === "main" && (
-            <IconButton
-              onClick={() => sweepItems()}
-              color="inherit"
-              edge="end"
-              aria-label="Sweep"
-            >
-              <SweepIcon />
-            </IconButton>
-          )}
+          {actions}
         </Toolbar>
       </MuiAppBar>
 
       {loadingIndicator()}
 
       <Menu
-        sweepItems={sweepItems}
         open={variant === "main" && drawerOpen}
         onOpen={() => setDrawerOpen(true)}
         onClose={() => setDrawerOpen(false)}

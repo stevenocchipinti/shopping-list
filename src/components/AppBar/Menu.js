@@ -3,7 +3,6 @@ import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 
 import IconButton from "@material-ui/core/IconButton"
-import SweepIcon from "@material-ui/icons/DeleteSweep"
 import ShareIcon from "@material-ui/icons/Share"
 import SwitchIcon from "@material-ui/icons/SwapHoriz"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
@@ -44,7 +43,7 @@ const DrawHeader = styled.div`
   margin: 4px;
 `
 
-const AppBar = ({ sweepItems, open, onOpen, onClose }) => {
+const AppBar = ({ open, onOpen, onClose }) => {
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const [openDialogOpen, setOpenDialogOpen] = useState(false)
 
@@ -70,18 +69,6 @@ const AppBar = ({ sweepItems, open, onOpen, onClose }) => {
             </IconButton>
           </DrawHeader>
           <Divider />
-          <ListItem
-            button
-            onClick={() => {
-              sweepItems()
-              onClose()
-            }}
-          >
-            <ListItemIcon>
-              <SweepIcon />
-            </ListItemIcon>
-            <ListItemText>Clear Done Items</ListItemText>
-          </ListItem>
 
           <ListItem
             button
