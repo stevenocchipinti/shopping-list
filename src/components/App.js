@@ -157,6 +157,7 @@ const App = ({ match }) => {
           <Planner
             onAdd={entry => backend.current.handleAddToPlanner(entry)}
             onEdit={entry => backend.current.handleEditPlannerItem(entry)}
+            onDelete={entry => backend.current.handleDeleteFromPlanner(entry)}
             planner={planner}
             catalogue={catalogue}
             loading={loading}

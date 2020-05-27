@@ -53,7 +53,7 @@ const days = [
   "Sunday",
 ]
 
-const Planner = ({ onAdd, onEdit, planner, catalogue, loading }) => {
+const Planner = ({ onAdd, onEdit, onDelete, planner, catalogue, loading }) => {
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [day, setDay] = useState(null)
@@ -117,6 +117,7 @@ const Planner = ({ onAdd, onEdit, planner, catalogue, loading }) => {
         catalogue={catalogue}
         open={editDialogOpen}
         onSubmit={onEdit}
+        onDelete={onDelete}
         onClose={() => setEditDialogOpen(false)}
       />
     </Wrapper>

@@ -129,6 +129,23 @@ export default class Backend {
     this.plannerRef.doc(day).set({ items: [...plannedItems, item] })
   }
 
+  handleDeleteFromPlanner({ item, day }) {
+    const existingSlug = slugify(item)
+    const existingItemsForExistingDay = this.planner?.[day]?.items || []
+    const newItemsForExistingDay = existingItemsForExistingDay.filter(
+      slug => slug !== existingSlug
+    )
+    const existingDayNowEmpty = newItemsForExistingDay.length === 0
+
+    if (existingDayNowEmpty) {
+      this.plannerRef.doc(day).delete()
+    } else {
+      this.plannerRef.doc(day).set({
+        items: newItemsForExistingDay,
+      })
+    }
+  }
+
   handleEditPlannerItem({ item, newItem, newDay }) {
     const existingSlug = slugify(item.name)
     const newSlug = slugify(newItem)
@@ -147,11 +164,13 @@ export default class Backend {
 
     const batch = Firebase.firestore().batch()
     // Delete first
-    if (existingDayNowEmpty) batch.delete(this.plannerRef.doc(item?.day))
-    else
+    if (existingDayNowEmpty) {
+      batch.delete(this.plannerRef.doc(item?.day))
+    } else {
       batch.set(this.plannerRef.doc(item?.day), {
         items: newItemsForExistingDay,
       })
+    }
     // Add item
     batch.set(this.plannerRef.doc(newDay), {
       items: newItemsForNewDay,

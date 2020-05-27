@@ -26,6 +26,7 @@ const AddPlannerItemDialog = ({
   catalogue,
   open,
   onSubmit,
+  onDelete,
   onClose,
 }) => {
   const itemInputRef = useRef()
@@ -45,6 +46,11 @@ const AddPlannerItemDialog = ({
   const handleSubmit = e => {
     e.preventDefault()
     onSubmit({ item: itemToEdit, newItem: item, newDay: day })
+    onClose()
+  }
+  const handleDelete = e => {
+    e.preventDefault()
+    onDelete({ item, day })
     onClose()
   }
 
@@ -86,6 +92,7 @@ const AddPlannerItemDialog = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
+        <Button onClick={handleDelete}>Delete</Button>
         <Button
           type="submit"
           variant="contained"
