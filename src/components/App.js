@@ -24,7 +24,7 @@ import Backend from "../backend"
 import AppBar from "./AppBar"
 import ShoppingLists from "./ShoppingLists"
 import Planner from "./Planner"
-import { AddItemDialog, AddPlanToListDialog } from "./ItemDialog"
+import { AddItemDialog, AddPlanToListDialog } from "./Dialogs"
 import { greys } from "../helpers"
 
 const BottomNavigation = styled(MuiBottomNavigation)`

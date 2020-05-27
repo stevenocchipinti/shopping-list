@@ -10,7 +10,7 @@ import Paper from "@material-ui/core/Paper"
 import IconButton from "@material-ui/core/IconButton"
 import AddIcon from "@material-ui/icons/Add"
 
-import { AddPlannerItemDialog, EditPlannerItemDialog } from "./ItemDialog"
+import { AddPlannerItemDialog, EditPlannerItemDialog } from "./Dialogs"
 import Chip from "./Chip"
 import { unslugify } from "../helpers"
 

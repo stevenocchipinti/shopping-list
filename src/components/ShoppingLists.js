@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 
-import Chip from "../Chip"
-import { slugify } from "../../helpers"
-import { EditItemDialog } from "../ItemDialog"
+import Chip from "./Chip"
+import { slugify } from "../helpers"
+import { EditItemDialog } from "./Dialogs"
 
 import Paper from "@material-ui/core/Paper"
 
