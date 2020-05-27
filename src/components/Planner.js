@@ -10,7 +10,7 @@ import Paper from "@material-ui/core/Paper"
 import IconButton from "@material-ui/core/IconButton"
 import AddIcon from "@material-ui/icons/Add"
 
-import { AddPlannerItemDialog } from "./ItemDialog"
+import { AddPlannerItemDialog, EditPlannerItemDialog } from "./ItemDialog"
 import Chip from "./Chip"
 import { unslugify } from "../helpers"
 
@@ -55,7 +55,9 @@ const days = [
 
 const Planner = ({ onAdd, onEdit, planner, catalogue, loading }) => {
   const [addDialogOpen, setAddDialogOpen] = useState(false)
-  const [dayToAddTo, setDayToAddTo] = useState(null)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [day, setDay] = useState(null)
+  const [itemToEdit, setItemToEdit] = useState({})
 
   return (
     <Wrapper>
@@ -73,7 +75,10 @@ const Planner = ({ onAdd, onEdit, planner, catalogue, loading }) => {
                       <Chip
                         key={index}
                         onClick={() => console.log("Goto", item)}
-                        onLongPress={() => onEdit(item)}
+                        onLongPress={() => {
+                          setItemToEdit({ day, name: unslugify(item) })
+                          setEditDialogOpen(true)
+                        }}
                       >
                         {unslugify(item)}
                       </Chip>
@@ -81,7 +86,7 @@ const Planner = ({ onAdd, onEdit, planner, catalogue, loading }) => {
                     {!loading && (
                       <AddButton
                         onClick={() => {
-                          setDayToAddTo(day)
+                          setDay(day)
                           setAddDialogOpen(true)
                         }}
                       />
@@ -93,18 +98,26 @@ const Planner = ({ onAdd, onEdit, planner, catalogue, loading }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
       <AddPlannerItemDialog
-        day={dayToAddTo}
+        day={day}
         days={days}
-        open={addDialogOpen}
-        onChangeDay={day => setDayToAddTo(day)}
-        onSubmit={entry => onAdd(entry)}
-        onClose={() => {
-          setAddDialogOpen(false)
-          setDayToAddTo(null)
-        }}
         planner={planner}
         catalogue={catalogue}
+        open={addDialogOpen}
+        onChangeDay={setDay}
+        onSubmit={onAdd}
+        onClose={() => setAddDialogOpen(false)}
+      />
+
+      <EditPlannerItemDialog
+        item={itemToEdit}
+        days={days}
+        planner={planner}
+        catalogue={catalogue}
+        open={editDialogOpen}
+        onSubmit={onEdit}
+        onClose={() => setEditDialogOpen(false)}
       />
     </Wrapper>
   )

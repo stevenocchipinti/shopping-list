@@ -129,6 +129,36 @@ export default class Backend {
     this.plannerRef.doc(day).set({ items: [...plannedItems, item] })
   }
 
+  handleEditPlannerItem({ item, newItem, newDay }) {
+    const existingSlug = slugify(item.name)
+    const newSlug = slugify(newItem)
+    const editingTheSameDay = item.day === newDay
+
+    const existingItemsForExistingDay = this.planner?.[item?.day]?.items || []
+    const newItemsForExistingDay = existingItemsForExistingDay.filter(
+      slug => slug !== existingSlug
+    )
+    const existingDayNowEmpty = newItemsForExistingDay.length === 0
+
+    const existingItemsForNewDay = this.planner?.[newDay]?.items || []
+    const newItemsForNewDay = editingTheSameDay
+      ? [...newItemsForExistingDay, newSlug]
+      : [...existingItemsForNewDay, newSlug]
+
+    const batch = Firebase.firestore().batch()
+    // Delete first
+    if (existingDayNowEmpty) batch.delete(this.plannerRef.doc(item?.day))
+    else
+      batch.set(this.plannerRef.doc(item?.day), {
+        items: newItemsForExistingDay,
+      })
+    // Add item
+    batch.set(this.plannerRef.doc(newDay), {
+      items: newItemsForNewDay,
+    })
+    batch.commit()
+  }
+
   handleClearPlanner() {
     const batch = Firebase.firestore().batch()
     Object.keys(this.planner).forEach(day => {
