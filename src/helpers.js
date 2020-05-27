@@ -12,3 +12,8 @@ export const slugify = s =>
     ?.trim()
     ?.replace(/[\s\W-]+/g, "-")
     ?.replace(/^-+|-+$/g, "")
+
+export const greys = (light, dark) => ({ theme }) =>
+  theme.palette.type === "light"
+    ? theme.palette.grey[light]
+    : theme.palette.grey[dark]

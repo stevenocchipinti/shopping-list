@@ -17,7 +17,8 @@ import Backend from "../backend"
 import AppBar from "./AppBar"
 import ShoppingLists from "./ShoppingLists"
 import Planner from "./Planner"
-import { AddItemDialog } from "./ItemDialog"
+import { AddItemDialog, AddPlanToListDialog } from "./ItemDialog"
+import { greys } from "../helpers"
 
 const BottomNavigation = styled(MuiBottomNavigation)`
   && {
@@ -26,6 +27,7 @@ const BottomNavigation = styled(MuiBottomNavigation)`
     z-index: 0;
     width: 100%;
     justify-content: space-around;
+    border-top: 1px solid ${({ theme }) => theme.palette.divider};
   }
 `
 
@@ -38,6 +40,9 @@ const FAB = styled(FloatingActionButton)`
     margin: 0 auto;
     z-index: 1;
   }
+  &&:disabled {
+    background-color: ${greys("300", "900")};
+  }
 `
 
 const App = ({ match }) => {
@@ -48,6 +53,7 @@ const App = ({ match }) => {
   const [planner, setPlanner] = useState({})
   const [loading, setLoading] = useState(true)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [addPlanToListDialogOpen, setAddPlanToListDialogOpen] = useState(false)
 
   const { pathname } = useLocation()
   const { listId } = useParams()
@@ -114,6 +120,7 @@ const App = ({ match }) => {
             loading={loading}
           />
           <FAB
+            disabled={loading}
             onClick={() => setAddDialogOpen(true)}
             color="primary"
             tabIndex={1}
@@ -155,12 +162,21 @@ const App = ({ match }) => {
             loading={loading}
           />
           <FAB
-            onClick={() => console.log("Add stuff to the list")}
+            disabled={loading}
+            onClick={() => setAddPlanToListDialogOpen(true)}
             color="primary"
             tabIndex={1}
           >
             <AddShoppingCartIcon />
           </FAB>
+          <AddPlanToListDialog
+            open={addPlanToListDialogOpen}
+            onSubmit={entry => backend.current.handleAddPlanToList(entry)}
+            onClose={() => setAddPlanToListDialogOpen(false)}
+            planner={planner}
+            items={items}
+            catalogue={catalogue}
+          />
         </Route>
 
         <BottomNavigation

@@ -123,4 +123,11 @@ export default class Backend {
     })
     batch.commit()
   }
+
+  handleAddPlanToList(names) {
+    console.log("Backend to add plan:", names)
+    // TODO: Make this work
+    // const plannedItems = this.planner?.[day]?.items || []
+    // this.plannerRef.doc(day).set({ items: [...plannedItems, item] })
+  }
 }
