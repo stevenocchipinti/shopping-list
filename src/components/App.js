@@ -118,6 +118,9 @@ const App = ({ match }) => {
             onMark={item => backend.current.handleMark(item)}
             onEdit={entry => backend.current.handleEdit(entry)}
             onDelete={entry => backend.current.handleDelete(entry)}
+            onCatalogueDelete={entry =>
+              backend.current.handleCatalogueDelete(entry)
+            }
             loading={loading}
           />
           <FAB
@@ -131,6 +134,9 @@ const App = ({ match }) => {
           <AddItemDialog
             open={addDialogOpen}
             onSubmit={entry => backend.current.handleAdd(entry)}
+            onCatalogueDelete={entry =>
+              backend.current.handleCatalogueDelete(entry)
+            }
             onClose={() => setAddDialogOpen(false)}
             items={items}
             catalogue={catalogue}
@@ -159,6 +165,9 @@ const App = ({ match }) => {
             onAdd={entry => backend.current.handleAddToPlanner(entry)}
             onEdit={entry => backend.current.handleEditPlannerItem(entry)}
             onDelete={entry => backend.current.handleDeleteFromPlanner(entry)}
+            onCatalogueDelete={entry =>
+              backend.current.handleCatalogueDelete(entry)
+            }
             planner={planner}
             catalogue={catalogue}
             loading={loading}

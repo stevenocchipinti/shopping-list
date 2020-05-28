@@ -39,6 +39,7 @@ const AddPlannerItemDialog = ({
   open,
   onSubmit,
   onDelete,
+  onCatalogueDelete,
   onClose,
 }) => {
   const itemInputRef = useRef()
@@ -66,6 +67,8 @@ const AddPlannerItemDialog = ({
     onDelete({ item, day })
     onClose()
   }
+
+  const handleDeleteSuggestedItem = item => onCatalogueDelete(slugify(item))
 
   return (
     <Dialog
@@ -110,6 +113,7 @@ const AddPlannerItemDialog = ({
           id="item-search"
           options={Array.from(new Set(allItems))}
           onChange={setItem}
+          onDelete={handleDeleteSuggestedItem}
           value={item}
           ref={itemInputRef}
           autoFocus

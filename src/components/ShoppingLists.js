@@ -46,6 +46,7 @@ const ShoppingLists = ({
   onMark,
   onEdit,
   onDelete,
+  onCatalogueDelete,
   items,
   catalogue,
   loading,
@@ -118,6 +119,7 @@ const ShoppingLists = ({
         open={editDialogOpen}
         onSubmit={onEdit}
         onDelete={onDelete}
+        onCatalogueDelete={onCatalogueDelete}
         onClose={() => setEditDialogOpen(false)}
         items={items}
         catalogue={catalogue}

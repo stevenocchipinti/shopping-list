@@ -8,9 +8,16 @@ import Dialog from "../Dialog"
 import AutoComplete from "../AutoComplete"
 import NumberPicker from "../NumberPicker"
 import useDialogState from "./useDialogState"
-import { unslugify, prettify } from "../../../helpers"
+import { slugify, unslugify, prettify } from "../../../helpers"
 
-const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
+const AddItemDialog = ({
+  items,
+  catalogue,
+  open,
+  onSubmit,
+  onCatalogueDelete,
+  onClose,
+}) => {
   const [dialogState, dispatch] = useDialogState()
   const itemInputRef = useRef()
 
@@ -36,6 +43,7 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
     dispatch({ type: "section", newSection, items, catalogue })
   const updateQuantity = newQuantity =>
     dispatch({ type: "quantity", newQuantity, items, catalogue })
+  const deleteSuggestedItem = item => onCatalogueDelete(slugify(item))
 
   return (
     <Dialog
@@ -52,6 +60,7 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
           id="item-search"
           options={Array.from(new Set(allItems))}
           onChange={updateItem}
+          onDelete={deleteSuggestedItem}
           value={dialogState.item}
           ref={itemInputRef}
           autoFocus

@@ -53,7 +53,15 @@ const days = [
   "Sunday",
 ]
 
-const Planner = ({ onAdd, onEdit, onDelete, planner, catalogue, loading }) => {
+const Planner = ({
+  onAdd,
+  onEdit,
+  onDelete,
+  onCatalogueDelete,
+  planner,
+  catalogue,
+  loading,
+}) => {
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [day, setDay] = useState(null)
@@ -106,6 +114,7 @@ const Planner = ({ onAdd, onEdit, onDelete, planner, catalogue, loading }) => {
         catalogue={catalogue}
         open={addDialogOpen}
         onChangeDay={setDay}
+        onCatalogueDelete={onCatalogueDelete}
         onSubmit={onAdd}
         onClose={() => setAddDialogOpen(false)}
       />
@@ -118,6 +127,7 @@ const Planner = ({ onAdd, onEdit, onDelete, planner, catalogue, loading }) => {
         open={editDialogOpen}
         onSubmit={onEdit}
         onDelete={onDelete}
+        onCatalogueDelete={onCatalogueDelete}
         onClose={() => setEditDialogOpen(false)}
       />
     </Wrapper>
