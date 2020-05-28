@@ -11,7 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import Dialog from "../Dialog"
 import AutoComplete from "../AutoComplete"
 import NumberPicker from "../NumberPicker"
-import { slugify, unslugify, prettify } from "../../../helpers"
+import { unslugify, prettify } from "../../../helpers"
 import { useDialogState } from "./useDialogState"
 
 const DialogTitle = styled(MuiDialogTitle)`
@@ -30,7 +30,6 @@ const EditItemDialog = ({
   open,
   onSubmit,
   onDelete,
-  onCatalogueDelete,
   onClose,
 }) => {
   const [dialogState, dispatch] = useDialogState()
@@ -67,7 +66,6 @@ const EditItemDialog = ({
     dispatch({ type: "section", newSection, item, items, catalogue })
   const updateQuantity = newQuantity =>
     dispatch({ type: "quantity", newQuantity, item, items, catalogue })
-  const deleteSuggestedItem = item => onCatalogueDelete(slugify(item))
 
   return (
     <Dialog
@@ -96,7 +94,6 @@ const EditItemDialog = ({
           id="item-search"
           options={Array.from(new Set(allItems))}
           onChange={updateItem}
-          onDelete={deleteSuggestedItem}
           value={dialogState.item}
           autoFocus
         />
