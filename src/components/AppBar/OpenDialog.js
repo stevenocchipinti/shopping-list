@@ -9,20 +9,11 @@ import DialogActions from "@material-ui/core/DialogActions"
 import MuiTextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
-import Autocomplete from "@material-ui/lab/Autocomplete"
-import IconButton from "@material-ui/core/IconButton"
-import DeleteIcon from "@material-ui/icons/Delete"
+import AutoComplete from "../Dialogs/AutoComplete"
 
 import { Link, useLocation, useHistory } from "react-router-dom"
 import useLocalStorage from "../../useLocalStorage"
 import { generateListName } from "../../backend"
-
-const OptionWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`
 
 // The form is nessesary to get the mobile keyboards to tab through the
 // fields and the styling is needed because the DialogTitle, DialogContent,
@@ -81,28 +72,14 @@ const ShareDialog = ({ open, onClose }) => {
           <Actions>
             <p>Open an existing list:</p>
 
-            <Autocomplete
-              freeSolo
-              inputValue={newList}
-              onInputChange={(e, newValue) => e && setNewList(newValue)}
+            {/* Having `-search` in the id stops lastpass autocomplete */}
+            <AutoComplete
+              id="list-search"
               options={listMRU}
-              getOptionLabel={option => option}
-              renderOption={option => (
-                <OptionWrapper>
-                  <span>{option}</span>
-                  <IconButton
-                    edge="end"
-                    size="small"
-                    onClick={e => {
-                      e.stopPropagation()
-                      removeFromListMRU(option)
-                    }}
-                    aria-label="delete"
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </OptionWrapper>
-              )}
+              value={newList}
+              onChange={setNewList}
+              onDelete={removeFromListMRU}
+              autoFocus
               renderInput={params => (
                 <TextField
                   {...params}
