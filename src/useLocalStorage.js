@@ -1,6 +1,6 @@
-// https://usehooks.com/useLocalStorage/
-
 import { useState } from "react"
+
+// https://usehooks.com/useLocalStorage/
 
 export default (key, initialValue) => {
   // State to store our value

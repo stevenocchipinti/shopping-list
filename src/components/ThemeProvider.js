@@ -12,7 +12,7 @@ import Brightness3 from "@material-ui/icons/Brightness3"
 import BrightnessHigh from "@material-ui/icons/BrightnessHigh"
 import BrightnessAuto from "@material-ui/icons/BrightnessAuto"
 
-import useLocalStorage from "./useLocalStorage"
+import useLocalStorage from "../useLocalStorage"
 
 const DarkModeContext = createContext(null)
 

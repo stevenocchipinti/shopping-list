@@ -75,7 +75,7 @@ const App = ({ match }) => {
       onPlannerChanged: planner => setPlanner(planner),
       onLoadingChanged: loading => setLoading(loading),
     })
-    return () => backend.disconnect()
+    return () => backend.current.disconnect()
   }, [match.params.listId])
 
   const hasSomeTickedItems = items.some(item => item.done)
