@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState } from "react"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
-import DialogTitle from "@material-ui/core/DialogTitle"
+import MuiDialogTitle from "@material-ui/core/DialogTitle"
 import Button from "@material-ui/core/Button"
 import { default as MuiFormControl } from "@material-ui/core/FormControl"
 import InputLabel from "@material-ui/core/InputLabel"
 import Select from "@material-ui/core/Select"
 import MenuItem from "@material-ui/core/MenuItem"
+import IconButton from "@material-ui/core/IconButton"
+import DeleteIcon from "@material-ui/icons/Delete"
+import Typography from "@material-ui/core/Typography"
 
 import Dialog from "../Dialog"
 import AutoComplete from "../AutoComplete"
@@ -16,6 +19,15 @@ import styled from "styled-components"
 const FormControl = styled(MuiFormControl)`
   && {
     margin-bottom: 2rem;
+  }
+`
+
+const DialogTitle = styled(MuiDialogTitle)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px 8px 24px;
   }
 `
 
@@ -62,7 +74,19 @@ const AddPlannerItemDialog = ({
       onClose={onClose}
       onSubmit={handleSubmit}
     >
-      <DialogTitle>Edit item</DialogTitle>
+      <DialogTitle disableTypography>
+        <Typography component="h2" variant="h6">
+          Edit item
+        </Typography>
+        <IconButton
+          onClick={handleDelete}
+          color="inherit"
+          edge="start"
+          aria-label="menu"
+        >
+          <DeleteIcon />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         <FormControl fullWidth variant="outlined">
           <InputLabel id="select-day-label">Day</InputLabel>
@@ -93,7 +117,6 @@ const AddPlannerItemDialog = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
-        <Button onClick={handleDelete}>Delete</Button>
         <Button
           type="submit"
           variant="contained"

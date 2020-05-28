@@ -1,14 +1,27 @@
 import React, { useEffect } from "react"
+import styled from "styled-components"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
-import DialogTitle from "@material-ui/core/DialogTitle"
+import MuiDialogTitle from "@material-ui/core/DialogTitle"
 import Button from "@material-ui/core/Button"
+import IconButton from "@material-ui/core/IconButton"
+import Typography from "@material-ui/core/Typography"
+import DeleteIcon from "@material-ui/icons/Delete"
 
 import Dialog from "../Dialog"
 import AutoComplete from "../AutoComplete"
 import NumberPicker from "../NumberPicker"
 import { unslugify, prettify } from "../../../helpers"
 import { useDialogState } from "./useDialogState"
+
+const DialogTitle = styled(MuiDialogTitle)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px 8px 24px;
+  }
+`
 
 const EditItemDialog = ({
   item,
@@ -61,7 +74,19 @@ const EditItemDialog = ({
       onClose={onClose}
       onSubmit={handleSubmit}
     >
-      <DialogTitle>Edit item</DialogTitle>
+      <DialogTitle disableTypography>
+        <Typography component="h2" variant="h6">
+          Edit item
+        </Typography>
+        <IconButton
+          onClick={handleDelete}
+          color="inherit"
+          edge="start"
+          aria-label="menu"
+        >
+          <DeleteIcon />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         {/* Having `-search` in the id stops lastpass autocomplete */}
         <AutoComplete
@@ -83,7 +108,6 @@ const EditItemDialog = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
-        <Button onClick={handleDelete}>Delete</Button>
         <Button
           type="submit"
           variant="contained"
