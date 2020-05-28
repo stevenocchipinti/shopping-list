@@ -1,8 +1,14 @@
-import React, { useRef } from "react"
+import React, { useState, useRef } from "react"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Button from "@material-ui/core/Button"
+import IconButton from "@material-ui/core/IconButton"
+import Popover from "@material-ui/core/Popover"
+import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon"
+
+import { Picker, Emoji } from "emoji-mart"
+import "emoji-mart/css/emoji-mart.css"
 
 import Dialog from "../Dialog"
 import AutoComplete from "../AutoComplete"
@@ -37,6 +43,15 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
   const updateQuantity = newQuantity =>
     dispatch({ type: "quantity", newQuantity, items, catalogue })
 
+  // TODO: Clean this up
+  const emojiPickerRef = useRef()
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [emoji, setEmoji] = useState(null)
+  const handleClick = event => setAnchorEl(event.currentTarget)
+  const handleClose = () => setAnchorEl(null)
+  const emojiPickerOpen = Boolean(anchorEl)
+  const id = open ? "simple-popover" : undefined
+
   return (
     <Dialog
       title="Add items"
@@ -46,7 +61,37 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
     >
       <DialogTitle>Add items</DialogTitle>
       <DialogContent>
-        {/* Having `-search` in the id stops lastpass autocomplete */}
+        <Popover
+          id={id}
+          open={emojiPickerOpen}
+          anchorEl={emojiPickerRef.current}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+        >
+          <Picker
+            color="#149588"
+            set="apple"
+            autoFocus
+            showPreview={false}
+            showSkinTones={false}
+            onSelect={e => {
+              setEmoji(e.id)
+              handleClose()
+            }}
+            perLine={7}
+            title="Emoji"
+            emoji="shopping_trolley"
+            style={{ margin: "0 auto", border: 0 }}
+          />
+        </Popover>
+
         <AutoComplete
           label="Item"
           id="item-search"
@@ -55,6 +100,18 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
           value={dialogState.item}
           ref={itemInputRef}
           autoFocus
+          InputProps={{
+            style: { padding: 4 },
+            startAdornment: (
+              <IconButton ref={emojiPickerRef} onClick={handleClick}>
+                {emoji ? (
+                  <Emoji emoji={emoji} set="apple" size={24} />
+                ) : (
+                  <InsertEmoticonIcon />
+                )}
+              </IconButton>
+            ),
+          }}
         />
         <AutoComplete
           label="Section"

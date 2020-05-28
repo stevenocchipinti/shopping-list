@@ -45,7 +45,7 @@ const Option = ({ option, onDelete }) => {
 }
 
 const AutoComplete = forwardRef(
-  ({ value, onChange, onDelete, ...props }, ref) => {
+  ({ value, onChange, onDelete, InputProps, ...props }, ref) => {
     const memoOption = useCallback(
       option => <Option option={option} onDelete={onDelete} />,
       [onDelete]
@@ -65,6 +65,7 @@ const AutoComplete = forwardRef(
             label={props.label}
             inputRef={ref}
             variant="outlined"
+            InputProps={{ ...params.InputProps, ...InputProps }}
           />
         )}
         {...props}
