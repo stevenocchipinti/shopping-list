@@ -1,5 +1,6 @@
 import React from "react"
 import styled from "styled-components"
+import { Emoji } from "emoji-mart"
 
 import useLongPress from "./useLongPress"
 import { greys } from "../../helpers"
@@ -15,6 +16,11 @@ const Chip = styled.span`
   margin: 0.25rem;
   color: ${({ done, theme }) => (done ? theme.palette.grey.A200 : "inherit")};
   cursor: pointer;
+
+  .emoji-mart-emoji {
+    height: 16px;
+    margin-right: 4px;
+  }
 `
 
 const Value = styled.span`
@@ -47,6 +53,7 @@ export default ({ done, qty, children, onLongPress, ...props }) => {
   const longPress = useLongPress(onLongPress)
   return (
     <Chip done={done} {...longPress} {...props}>
+      {children === "Apples" && <Emoji emoji="apple" set="apple" size={16} />}
       <Value done={done}>{children}</Value>
       {qty && qty > 1 && (
         <Qty>
