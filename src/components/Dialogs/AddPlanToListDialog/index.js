@@ -18,21 +18,34 @@ const AddPlanToListDialog = ({
   onClose,
 }) => {
   const [ignoredItems, setIgnoredItems] = useState([])
-  const plannedItems = Object.values(planner)
+
+  // Returns: ["apples", "apples", "bananas"]
+  const plannedItemSlugs = Object.values(planner)
     .map(p => p.items)
     .flat()
-    .map(slug => {
-      const name = unslugify(slug)
-      const existingItem = items.find(item => item.name === name)
-      const existingQty =
-        existingItem && !existingItem?.done ? existingItem?.quantity || 1 : 0
-      return {
-        name,
-        section: catalogue[slug]?.section || "",
-        quantity: existingQty + 1,
-        done: ignoredItems.includes(unslugify(slug)),
-      }
-    })
+
+  // Returns: {"apples": 2, "bananas": 1}
+  const qtyBySlug = plannedItemSlugs.reduce(
+    (result, slug) => ({
+      ...result,
+      [slug]: (result[slug] || 0) + 1,
+    }),
+    {}
+  )
+
+  const plannedItems = [...new Set(plannedItemSlugs)].map(slug => {
+    const name = unslugify(slug)
+    const existingItem = items.find(item => item.name === name)
+    const existingQty =
+      existingItem && !existingItem?.done ? existingItem?.quantity || 1 : 0
+    const qtyToAdd = qtyBySlug[slug] || 1
+    return {
+      name,
+      section: catalogue[slug]?.section || "",
+      quantity: existingQty + qtyToAdd,
+      done: ignoredItems.includes(unslugify(slug)),
+    }
+  })
 
   const itemsToAdd = plannedItems
     .filter(i => !i.done)
