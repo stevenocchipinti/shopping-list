@@ -8,6 +8,7 @@ import * as serviceWorker from "./serviceWorker"
 
 import App from "./components/App"
 import Home from "./components/Home"
+import Settings from "./components/Settings"
 import { ThemeProvider } from "./components/ThemeProvider"
 
 import Snackbar from "@material-ui/core/Snackbar"
@@ -56,6 +57,7 @@ const Root = () => {
         <>
           <GlobalStyle />
           <Route path="/" exact={true} component={Home} />
+          <Route path="/settings" exact={true} component={Settings} />
           <Route path="/list/:listId" component={App} />
         </>
       </Router>

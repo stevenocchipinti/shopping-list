@@ -15,6 +15,7 @@ import AutoComplete from "../AutoComplete"
 import NumberPicker from "../NumberPicker"
 import useDialogState from "./useDialogState"
 import { unslugify, prettify } from "../../../helpers"
+import useSetting from "../../../useSetting"
 
 const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
   const [dialogState, dispatch] = useDialogState()
@@ -52,6 +53,24 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
   const emojiPickerOpen = Boolean(anchorEl)
   const id = open ? "simple-popover" : undefined
 
+  const emojiSupport = useSetting("emojiSupport")
+  const emojiProps = !emojiSupport
+    ? {}
+    : {
+        InputProps: {
+          style: { padding: 4 },
+          startAdornment: (
+            <IconButton ref={emojiPickerRef} onClick={handleClick}>
+              {emoji ? (
+                <Emoji emoji={emoji} set="apple" size={24} />
+              ) : (
+                <InsertEmoticonIcon />
+              )}
+            </IconButton>
+          ),
+        },
+      }
+
   return (
     <Dialog
       title="Add items"
@@ -61,36 +80,38 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
     >
       <DialogTitle>Add items</DialogTitle>
       <DialogContent>
-        <Popover
-          id={id}
-          open={emojiPickerOpen}
-          anchorEl={emojiPickerRef.current}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-        >
-          <Picker
-            color="#149588"
-            set="apple"
-            autoFocus
-            showPreview={false}
-            showSkinTones={false}
-            onSelect={e => {
-              setEmoji(e.id)
-              handleClose()
+        {emojiSupport && (
+          <Popover
+            id={id}
+            open={emojiPickerOpen}
+            anchorEl={emojiPickerRef.current}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
             }}
-            perLine={7}
-            title="Emoji"
-            emoji="shopping_trolley"
-            style={{ margin: "0 auto", border: 0 }}
-          />
-        </Popover>
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            <Picker
+              color="#149588"
+              set="apple"
+              autoFocus
+              showPreview={false}
+              showSkinTones={false}
+              onSelect={e => {
+                setEmoji(e.id)
+                handleClose()
+              }}
+              perLine={7}
+              title="Emoji"
+              emoji="shopping_trolley"
+              style={{ margin: "0 auto", border: 0 }}
+            />
+          </Popover>
+        )}
 
         <AutoComplete
           label="Item"
@@ -100,18 +121,7 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
           value={dialogState.item}
           ref={itemInputRef}
           autoFocus
-          InputProps={{
-            style: { padding: 4 },
-            startAdornment: (
-              <IconButton ref={emojiPickerRef} onClick={handleClick}>
-                {emoji ? (
-                  <Emoji emoji={emoji} set="apple" size={24} />
-                ) : (
-                  <InsertEmoticonIcon />
-                )}
-              </IconButton>
-            ),
-          }}
+          {...emojiProps}
         />
         <AutoComplete
           label="Section"

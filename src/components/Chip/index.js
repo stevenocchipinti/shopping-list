@@ -4,6 +4,7 @@ import { Emoji } from "emoji-mart"
 
 import useLongPress from "./useLongPress"
 import { greys } from "../../helpers"
+import useSetting from "../../useSetting"
 
 const Chip = styled.span`
   display: flex;
@@ -20,6 +21,7 @@ const Chip = styled.span`
   .emoji-mart-emoji {
     height: 16px;
     margin-right: 4px;
+    filter: ${({ done }) => (done ? "grayscale(1) opacity(0.4)" : "none")};
   }
 `
 
@@ -51,9 +53,12 @@ const X = () => (
 
 export default ({ done, qty, children, onLongPress, ...props }) => {
   const longPress = useLongPress(onLongPress)
+  const emojiSupport = useSetting("emojiSupport")
   return (
     <Chip done={done} {...longPress} {...props}>
-      {children === "Apples" && <Emoji emoji="apple" set="apple" size={16} />}
+      {emojiSupport && children === "Apples" && (
+        <Emoji emoji="apple" set="apple" size={16} />
+      )}
       <Value done={done}>{children}</Value>
       {qty && qty > 1 && (
         <Qty>
