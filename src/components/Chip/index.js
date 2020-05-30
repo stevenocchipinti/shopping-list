@@ -53,7 +53,7 @@ const X = () => (
 
 export default ({ done, qty, children, onLongPress, ...props }) => {
   const longPress = useLongPress(onLongPress)
-  const emojiSupport = useSetting("emojiSupport")
+  const [emojiSupport] = useSetting("emojiSupport")
   return (
     <Chip done={done} {...longPress} {...props}>
       {emojiSupport && children === "Apples" && (

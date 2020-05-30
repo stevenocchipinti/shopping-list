@@ -7,7 +7,7 @@ import ShareIcon from "@material-ui/icons/Share"
 import SwitchIcon from "@material-ui/icons/SwapHoriz"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import HistoryIcon from "@material-ui/icons/History"
-import SettingsIcon from "@material-ui/icons/Tune"
+import { ReactComponent as SettingsIcon } from "./experiments.svg"
 
 import Drawer from "@material-ui/core/SwipeableDrawer"
 import MuiDivider from "@material-ui/core/Divider"
@@ -118,7 +118,7 @@ const AppBar = ({ open, onOpen, onClose }) => {
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText>Settings</ListItemText>
+            <ListItemText>Experiments</ListItemText>
           </ListItem>
         </List>
 

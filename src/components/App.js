@@ -26,7 +26,6 @@ import ShoppingLists from "./ShoppingLists"
 import Planner from "./Planner"
 import { AddItemDialog, AddPlanToListDialog } from "./Dialogs"
 import { greys } from "../helpers"
-import useSetting from "../useSetting"
 
 const BottomNavigation = styled(MuiBottomNavigation)`
   && {
@@ -62,8 +61,6 @@ const App = ({ match }) => {
   const [loading, setLoading] = useState(true)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [addPlanToListDialogOpen, setAddPlanToListDialogOpen] = useState(false)
-
-  const plannerEnabled = useSetting("plannerEnabled")
 
   const { pathname } = useLocation()
   const history = useHistory()
@@ -187,27 +184,25 @@ const App = ({ match }) => {
           />
         </Route>
 
-        {plannerEnabled && (
-          <BottomNavigation
-            value={tabUrls.findIndex(url => pathname === url)}
-            showLabels
-          >
-            <BottomNavigationAction
-              label="List"
-              icon={<ListIcon />}
-              component={Link}
-              to={tabUrls[0]}
-              replace
-            />
-            <BottomNavigationAction
-              label="Planner"
-              icon={<PlannerIcon />}
-              component={Link}
-              to={tabUrls[1]}
-              replace
-            />
-          </BottomNavigation>
-        )}
+        <BottomNavigation
+          value={tabUrls.findIndex(url => pathname === url)}
+          showLabels
+        >
+          <BottomNavigationAction
+            label="List"
+            icon={<ListIcon />}
+            component={Link}
+            to={tabUrls[0]}
+            replace
+          />
+          <BottomNavigationAction
+            label="Planner"
+            icon={<PlannerIcon />}
+            component={Link}
+            to={tabUrls[1]}
+            replace
+          />
+        </BottomNavigation>
       </Route>
     </Switch>
   )

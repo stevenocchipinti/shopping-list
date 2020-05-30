@@ -53,7 +53,7 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
   const emojiPickerOpen = Boolean(anchorEl)
   const id = open ? "simple-popover" : undefined
 
-  const emojiSupport = useSetting("emojiSupport")
+  const [emojiSupport] = useSetting("emojiSupport")
   const emojiProps = !emojiSupport
     ? {}
     : {

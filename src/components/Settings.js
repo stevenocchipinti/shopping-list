@@ -4,11 +4,9 @@ import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup"
 import MuiToggleButton from "@material-ui/lab/ToggleButton"
 import Typography from "@material-ui/core/Typography"
 import MuiBadge from "@material-ui/core/Badge"
-import { Switch } from "@material-ui/core"
 
-import useLocalStorage from "../useLocalStorage"
+import useSetting from "../useSetting"
 import AppBar from "../components/AppBar"
-import { defaultToggles } from "../useSetting"
 
 const Row = styled.div`
   display: flex;
@@ -35,21 +33,7 @@ const ToggleButton = styled(MuiToggleButton)`
   }
 `
 
-const Setting = ({ name, value, set }) => (
-  <Row>
-    <Typography variant="body1" color="textPrimary">
-      {name}
-    </Typography>
-    <Switch
-      checked={value}
-      onChange={(e, newSetting) => set(newSetting)}
-      name={name}
-      inputProps={{ "aria-label": name }}
-    />
-  </Row>
-)
-
-const Experiment = ({ name, value, set }) => (
+const Toggle = ({ name, value, set }) => (
   <Row>
     <Badge>
       <Typography variant="body1" color="textPrimary">
@@ -76,30 +60,21 @@ const Experiment = ({ name, value, set }) => (
 )
 
 const Settings = () => {
-  const [planner, setPlanner] = useLocalStorage(
-    "plannerEnabled",
-    defaultToggles["plannerEnabled"]
-  )
-  const [emoji, setEmoji] = useLocalStorage("emojiSupport", "auto")
-
-  const settings = [{ name: "Planner", value: planner, set: setPlanner }]
-  const experiments = [{ name: "Emoji support", value: emoji, set: setEmoji }]
+  const [, emoji, setEmoji] = useSetting("emojiSupport", "auto")
+  const settings = [{ name: "Emoji support", value: emoji, set: setEmoji }]
   return (
     <>
-      <AppBar title="Settings" />
-      {settings.map(setting => (
-        <Setting key={setting.name} {...setting} />
-      ))}
+      <AppBar title="Experiments" />
       <Typography
-        color="textPrimary"
+        color="textSecondary"
         style={{ margin: "1rem" }}
-        variant="h6"
-        component="h2"
+        variant="body1"
+        component="p"
       >
-        Experimental features
+        There are experimental features that may not work 100% just yet.
       </Typography>
-      {experiments.map(setting => (
-        <Experiment key={setting.name} {...setting} />
+      {settings.map(setting => (
+        <Toggle key={setting.name} {...setting} />
       ))}
     </>
   )
