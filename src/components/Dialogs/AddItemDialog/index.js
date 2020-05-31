@@ -42,10 +42,11 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
     dispatch({ type: "section", newSection, items, catalogue })
   const updateQuantity = newQuantity =>
     dispatch({ type: "quantity", newQuantity, items, catalogue })
+  const updateEmoji = newEmoji =>
+    dispatch({ type: "emoji", newEmoji, items, catalogue })
 
   const emojiPickerRef = useRef()
   const [anchorEl, setAnchorEl] = useState(null)
-  const [emoji, setEmoji] = useState(null)
   const handleClick = event => setAnchorEl(event.currentTarget)
   const handleClose = () => setAnchorEl(null)
   const emojiPickerOpen = Boolean(anchorEl)
@@ -58,8 +59,8 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
           style: { padding: 4 },
           startAdornment: (
             <IconButton ref={emojiPickerRef} onClick={handleClick}>
-              {emoji ? (
-                <Emoji emoji={emoji} set="apple" size={24} />
+              {dialogState.emoji ? (
+                <Emoji emoji={dialogState.emoji} set="apple" size={24} />
               ) : (
                 <InsertEmoticonIcon />
               )}
@@ -79,7 +80,7 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
       <DialogContent>
         {emojiSupport && (
           <EmojiPicker
-            onSelect={setEmoji}
+            onSelect={updateEmoji}
             open={emojiPickerOpen}
             anchorEl={emojiPickerRef.current}
             onClose={handleClose}
