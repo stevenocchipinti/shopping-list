@@ -53,18 +53,12 @@ const X = () => (
 
 const Emoji = React.memo(EmojiMart)
 
-export default ({
-  done,
-  qty,
-  children,
-  emoji = null,
-  onLongPress,
-  ...props
-}) => {
+export default ({ done, qty, children, emoji, onLongPress, ...props }) => {
   const longPress = useLongPress(onLongPress)
   const [emojiSupport] = useSetting("emojiSupport")
   const searchTerm = children.replace(/i?e?s?$/, "")
-  const assumedEmoji = emoji ?? emojiIndex.search(searchTerm)?.[0]?.id ?? null
+  const assumedEmoji =
+    emoji === undefined ? emojiIndex.search(searchTerm)?.[0]?.id || null : emoji
   return (
     <Chip done={done} {...longPress} {...props}>
       {emojiSupport && assumedEmoji && (
