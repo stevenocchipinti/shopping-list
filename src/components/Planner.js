@@ -73,6 +73,7 @@ const Planner = ({ onAdd, onEdit, onDelete, planner, catalogue, loading }) => {
                   <ChipContainer>
                     {planner?.[day]?.items?.map((item, index) => (
                       <Chip
+                        emoji={false}
                         key={index}
                         onClick={() => console.log("Goto", item)}
                         onLongPress={() => {
