@@ -1,9 +1,10 @@
 import React from "react"
 import styled from "styled-components"
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup"
-import MuiToggleButton from "@material-ui/lab/ToggleButton"
-import Typography from "@material-ui/core/Typography"
-import MuiBadge from "@material-ui/core/Badge"
+import {
+  ToggleButtonGroup,
+  ToggleButton as MuiToggleButton,
+} from "@material-ui/lab"
+import { Typography, Badge as MuiBadge } from "@material-ui/core"
 
 import useSetting from "../useSetting"
 import AppBar from "../components/AppBar"

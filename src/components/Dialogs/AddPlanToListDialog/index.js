@@ -1,22 +1,19 @@
 import React, { useState } from "react"
-import DialogActions from "@material-ui/core/DialogActions"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import Button from "@material-ui/core/Button"
+import {
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from "@material-ui/core"
 
 import Dialog from "../Dialog"
 import ShoppingLists from "../../ShoppingLists"
 import { unslugify } from "../../../helpers"
+import { useAppState } from "../../Backend"
 
-const AddPlanToListDialog = ({
-  planner,
-  items,
-  catalogue,
-  open,
-  onSubmit,
-  onClose,
-}) => {
+const AddPlanToListDialog = ({ open, onSubmit, onClose }) => {
+  const { items, catalogue, planner } = useAppState()
   const [ignoredItems, setIgnoredItems] = useState([])
 
   // Returns: ["apples", "apples", "bananas"]
@@ -79,7 +76,6 @@ const AddPlanToListDialog = ({
         <ShoppingLists
           variant="embedded"
           items={plannedItems}
-          catalogue={catalogue}
           onMark={handleMark}
         />
       </DialogContent>

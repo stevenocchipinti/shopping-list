@@ -1,14 +1,14 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
-import MuiAppBar from "@material-ui/core/AppBar"
-import LinearProgress from "@material-ui/core/LinearProgress"
-import Toolbar from "@material-ui/core/Toolbar"
-import Typography from "@material-ui/core/Typography"
-
-import IconButton from "@material-ui/core/IconButton"
-import MenuIcon from "@material-ui/icons/Menu"
-import BackIcon from "@material-ui/icons/ArrowBack"
+import {
+  AppBar as MuiAppBar,
+  LinearProgress,
+  Toolbar,
+  Typography,
+  IconButton,
+} from "@material-ui/core"
+import { Menu as MenuIcon, ArrowBack as BackIcon } from "@material-ui/icons"
 
 import Menu from "./Menu"
 

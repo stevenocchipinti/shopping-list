@@ -1,15 +1,18 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 
-import Table from "@material-ui/core/Table"
-import TableBody from "@material-ui/core/TableBody"
-import TableCell from "@material-ui/core/TableCell"
-import TableContainer from "@material-ui/core/TableContainer"
-import TableRow from "@material-ui/core/TableRow"
-import Paper from "@material-ui/core/Paper"
-import IconButton from "@material-ui/core/IconButton"
-import AddIcon from "@material-ui/icons/Add"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+  IconButton,
+} from "@material-ui/core"
+import { Add as AddIcon } from "@material-ui/icons"
 
+import { useAppState } from "./Backend"
 import { AddPlannerItemDialog, EditPlannerItemDialog } from "./Dialogs"
 import Chip from "./Chip"
 import { unslugify } from "../helpers"
@@ -53,7 +56,8 @@ const days = [
   "Sunday",
 ]
 
-const Planner = ({ onAdd, onEdit, onDelete, planner, catalogue, loading }) => {
+const Planner = ({ onAdd, onEdit, onDelete }) => {
+  const { planner, loading } = useAppState()
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [day, setDay] = useState(null)
@@ -103,8 +107,6 @@ const Planner = ({ onAdd, onEdit, onDelete, planner, catalogue, loading }) => {
       <AddPlannerItemDialog
         day={day}
         days={days}
-        planner={planner}
-        catalogue={catalogue}
         open={addDialogOpen}
         onChangeDay={setDay}
         onSubmit={onAdd}
@@ -114,8 +116,6 @@ const Planner = ({ onAdd, onEdit, onDelete, planner, catalogue, loading }) => {
       <EditPlannerItemDialog
         item={itemToEdit}
         days={days}
-        planner={planner}
-        catalogue={catalogue}
         open={editDialogOpen}
         onSubmit={onEdit}
         onDelete={onDelete}

@@ -1,18 +1,21 @@
 import React, { useEffect } from "react"
 import styled from "styled-components"
-import DialogActions from "@material-ui/core/DialogActions"
-import DialogContent from "@material-ui/core/DialogContent"
-import MuiDialogTitle from "@material-ui/core/DialogTitle"
-import Button from "@material-ui/core/Button"
-import IconButton from "@material-ui/core/IconButton"
-import Typography from "@material-ui/core/Typography"
-import DeleteIcon from "@material-ui/icons/Delete"
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle as MuiDialogTitle,
+  Button,
+  IconButton,
+  Typography,
+} from "@material-ui/core"
+import { Delete as DeleteIcon } from "@material-ui/icons"
 
 import Dialog from "../Dialog"
 import AutoComplete from "../AutoComplete"
 import NumberPicker from "../NumberPicker"
 import { unslugify, prettify } from "../../../helpers"
 import { useDialogState } from "./useDialogState"
+import { useAppState } from "../../Backend"
 
 const DialogTitle = styled(MuiDialogTitle)`
   && {
@@ -23,15 +26,8 @@ const DialogTitle = styled(MuiDialogTitle)`
   }
 `
 
-const EditItemDialog = ({
-  item,
-  items,
-  catalogue,
-  open,
-  onSubmit,
-  onDelete,
-  onClose,
-}) => {
+const EditItemDialog = ({ item, open, onSubmit, onDelete, onClose }) => {
+  const { items, catalogue } = useAppState()
   const [dialogState, dispatch] = useDialogState()
 
   useEffect(() => {

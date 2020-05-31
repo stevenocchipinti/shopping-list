@@ -1,9 +1,9 @@
 import React, { useCallback, forwardRef } from "react"
 import styled from "styled-components"
-import MuiAutoComplete from "@material-ui/lab/Autocomplete"
-import TextField from "@material-ui/core/TextField"
-import IconButton from "@material-ui/core/IconButton"
-import DeleteIcon from "@material-ui/icons/Delete"
+
+import { Autocomplete as MuiAutoComplete } from "@material-ui/lab"
+import { TextField, IconButton } from "@material-ui/core"
+import { Delete as DeleteIcon } from "@material-ui/icons"
 
 const StyledAutoComplete = styled(MuiAutoComplete)`
   margin-bottom: 2rem;

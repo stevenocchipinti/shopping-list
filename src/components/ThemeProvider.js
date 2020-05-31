@@ -1,16 +1,18 @@
 import React, { useContext, createContext } from "react"
 import styled, { ThemeProvider as ScThemeProvider } from "styled-components"
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
 
-import { createMuiTheme } from "@material-ui/core/styles"
+import { useMediaQuery } from "@material-ui/core"
+import {
+  ThemeProvider as MuiThemeProvider,
+  createMuiTheme,
+} from "@material-ui/core/styles"
 import teal from "@material-ui/core/colors/teal"
 
-import MuiToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup"
-import ToggleButton from "@material-ui/lab/ToggleButton"
-import Brightness3 from "@material-ui/icons/Brightness3"
-import BrightnessHigh from "@material-ui/icons/BrightnessHigh"
-import BrightnessAuto from "@material-ui/icons/BrightnessAuto"
+import {
+  ToggleButtonGroup as MuiToggleButtonGroup,
+  ToggleButton,
+} from "@material-ui/lab"
+import { Brightness3, BrightnessHigh, BrightnessAuto } from "@material-ui/icons"
 
 import useLocalStorage from "../useLocalStorage"
 

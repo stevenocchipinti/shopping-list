@@ -1,7 +1,6 @@
 import React from "react"
 import { useTheme } from "styled-components"
-import Popover from "@material-ui/core/Popover"
-import Button from "@material-ui/core/Button"
+import { Popover, Button } from "@material-ui/core"
 import { Picker } from "emoji-mart"
 
 import "emoji-mart/css/emoji-mart.css"

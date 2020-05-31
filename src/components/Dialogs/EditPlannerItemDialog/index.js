@@ -1,16 +1,20 @@
 import React, { useRef, useEffect, useState } from "react"
-import DialogActions from "@material-ui/core/DialogActions"
-import DialogContent from "@material-ui/core/DialogContent"
-import MuiDialogTitle from "@material-ui/core/DialogTitle"
-import Button from "@material-ui/core/Button"
-import { default as MuiFormControl } from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
-import Select from "@material-ui/core/Select"
-import MenuItem from "@material-ui/core/MenuItem"
-import IconButton from "@material-ui/core/IconButton"
-import DeleteIcon from "@material-ui/icons/Delete"
-import Typography from "@material-ui/core/Typography"
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle as MuiDialogTitle,
+  Button,
+  FormControl as MuiFormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  IconButton,
+  Typography,
+} from "@material-ui/core"
 
+import { Delete as DeleteIcon } from "@material-ui/icons"
+
+import { useAppState } from "../../Backend"
 import Dialog from "../Dialog"
 import AutoComplete from "../AutoComplete"
 import { unslugify, slugify } from "../../../helpers"
@@ -34,13 +38,13 @@ const DialogTitle = styled(MuiDialogTitle)`
 const AddPlannerItemDialog = ({
   item: itemToEdit,
   days,
-  planner,
-  catalogue,
   open,
   onSubmit,
   onDelete,
   onClose,
 }) => {
+  const { planner, catalogue } = useAppState()
+
   const itemInputRef = useRef()
   const [item, setItem] = useState("")
   const [day, setDay] = useState(days[0])

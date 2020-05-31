@@ -6,12 +6,13 @@ import * as Firebase from "firebase/app"
 import "firebase/firestore"
 import * as serviceWorker from "./serviceWorker"
 
+import { AppProvider } from "./components/Backend"
 import App from "./components/App"
 import Home from "./components/Home"
 import Settings from "./components/Settings"
 import { ThemeProvider } from "./components/ThemeProvider"
 
-import Snackbar from "@material-ui/core/Snackbar"
+import { Snackbar } from "@material-ui/core"
 
 Firebase.initializeApp({
   apiKey: "AIzaSyCtgligqZSkUwWkWIAcMOW0nIW2mfgVdcw",
@@ -56,9 +57,16 @@ const Root = () => {
       <Router>
         <>
           <GlobalStyle />
-          <Route path="/" exact={true} component={Home} />
-          <Route path="/settings" exact={true} component={Settings} />
-          <Route path="/list/:listId" component={App} />
+          <Route path="/" exact={true} render={() => <Home />} />
+          <Route path="/settings" exact={true} render={() => <Settings />} />
+          <Route
+            path="/list/:listId"
+            render={({ match }) => (
+              <AppProvider listId={match.params.listId}>
+                <App match={match} />
+              </AppProvider>
+            )}
+          />
         </>
       </Router>
 

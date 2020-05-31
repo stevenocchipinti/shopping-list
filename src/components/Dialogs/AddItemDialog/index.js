@@ -1,10 +1,12 @@
 import React, { useState, useRef } from "react"
-import DialogActions from "@material-ui/core/DialogActions"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import Button from "@material-ui/core/Button"
-import IconButton from "@material-ui/core/IconButton"
-import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon"
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  IconButton,
+} from "@material-ui/core"
+import { InsertEmoticon as InsertEmoticonIcon } from "@material-ui/icons"
 
 import { Emoji } from "emoji-mart"
 
@@ -15,8 +17,10 @@ import NumberPicker from "../NumberPicker"
 import useDialogState from "./useDialogState"
 import { unslugify, prettify } from "../../../helpers"
 import useSetting from "../../../useSetting"
+import { useAppState } from "../../Backend"
 
-const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
+const AddItemDialog = ({ open, onSubmit, onClose }) => {
+  const { items, catalogue } = useAppState()
   const [dialogState, dispatch] = useDialogState()
   const itemInputRef = useRef()
 
