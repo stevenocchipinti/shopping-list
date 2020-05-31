@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Emoji } from "emoji-mart"
+import { Emoji as EmojiMart } from "emoji-mart"
 
 import useLongPress from "./useLongPress"
 import { greys } from "../../helpers"
@@ -50,6 +50,8 @@ const X = () => (
     <path d="M6 0 L 0 6" />
   </Svg>
 )
+
+const Emoji = React.memo(EmojiMart)
 
 export default ({ done, qty, children, onLongPress, ...props }) => {
   const longPress = useLongPress(onLongPress)
