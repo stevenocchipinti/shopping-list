@@ -71,6 +71,7 @@ const ShoppingLists = ({
         onLongPress={() => handleEdit(item)}
         qty={item.quantity}
         done={item.done}
+        emoji={item.emoji}
       >
         {item.name}
       </Chip>
@@ -82,7 +83,10 @@ const ShoppingLists = ({
     const section = catalogueEntry?.section || ""
     return {
       ...a,
-      [section]: [...(a[section] || []), item],
+      [section]: [
+        ...(a[section] || []),
+        { ...item, emoji: catalogueEntry?.emoji },
+      ],
     }
   }, {})
 

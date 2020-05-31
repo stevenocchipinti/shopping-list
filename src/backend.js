@@ -81,11 +81,11 @@ export default class Backend {
     this.callbacks.onLoadingChanged(false)
   }
 
-  handleAdd({ item, section, quantity = 1 }) {
+  handleAdd({ item, section, quantity = 1, emoji = null }) {
     const slug = slugify(item)
     const batch = Firebase.firestore().batch()
     batch.set(this.itemsRef.doc(slug), { name: item, quantity, done: false })
-    batch.set(this.catalogueRef.doc(slug), { section })
+    batch.set(this.catalogueRef.doc(slug), { section, emoji })
     batch.commit()
   }
 

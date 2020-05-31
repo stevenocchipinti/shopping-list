@@ -25,6 +25,7 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
       item: prettify(dialogState.item),
       section: prettify(dialogState.section),
       quantity: parseInt(dialogState.quantity),
+      emoji: dialogState.emoji,
     })
     dispatch({ type: "reset" })
     itemInputRef.current.focus()

@@ -8,7 +8,7 @@ const items = [
 const catalogue = {
   "aa-batteries": { section: "" },
   "almond-flour": { section: "Health Food" },
-  apples: { section: "Fresh Produce" },
+  apples: { section: "Fresh Produce", emoji: "green_apple" },
   asparagus: { section: "Fresh Produce" },
 }
 
@@ -55,6 +55,18 @@ describe("reducer", () => {
       })
       it("sets a matching emoji", () => {
         expect(newItemState).toHaveProperty("emoji", "banana")
+      })
+    })
+
+    describe("entering an item with a previous emoji", () => {
+      const newItemState = reducer(defaultState, {
+        type: "item",
+        items,
+        catalogue,
+        newItem: "apples",
+      })
+      it("sets a matching emoji", () => {
+        expect(newItemState).toHaveProperty("emoji", "green_apple")
       })
     })
 

@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Emoji as EmojiMart } from "emoji-mart"
+import { emojiIndex, Emoji as EmojiMart } from "emoji-mart"
 
 import useLongPress from "./useLongPress"
 import { greys } from "../../helpers"
@@ -53,13 +53,22 @@ const X = () => (
 
 const Emoji = React.memo(EmojiMart)
 
-export default ({ done, qty, children, onLongPress, ...props }) => {
+export default ({
+  done,
+  qty,
+  children,
+  emoji = null,
+  onLongPress,
+  ...props
+}) => {
   const longPress = useLongPress(onLongPress)
   const [emojiSupport] = useSetting("emojiSupport")
+  const searchTerm = children.replace(/i?e?s?$/, "")
+  const assumedEmoji = emoji || emojiIndex.search(searchTerm)?.[0]?.id || null
   return (
     <Chip done={done} {...longPress} {...props}>
-      {emojiSupport && children === "Apples" && (
-        <Emoji emoji="apple" set="apple" size={16} />
+      {emojiSupport && assumedEmoji && (
+        <Emoji emoji={assumedEmoji} set="apple" size={16} />
       )}
       <Value done={done}>{children}</Value>
       {qty && qty > 1 && (
