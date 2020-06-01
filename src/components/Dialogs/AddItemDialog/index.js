@@ -1,22 +1,15 @@
-import React, { useState, useRef } from "react"
+import React, { useRef } from "react"
 import {
   DialogActions,
   DialogContent,
   DialogTitle,
   Button,
-  IconButton,
 } from "@material-ui/core"
-import { InsertEmoticon as InsertEmoticonIcon } from "@material-ui/icons"
-
-import { Emoji } from "emoji-mart"
-
-import EmojiPicker from "../../EmojiPicker"
 import Dialog from "../Dialog"
-import AutoComplete from "../AutoComplete"
+import { ItemAutocomplete, SectionAutocomplete } from "../../Autocomplete"
 import NumberPicker from "../NumberPicker"
 import useDialogState from "./useDialogState"
-import { unslugify, prettify } from "../../../helpers"
-import useSetting from "../../../useSetting"
+import { prettify } from "../../../helpers"
 import { useAppState } from "../../Backend"
 
 const AddItemDialog = ({ open, onSubmit, onClose }) => {
@@ -36,11 +29,6 @@ const AddItemDialog = ({ open, onSubmit, onClose }) => {
     e.preventDefault()
   }
 
-  const allItems = Object.keys(catalogue).map(unslugify)
-  const allSections = Object.values(catalogue)
-    .map(e => e.section)
-    .filter(Boolean)
-
   const updateItem = newItem =>
     dispatch({ type: "item", newItem, items, catalogue })
   const updateSection = newSection =>
@@ -49,30 +37,6 @@ const AddItemDialog = ({ open, onSubmit, onClose }) => {
     dispatch({ type: "quantity", newQuantity, items, catalogue })
   const updateEmoji = newEmoji =>
     dispatch({ type: "emoji", newEmoji, items, catalogue })
-
-  const emojiPickerRef = useRef()
-  const [anchorEl, setAnchorEl] = useState(null)
-  const handleClick = event => setAnchorEl(event.currentTarget)
-  const handleClose = () => setAnchorEl(null)
-  const emojiPickerOpen = Boolean(anchorEl)
-
-  const [emojiSupport] = useSetting("emojiSupport")
-  const emojiProps = !emojiSupport
-    ? {}
-    : {
-        InputProps: {
-          style: { padding: 4 },
-          startAdornment: (
-            <IconButton ref={emojiPickerRef} onClick={handleClick}>
-              {dialogState.emoji ? (
-                <Emoji emoji={dialogState.emoji} set="apple" size={24} />
-              ) : (
-                <InsertEmoticonIcon />
-              )}
-            </IconButton>
-          ),
-        },
-      }
 
   return (
     <Dialog
@@ -83,31 +47,17 @@ const AddItemDialog = ({ open, onSubmit, onClose }) => {
     >
       <DialogTitle>Add items</DialogTitle>
       <DialogContent>
-        {emojiSupport && (
-          <EmojiPicker
-            onSelect={updateEmoji}
-            open={emojiPickerOpen}
-            anchorEl={emojiPickerRef.current}
-            onClose={handleClose}
-          />
-        )}
-
-        <AutoComplete
-          label="Item"
-          id="item-search"
-          options={Array.from(new Set(allItems))}
-          onChange={updateItem}
+        <ItemAutocomplete
           value={dialogState.item}
+          onChange={updateItem}
+          emoji={dialogState.emoji}
+          onEmojiChange={updateEmoji}
           ref={itemInputRef}
           autoFocus
-          {...emojiProps}
         />
-        <AutoComplete
-          label="Section"
-          id="section-search"
-          options={Array.from(new Set(allSections))}
-          onChange={updateSection}
+        <SectionAutocomplete
           value={dialogState.section}
+          onChange={updateSection}
         />
         <NumberPicker value={dialogState.quantity} onChange={updateQuantity} />
       </DialogContent>

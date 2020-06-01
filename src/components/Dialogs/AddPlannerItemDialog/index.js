@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core"
 
 import Dialog from "../Dialog"
-import AutoComplete from "../AutoComplete"
+import AutoComplete from "../../Autocomplete"
 import { unslugify, slugify } from "../../../helpers"
 import styled from "styled-components"
 import { useAppState } from "../../Backend"

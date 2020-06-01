@@ -32,7 +32,7 @@ export const reducer = (
   const storedEmoji = catalogueEntry?.emoji
 
   if (type === "item") {
-    const searchTerm = (newState.emoji = newItem.replace(/i?e?s?$/, ""))
+    const searchTerm = newItem.replace(/i?e?s?$/, "")
     newState.emoji = storedEmoji
       ? storedEmoji
       : emojiIndex.search(searchTerm)?.[0]?.id || null

@@ -11,7 +11,7 @@ import {
   Button,
   Typography,
 } from "@material-ui/core"
-import AutoComplete from "../Dialogs/AutoComplete"
+import AutoComplete from "../Autocomplete"
 
 import { Link, useLocation, useHistory } from "react-router-dom"
 import useLocalStorage from "../../useLocalStorage"

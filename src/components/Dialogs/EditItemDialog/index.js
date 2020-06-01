@@ -11,7 +11,7 @@ import {
 import { Delete as DeleteIcon } from "@material-ui/icons"
 
 import Dialog from "../Dialog"
-import AutoComplete from "../AutoComplete"
+import AutoComplete from "../../Autocomplete"
 import NumberPicker from "../NumberPicker"
 import { unslugify, prettify } from "../../../helpers"
 import { useDialogState } from "./useDialogState"
