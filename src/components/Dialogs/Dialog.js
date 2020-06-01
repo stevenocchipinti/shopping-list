@@ -1,8 +1,6 @@
 import React, { forwardRef } from "react"
 import styled from "styled-components"
-import MuiDialog from "@material-ui/core/Dialog"
-import Slide from "@material-ui/core/Slide"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
+import { Dialog as MuiDialog, Slide, useMediaQuery } from "@material-ui/core"
 import { useTheme } from "@material-ui/core/styles"
 
 const StyledDialog = styled(MuiDialog)`

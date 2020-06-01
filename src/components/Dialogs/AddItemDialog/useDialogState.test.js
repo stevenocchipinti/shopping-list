@@ -8,7 +8,7 @@ const items = [
 const catalogue = {
   "aa-batteries": { section: "" },
   "almond-flour": { section: "Health Food" },
-  apples: { section: "Fresh Produce" },
+  apples: { section: "Fresh Produce", emoji: "green_apple" },
   asparagus: { section: "Fresh Produce" },
 }
 
@@ -30,6 +30,20 @@ describe("reducer", () => {
     it("resets to the defaultState", () => {
       const resetState = reducer(defaultState, { type: "reset" })
       expect(resetState).toEqual(defaultState)
+    })
+  })
+
+  describe("emoji", () => {
+    describe("selecting an emoji", () => {
+      const newItemState = reducer(defaultState, {
+        type: "emoji",
+        items,
+        catalogue,
+        newEmoji: "Banana",
+      })
+      it("sets the emoji", () => {
+        expect(newItemState).toHaveProperty("emoji", "Banana")
+      })
     })
   })
 

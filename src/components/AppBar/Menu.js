@@ -2,18 +2,23 @@ import React, { useState } from "react"
 import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 
-import IconButton from "@material-ui/core/IconButton"
-import ShareIcon from "@material-ui/icons/Share"
-import SwitchIcon from "@material-ui/icons/SwapHoriz"
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
-import HistoryIcon from "@material-ui/icons/History"
+import {
+  Share as ShareIcon,
+  SwapHoriz as SwitchIcon,
+  ChevronLeft as ChevronLeftIcon,
+  History as HistoryIcon,
+} from "@material-ui/icons"
+import { ReactComponent as SettingsIcon } from "./experiments.svg"
 
-import Drawer from "@material-ui/core/SwipeableDrawer"
-import MuiDivider from "@material-ui/core/Divider"
-import MuiList from "@material-ui/core/List"
-import MuiListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import ListItemText from "@material-ui/core/ListItemText"
+import {
+  IconButton,
+  SwipeableDrawer as Drawer,
+  Divider as MuiDivider,
+  List as MuiList,
+  ListItem as MuiListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@material-ui/core"
 
 import OpenDialog from "./OpenDialog"
 import ShareDialog from "./ShareDialog"
@@ -106,6 +111,18 @@ const AppBar = ({ open, onOpen, onClose }) => {
               <HistoryIcon />
             </ListItemIcon>
             <ListItemText>History</ListItemText>
+          </ListItem>
+
+          <ListItem
+            button
+            component={Link}
+            to="/settings"
+            onClick={() => onClose()}
+          >
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText>Experiments</ListItemText>
           </ListItem>
         </List>
 

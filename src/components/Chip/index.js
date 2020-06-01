@@ -1,8 +1,10 @@
 import React from "react"
 import styled from "styled-components"
+import { emojiIndex, Emoji as EmojiMart } from "emoji-mart"
 
 import useLongPress from "./useLongPress"
 import { greys } from "../../helpers"
+import useSetting from "../../useSetting"
 
 const Chip = styled.span`
   display: flex;
@@ -15,6 +17,12 @@ const Chip = styled.span`
   margin: 0.25rem;
   color: ${({ done, theme }) => (done ? theme.palette.grey.A200 : "inherit")};
   cursor: pointer;
+
+  .emoji-mart-emoji {
+    height: 16px;
+    margin-right: 4px;
+    filter: ${({ done }) => (done ? "grayscale(1) opacity(0.4)" : "none")};
+  }
 `
 
 const Value = styled.span`
@@ -43,10 +51,19 @@ const X = () => (
   </Svg>
 )
 
-export default ({ done, qty, children, onLongPress, ...props }) => {
+const Emoji = React.memo(EmojiMart)
+
+export default ({ done, qty, children, emoji, onLongPress, ...props }) => {
   const longPress = useLongPress(onLongPress)
+  const [emojiSupport] = useSetting("emojiSupport")
+  const searchTerm = children.replace(/i?e?s?$/, "")
+  const assumedEmoji =
+    emoji === undefined ? emojiIndex.search(searchTerm)?.[0]?.id || null : emoji
   return (
     <Chip done={done} {...longPress} {...props}>
+      {emojiSupport && assumedEmoji && (
+        <Emoji emoji={assumedEmoji} set="apple" size={16} />
+      )}
       <Value done={done}>{children}</Value>
       {qty && qty > 1 && (
         <Qty>

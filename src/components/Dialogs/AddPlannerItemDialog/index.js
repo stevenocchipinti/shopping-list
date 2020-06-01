@@ -1,17 +1,20 @@
 import React, { useRef, useState } from "react"
-import DialogActions from "@material-ui/core/DialogActions"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import Button from "@material-ui/core/Button"
-import { default as MuiFormControl } from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
-import Select from "@material-ui/core/Select"
-import MenuItem from "@material-ui/core/MenuItem"
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  FormControl as MuiFormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@material-ui/core"
 
 import Dialog from "../Dialog"
-import AutoComplete from "../AutoComplete"
-import { unslugify, slugify } from "../../../helpers"
+import { ItemAutocomplete } from "../../Autocomplete"
+import { slugify } from "../../../helpers"
 import styled from "styled-components"
+import { useAppState } from "../../Backend"
 
 const FormControl = styled(MuiFormControl)`
   && {
@@ -22,17 +25,15 @@ const FormControl = styled(MuiFormControl)`
 const AddPlannerItemDialog = ({
   day,
   days,
-  planner,
-  catalogue,
   open,
   onSubmit,
   onClose,
   onChangeDay,
 }) => {
+  const { planner } = useAppState()
   const itemInputRef = useRef()
   const [item, setItem] = useState("")
 
-  const allItems = Object.keys(catalogue).map(unslugify)
   const plannedItems = planner[day]?.items || []
   const alreadyPlanned = plannedItems.some(i => i === slugify(item))
   const disabled = slugify(item) === "" || alreadyPlanned
@@ -70,12 +71,9 @@ const AddPlannerItemDialog = ({
           </Select>
         </FormControl>
         {/* Having `-search` in the id stops lastpass autocomplete */}
-        <AutoComplete
-          label="Item"
-          id="item-search"
-          options={Array.from(new Set(allItems))}
-          onChange={setItem}
+        <ItemAutocomplete
           value={item}
+          onChange={setItem}
           ref={itemInputRef}
           autoFocus
         />

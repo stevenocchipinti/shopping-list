@@ -1,19 +1,21 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 
-import Dialog from "@material-ui/core/Dialog"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
-import DialogActions from "@material-ui/core/DialogActions"
-import MuiTextField from "@material-ui/core/TextField"
-import Button from "@material-ui/core/Button"
-import Typography from "@material-ui/core/Typography"
-import AutoComplete from "../Dialogs/AutoComplete"
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField as MuiTextField,
+  Button,
+  Typography,
+} from "@material-ui/core"
+import AutoComplete from "../Autocomplete"
 
 import { Link, useLocation, useHistory } from "react-router-dom"
 import useLocalStorage from "../../useLocalStorage"
-import { generateListName } from "../../backend"
+import { generateListName } from "../../components/Backend/backend"
 
 // The form is nessesary to get the mobile keyboards to tab through the
 // fields and the styling is needed because the DialogTitle, DialogContent,

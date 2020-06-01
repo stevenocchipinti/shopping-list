@@ -5,13 +5,14 @@ export const defaultState = {
   item: "",
   section: "",
   quantity: 1,
+  emoji: null,
   actionLabel: "Add",
   actionDisabled: true,
 }
 
 export const reducer = (
   state,
-  { type, items, catalogue, newItem, newSection, newQuantity }
+  { type, items, catalogue, newItem, newSection, newQuantity, newEmoji }
 ) => {
   if (type === "reset") return defaultState
 
@@ -20,6 +21,7 @@ export const reducer = (
     item: type === "item" ? newItem : state.item,
     section: type === "section" ? newSection : state.section,
     quantity: type === "quantity" ? newQuantity : state.quantity,
+    emoji: type === "emoji" ? newEmoji : state.emoji,
   }
 
   const itemOnList = items.find(i => i.name === newState.item)

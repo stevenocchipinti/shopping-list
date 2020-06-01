@@ -1,9 +1,10 @@
 import React from "react"
 import styled from "styled-components"
-import IconButton from "@material-ui/core/IconButton"
-import TextField from "@material-ui/core/TextField"
-import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline"
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline"
+import { IconButton, TextField } from "@material-ui/core"
+import {
+  RemoveCircleOutline as RemoveCircleOutlineIcon,
+  AddCircleOutline as AddCircleOutlineIcon,
+} from "@material-ui/icons"
 
 const Container = styled.div`
   display: flex;

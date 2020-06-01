@@ -1,18 +1,21 @@
 import React, { useEffect } from "react"
 import styled from "styled-components"
-import DialogActions from "@material-ui/core/DialogActions"
-import DialogContent from "@material-ui/core/DialogContent"
-import MuiDialogTitle from "@material-ui/core/DialogTitle"
-import Button from "@material-ui/core/Button"
-import IconButton from "@material-ui/core/IconButton"
-import Typography from "@material-ui/core/Typography"
-import DeleteIcon from "@material-ui/icons/Delete"
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle as MuiDialogTitle,
+  Button,
+  IconButton,
+  Typography,
+} from "@material-ui/core"
+import { Delete as DeleteIcon } from "@material-ui/icons"
 
 import Dialog from "../Dialog"
-import AutoComplete from "../AutoComplete"
+import { ItemAutocomplete, SectionAutocomplete } from "../../Autocomplete"
 import NumberPicker from "../NumberPicker"
-import { unslugify, prettify } from "../../../helpers"
+import { prettify } from "../../../helpers"
 import { useDialogState } from "./useDialogState"
+import { useAppState } from "../../Backend"
 
 const DialogTitle = styled(MuiDialogTitle)`
   && {
@@ -23,15 +26,8 @@ const DialogTitle = styled(MuiDialogTitle)`
   }
 `
 
-const EditItemDialog = ({
-  item,
-  items,
-  catalogue,
-  open,
-  onSubmit,
-  onDelete,
-  onClose,
-}) => {
+const EditItemDialog = ({ item, open, onSubmit, onDelete, onClose }) => {
+  const { items, catalogue } = useAppState()
   const [dialogState, dispatch] = useDialogState()
 
   useEffect(() => {
@@ -51,14 +47,10 @@ const EditItemDialog = ({
       newItem: prettify(dialogState.item),
       newSection: prettify(dialogState.section),
       newQuantity: parseInt(dialogState.quantity),
+      newEmoji: dialogState.emoji,
     })
     onClose()
   }
-
-  const allItems = Object.keys(catalogue).map(unslugify)
-  const allSections = Object.values(catalogue)
-    .map(e => e.section)
-    .filter(Boolean)
 
   const updateItem = newItem =>
     dispatch({ type: "item", newItem, item, items, catalogue })
@@ -66,6 +58,8 @@ const EditItemDialog = ({
     dispatch({ type: "section", newSection, item, items, catalogue })
   const updateQuantity = newQuantity =>
     dispatch({ type: "quantity", newQuantity, item, items, catalogue })
+  const updateEmoji = newEmoji =>
+    dispatch({ type: "emoji", newEmoji, item, items, catalogue })
 
   return (
     <Dialog
@@ -88,21 +82,16 @@ const EditItemDialog = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        {/* Having `-search` in the id stops lastpass autocomplete */}
-        <AutoComplete
-          label="Item"
-          id="item-search"
-          options={Array.from(new Set(allItems))}
-          onChange={updateItem}
+        <ItemAutocomplete
           value={dialogState.item}
+          onChange={updateItem}
+          emoji={dialogState.emoji}
+          onEmojiChange={updateEmoji}
           autoFocus
         />
-        <AutoComplete
-          label="Section"
-          id="section-search"
-          options={Array.from(new Set(allSections))}
-          onChange={updateSection}
+        <SectionAutocomplete
           value={dialogState.section}
+          onChange={updateSection}
         />
         <NumberPicker value={dialogState.quantity} onChange={updateQuantity} />
       </DialogContent>

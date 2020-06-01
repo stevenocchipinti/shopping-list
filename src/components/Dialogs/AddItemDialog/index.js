@@ -1,16 +1,19 @@
 import React, { useRef } from "react"
-import DialogActions from "@material-ui/core/DialogActions"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import Button from "@material-ui/core/Button"
-
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from "@material-ui/core"
 import Dialog from "../Dialog"
-import AutoComplete from "../AutoComplete"
+import { ItemAutocomplete, SectionAutocomplete } from "../../Autocomplete"
 import NumberPicker from "../NumberPicker"
 import useDialogState from "./useDialogState"
-import { unslugify, prettify } from "../../../helpers"
+import { prettify } from "../../../helpers"
+import { useAppState } from "../../Backend"
 
-const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
+const AddItemDialog = ({ open, onSubmit, onClose }) => {
+  const { items, catalogue } = useAppState()
   const [dialogState, dispatch] = useDialogState()
   const itemInputRef = useRef()
 
@@ -19,16 +22,12 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
       item: prettify(dialogState.item),
       section: prettify(dialogState.section),
       quantity: parseInt(dialogState.quantity),
+      emoji: dialogState.emoji,
     })
     dispatch({ type: "reset" })
     itemInputRef.current.focus()
     e.preventDefault()
   }
-
-  const allItems = Object.keys(catalogue).map(unslugify)
-  const allSections = Object.values(catalogue)
-    .map(e => e.section)
-    .filter(Boolean)
 
   const updateItem = newItem =>
     dispatch({ type: "item", newItem, items, catalogue })
@@ -36,6 +35,8 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
     dispatch({ type: "section", newSection, items, catalogue })
   const updateQuantity = newQuantity =>
     dispatch({ type: "quantity", newQuantity, items, catalogue })
+  const updateEmoji = newEmoji =>
+    dispatch({ type: "emoji", newEmoji, items, catalogue })
 
   return (
     <Dialog
@@ -46,22 +47,17 @@ const AddItemDialog = ({ items, catalogue, open, onSubmit, onClose }) => {
     >
       <DialogTitle>Add items</DialogTitle>
       <DialogContent>
-        {/* Having `-search` in the id stops lastpass autocomplete */}
-        <AutoComplete
-          label="Item"
-          id="item-search"
-          options={Array.from(new Set(allItems))}
-          onChange={updateItem}
+        <ItemAutocomplete
           value={dialogState.item}
+          onChange={updateItem}
+          emoji={dialogState.emoji}
+          onEmojiChange={updateEmoji}
           ref={itemInputRef}
           autoFocus
         />
-        <AutoComplete
-          label="Section"
-          id="section-search"
-          options={Array.from(new Set(allSections))}
-          onChange={updateSection}
+        <SectionAutocomplete
           value={dialogState.section}
+          onChange={updateSection}
         />
         <NumberPicker value={dialogState.quantity} onChange={updateQuantity} />
       </DialogContent>

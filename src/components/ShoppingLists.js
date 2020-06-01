@@ -4,8 +4,9 @@ import styled from "styled-components"
 import Chip from "./Chip"
 import { slugify } from "../helpers"
 import { EditItemDialog } from "./Dialogs"
+import { useAppState } from "./Backend"
 
-import Paper from "@material-ui/core/Paper"
+import { Paper } from "@material-ui/core"
 
 const Container = styled.div`
   padding: ${({ variant }) =>
@@ -46,11 +47,10 @@ const ShoppingLists = ({
   onMark,
   onEdit,
   onDelete,
-  items,
-  catalogue,
-  loading,
+  items, // Not always from the AppState
   variant = "main",
 }) => {
+  const { catalogue, loading } = useAppState()
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [itemToEdit, setItemToEdit] = useState()
 
@@ -71,6 +71,7 @@ const ShoppingLists = ({
         onLongPress={() => handleEdit(item)}
         qty={item.quantity}
         done={item.done}
+        emoji={item.emoji}
       >
         {item.name}
       </Chip>
@@ -82,7 +83,10 @@ const ShoppingLists = ({
     const section = catalogueEntry?.section || ""
     return {
       ...a,
-      [section]: [...(a[section] || []), item],
+      [section]: [
+        ...(a[section] || []),
+        { ...item, emoji: catalogueEntry?.emoji },
+      ],
     }
   }, {})
 

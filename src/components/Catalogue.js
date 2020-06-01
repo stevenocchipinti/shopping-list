@@ -1,17 +1,20 @@
 import React from "react"
 import styled from "styled-components"
 
-import Table from "@material-ui/core/Table"
-import TableBody from "@material-ui/core/TableBody"
-import TableCell from "@material-ui/core/TableCell"
-import TableContainer from "@material-ui/core/TableContainer"
-import TableHead from "@material-ui/core/TableHead"
-import TableRow from "@material-ui/core/TableRow"
-import Paper from "@material-ui/core/Paper"
-import IconButton from "@material-ui/core/IconButton"
-import DeleteIcon from "@material-ui/icons/Delete"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+} from "@material-ui/core"
+import { Delete as DeleteIcon } from "@material-ui/icons"
 
 import { unslugify } from "../helpers"
+import { useAppState } from "./Backend"
 
 const Wrapper = styled.div`
   max-width: 1000px;
@@ -35,7 +38,9 @@ const Placeholder = styled(TableCell).attrs({
   }
 `
 
-const Catalogue = ({ catalogue, loading, onDelete }) => {
+const Catalogue = ({ onDelete }) => {
+  const { catalogue, loading } = useAppState()
+
   return (
     <Wrapper>
       <TableContainer component={Paper}>

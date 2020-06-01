@@ -1,14 +1,14 @@
 import React, { useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 
-import MuiAppBar from "@material-ui/core/AppBar"
-import LinearProgress from "@material-ui/core/LinearProgress"
-import Toolbar from "@material-ui/core/Toolbar"
-import Typography from "@material-ui/core/Typography"
-
-import IconButton from "@material-ui/core/IconButton"
-import MenuIcon from "@material-ui/icons/Menu"
-import BackIcon from "@material-ui/icons/ArrowBack"
+import {
+  AppBar as MuiAppBar,
+  LinearProgress,
+  Toolbar,
+  Typography,
+  IconButton,
+} from "@material-ui/core"
+import { Menu as MenuIcon, ArrowBack as BackIcon } from "@material-ui/icons"
 
 import Menu from "./Menu"
 
@@ -19,7 +19,7 @@ const AppBar = ({
   actions = [],
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const { listId } = useParams()
+  const listId = window.localStorage.getItem("listName")
 
   // This keeps the height consistent instead of jumping by 4 pixels
   const loadingIndicator = () =>
@@ -45,7 +45,7 @@ const AppBar = ({
           ) : (
             <IconButton
               component={Link}
-              to={`/list/${listId}`}
+              to={listId ? `/list/${listId}` : "/"}
               color="inherit"
               edge="start"
               aria-label="back"
@@ -63,11 +63,13 @@ const AppBar = ({
 
       {loadingIndicator()}
 
-      <Menu
-        open={variant === "main" && drawerOpen}
-        onOpen={() => setDrawerOpen(true)}
-        onClose={() => setDrawerOpen(false)}
-      />
+      {variant === "main" && (
+        <Menu
+          open={drawerOpen}
+          onOpen={() => setDrawerOpen(true)}
+          onClose={() => setDrawerOpen(false)}
+        />
+      )}
     </>
   )
 }

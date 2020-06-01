@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import background from "./background.jpg"
 import { Link, Redirect } from "react-router-dom"
-import { generateListName } from "../../backend"
+import { generateListName } from "../../components/Backend/backend"
 
 const Container = styled.main`
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8)),
