@@ -5,6 +5,7 @@ export const defaultState = {
   item: "",
   section: "",
   quantity: 1,
+  emoji: null,
   actionLabel: "Save",
   actionDisabled: false,
 }
@@ -18,10 +19,13 @@ export const reducer = (state, event) => {
     newItem,
     newSection,
     newQuantity,
+    newEmoji,
   } = event
 
   const originalName = item.name
-  const originalSection = catalogue[slugify(item.name)]?.section
+  const catalogueEntry = catalogue[slugify(item.name)]
+  const originalSection = catalogueEntry?.section
+  const originalEmoji = catalogueEntry?.emoji
   const originalQuantity = item.quantity || 1
 
   if (type === "reset") return defaultState
@@ -31,6 +35,7 @@ export const reducer = (state, event) => {
       item: originalName,
       section: originalSection,
       quantity: originalQuantity,
+      emoji: originalEmoji,
       actionDisabled: true,
     }
   }
@@ -40,12 +45,14 @@ export const reducer = (state, event) => {
     item: type === "item" ? newItem : state.item,
     section: type === "section" ? newSection : state.section,
     quantity: type === "quantity" ? newQuantity : state.quantity,
+    emoji: type === "emoji" ? newEmoji : state.emoji,
   }
 
   const noChanges =
     prettify(newState.item) === prettify(originalName) &&
     prettify(newState.section) === prettify(originalSection) &&
-    newState.quantity === originalQuantity
+    newState.quantity === originalQuantity &&
+    newState.emoji === originalEmoji
 
   const alreadyExists =
     prettify(newState.item) !== prettify(originalName) &&

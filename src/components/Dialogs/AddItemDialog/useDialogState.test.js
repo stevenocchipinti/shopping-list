@@ -45,54 +45,6 @@ describe("reducer", () => {
         expect(newItemState).toHaveProperty("emoji", "Banana")
       })
     })
-
-    describe("entering a singular item", () => {
-      const newItemState = reducer(defaultState, {
-        type: "item",
-        items,
-        catalogue,
-        newItem: "Banana",
-      })
-      it("sets a matching emoji", () => {
-        expect(newItemState).toHaveProperty("emoji", "banana")
-      })
-    })
-
-    describe("entering an item with a previous emoji", () => {
-      const newItemState = reducer(defaultState, {
-        type: "item",
-        items,
-        catalogue,
-        newItem: "apples",
-      })
-      it("sets a matching emoji", () => {
-        expect(newItemState).toHaveProperty("emoji", "green_apple")
-      })
-    })
-
-    describe("entering a plural item", () => {
-      const newItemState = reducer(defaultState, {
-        type: "item",
-        items,
-        catalogue,
-        newItem: "Bananas",
-      })
-      it("roughly handles plurals", () => {
-        expect(newItemState).toHaveProperty("emoji", "banana")
-      })
-    })
-
-    describe("entering an item that doesn't have an emoji", () => {
-      const newItemState = reducer(defaultState, {
-        type: "item",
-        items,
-        catalogue,
-        newItem: "blablablabla",
-      })
-      it("sets the emoji to null", () => {
-        expect(newItemState).toHaveProperty("emoji", null)
-      })
-    })
   })
 
   describe("entering a new item", () => {

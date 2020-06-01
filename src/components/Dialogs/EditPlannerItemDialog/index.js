@@ -16,8 +16,8 @@ import { Delete as DeleteIcon } from "@material-ui/icons"
 
 import { useAppState } from "../../Backend"
 import Dialog from "../Dialog"
-import AutoComplete from "../../Autocomplete"
-import { unslugify, slugify } from "../../../helpers"
+import { ItemAutocomplete } from "../../Autocomplete"
+import { slugify } from "../../../helpers"
 import styled from "styled-components"
 
 const FormControl = styled(MuiFormControl)`
@@ -43,7 +43,7 @@ const AddPlannerItemDialog = ({
   onDelete,
   onClose,
 }) => {
-  const { planner, catalogue } = useAppState()
+  const { planner } = useAppState()
 
   const itemInputRef = useRef()
   const [item, setItem] = useState("")
@@ -54,7 +54,6 @@ const AddPlannerItemDialog = ({
     setDay(itemToEdit?.day)
   }, [itemToEdit])
 
-  const allItems = Object.keys(catalogue).map(unslugify)
   const plannedItems = planner[day]?.items || []
   const alreadyPlanned = plannedItems.some(i => i === slugify(item))
   const disabled = slugify(item) === "" || alreadyPlanned
@@ -108,13 +107,9 @@ const AddPlannerItemDialog = ({
             ))}
           </Select>
         </FormControl>
-        {/* Having `-search` in the id stops lastpass autocomplete */}
-        <AutoComplete
-          label="Item"
-          id="item-search"
-          options={Array.from(new Set(allItems))}
-          onChange={setItem}
+        <ItemAutocomplete
           value={item}
+          onChange={setItem}
           ref={itemInputRef}
           autoFocus
         />

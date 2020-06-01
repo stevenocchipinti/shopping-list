@@ -14,7 +14,7 @@ const items = [
 const catalogue = {
   "aa-batteries": { section: "" },
   "almond-flour": { section: "Health Food" },
-  apples: { section: "Fresh Produce" },
+  apples: { section: "Fresh Produce", emoji: "green_apple" },
   asparagus: { section: "Fresh Produce" },
 }
 
@@ -44,6 +44,7 @@ describe("reducer", () => {
       expect(newSetState).toHaveProperty("item", "Apples")
       expect(newSetState).toHaveProperty("section", "Fresh Produce")
       expect(newSetState).toHaveProperty("quantity", 5)
+      expect(newSetState).toHaveProperty("emoji", "green_apple")
       expect(newSetState).toHaveProperty("actionLabel", "Save")
       expect(newSetState).toHaveProperty("actionDisabled", true)
     })
@@ -124,6 +125,28 @@ describe("reducer", () => {
         expect(newItemState).toHaveProperty("item", "Apples")
         expect(newItemState).toHaveProperty("section", "Fresh Produce")
         expect(newItemState).toHaveProperty("quantity", 99)
+      })
+
+      it("shows an enabled 'Save' button", () => {
+        expect(newItemState).toHaveProperty("actionLabel", "Save")
+        expect(newItemState).toHaveProperty("actionDisabled", false)
+      })
+    })
+
+    describe("then changing the emoji to something new", () => {
+      const newItemState = reducer(newSetState, {
+        type: "emoji",
+        newEmoji: "peach",
+        item: itemToEdit,
+        items,
+        catalogue,
+      })
+
+      it("updates the form", () => {
+        expect(newItemState).toHaveProperty("item", "Apples")
+        expect(newItemState).toHaveProperty("section", "Fresh Produce")
+        expect(newItemState).toHaveProperty("quantity", 5)
+        expect(newItemState).toHaveProperty("emoji", "peach")
       })
 
       it("shows an enabled 'Save' button", () => {

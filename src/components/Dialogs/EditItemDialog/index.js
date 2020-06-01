@@ -11,9 +11,9 @@ import {
 import { Delete as DeleteIcon } from "@material-ui/icons"
 
 import Dialog from "../Dialog"
-import AutoComplete from "../../Autocomplete"
+import { ItemAutocomplete, SectionAutocomplete } from "../../Autocomplete"
 import NumberPicker from "../NumberPicker"
-import { unslugify, prettify } from "../../../helpers"
+import { prettify } from "../../../helpers"
 import { useDialogState } from "./useDialogState"
 import { useAppState } from "../../Backend"
 
@@ -47,14 +47,10 @@ const EditItemDialog = ({ item, open, onSubmit, onDelete, onClose }) => {
       newItem: prettify(dialogState.item),
       newSection: prettify(dialogState.section),
       newQuantity: parseInt(dialogState.quantity),
+      newEmoji: dialogState.emoji,
     })
     onClose()
   }
-
-  const allItems = Object.keys(catalogue).map(unslugify)
-  const allSections = Object.values(catalogue)
-    .map(e => e.section)
-    .filter(Boolean)
 
   const updateItem = newItem =>
     dispatch({ type: "item", newItem, item, items, catalogue })
@@ -62,6 +58,8 @@ const EditItemDialog = ({ item, open, onSubmit, onDelete, onClose }) => {
     dispatch({ type: "section", newSection, item, items, catalogue })
   const updateQuantity = newQuantity =>
     dispatch({ type: "quantity", newQuantity, item, items, catalogue })
+  const updateEmoji = newEmoji =>
+    dispatch({ type: "emoji", newEmoji, item, items, catalogue })
 
   return (
     <Dialog
@@ -84,21 +82,16 @@ const EditItemDialog = ({ item, open, onSubmit, onDelete, onClose }) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        {/* Having `-search` in the id stops lastpass autocomplete */}
-        <AutoComplete
-          label="Item"
-          id="item-search"
-          options={Array.from(new Set(allItems))}
-          onChange={updateItem}
+        <ItemAutocomplete
           value={dialogState.item}
+          onChange={updateItem}
+          emoji={dialogState.emoji}
+          onEmojiChange={updateEmoji}
           autoFocus
         />
-        <AutoComplete
-          label="Section"
-          id="section-search"
-          options={Array.from(new Set(allSections))}
-          onChange={updateSection}
+        <SectionAutocomplete
           value={dialogState.section}
+          onChange={updateSection}
         />
         <NumberPicker value={dialogState.quantity} onChange={updateQuantity} />
       </DialogContent>

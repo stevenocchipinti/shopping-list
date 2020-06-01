@@ -1,6 +1,5 @@
 import { useReducer } from "react"
 import { slugify } from "../../../helpers"
-import { emojiIndex } from "emoji-mart"
 
 export const defaultState = {
   item: "",
@@ -29,14 +28,6 @@ export const reducer = (
   const catalogueEntry = catalogue[slugify(newState.item)]
   const storedSection = catalogueEntry && catalogueEntry.section
   const storedQuantity = itemOnList?.quantity
-  const storedEmoji = catalogueEntry?.emoji
-
-  if (type === "item") {
-    const searchTerm = newItem.replace(/i?e?s?$/, "")
-    newState.emoji = storedEmoji
-      ? storedEmoji
-      : emojiIndex.search(searchTerm)?.[0]?.id || null
-  }
 
   if (newState.item.trim().length > 0) newState.actionDisabled = false
   if (newItem && storedSection) newState.section = storedSection
