@@ -7,6 +7,7 @@ import {
   SwapHoriz as SwitchIcon,
   ChevronLeft as ChevronLeftIcon,
   History as HistoryIcon,
+  InfoOutlined as AboutIcon,
 } from "@material-ui/icons"
 import { ReactComponent as SettingsIcon } from "./experiments.svg"
 
@@ -22,6 +23,7 @@ import {
 
 import OpenDialog from "./OpenDialog"
 import ShareDialog from "./ShareDialog"
+import AboutDialog from "./AboutDialog"
 import { DarkModeToggle } from "../ThemeProvider"
 
 const Divider = styled(MuiDivider)`
@@ -51,6 +53,7 @@ const DrawHeader = styled.div`
 const AppBar = ({ open, onOpen, onClose }) => {
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const [openDialogOpen, setOpenDialogOpen] = useState(false)
+  const [aboutDialogOpen, setAboutDialogOpen] = useState(false)
 
   let { listId } = useParams()
 
@@ -64,6 +67,11 @@ const AppBar = ({ open, onOpen, onClose }) => {
       <ShareDialog
         open={shareDialogOpen}
         onClose={() => setShareDialogOpen(false)}
+      />
+
+      <AboutDialog
+        open={aboutDialogOpen}
+        onClose={() => setAboutDialogOpen(false)}
       />
 
       <Drawer open={open} onOpen={onOpen} onClose={onClose}>
@@ -124,8 +132,20 @@ const AppBar = ({ open, onOpen, onClose }) => {
             </ListItemIcon>
             <ListItemText>Experiments</ListItemText>
           </ListItem>
-        </List>
 
+          <ListItem
+            button
+            onClick={() => {
+              onClose()
+              setAboutDialogOpen(true)
+            }}
+          >
+            <ListItemIcon>
+              <AboutIcon />
+            </ListItemIcon>
+            <ListItemText>About</ListItemText>
+          </ListItem>
+        </List>
         <DarkModeToggle />
       </Drawer>
     </>

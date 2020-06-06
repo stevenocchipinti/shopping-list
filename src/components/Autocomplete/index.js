@@ -1,10 +1,10 @@
 import React, { forwardRef } from "react"
-import { emojiIndex } from "emoji-mart"
 
 import useSetting from "../../useSetting"
 import Autocomplete from "./Autocomplete"
 import { useAppState } from "../Backend"
 import { unslugify, slugify } from "../../helpers"
+import { emojiSearch } from "../Emoji"
 
 const ItemAutocomplete = forwardRef(({ onChange, ...props }, ref) => {
   const [emojiSupport] = useSetting("emojiSupport")
@@ -19,9 +19,7 @@ const ItemAutocomplete = forwardRef(({ onChange, ...props }, ref) => {
       const searchTerm = newItem.replace(/i?e?s?$/, "")
       const storedEmoji = catalogueEntry?.emoji
       props.onEmojiChange(
-        storedEmoji
-          ? storedEmoji
-          : emojiIndex.search(searchTerm)?.[0]?.id || null
+        storedEmoji ? storedEmoji : emojiSearch(searchTerm)?.[0]?.id || null
       )
     }
   }

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback, forwardRef } from "react"
 import styled from "styled-components"
-import { Emoji } from "emoji-mart"
 
 import { Autocomplete as MuiAutocomplete } from "@material-ui/lab"
 import { TextField, IconButton } from "@material-ui/core"
@@ -9,7 +8,7 @@ import {
   InsertEmoticon as InsertEmoticonIcon,
 } from "@material-ui/icons"
 
-import EmojiPicker from "../EmojiPicker"
+import { EmojiPicker, Emoji } from "../Emoji"
 import useSetting from "../../useSetting"
 
 const StyledAutocomplete = styled(MuiAutocomplete)`
@@ -66,11 +65,7 @@ const Autocomplete = forwardRef(
             style: { padding: 4 },
             startAdornment: (
               <IconButton ref={emojiPickerRef} onClick={handleClick}>
-                {emoji ? (
-                  <Emoji emoji={emoji} set="apple" size={24} />
-                ) : (
-                  <InsertEmoticonIcon />
-                )}
+                {emoji ? <Emoji emoji={emoji} /> : <InsertEmoticonIcon />}
               </IconButton>
             ),
           }

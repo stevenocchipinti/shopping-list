@@ -3,6 +3,7 @@ import { useTheme } from "styled-components"
 import { Popover, Button } from "@material-ui/core"
 import { Picker } from "emoji-mart"
 
+import customEmojis from "./customEmojis"
 import "emoji-mart/css/emoji-mart.css"
 
 export default ({ open, anchorEl, onClose, onSelect }) => {
@@ -34,6 +35,7 @@ export default ({ open, anchorEl, onClose, onSelect }) => {
         color={palette.primary.main}
         theme={palette.type}
         set="apple"
+        custom={customEmojis}
         autoFocus
         showPreview={false}
         showSkinTones={false}
