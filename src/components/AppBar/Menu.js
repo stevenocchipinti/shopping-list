@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 
 import {
+  MenuBookTwoTone as RecipesIcon,
   Share as ShareIcon,
   SwapHoriz as SwitchIcon,
   ChevronLeft as ChevronLeftIcon,
@@ -82,6 +83,18 @@ const AppBar = ({ open, onOpen, onClose }) => {
             </IconButton>
           </DrawHeader>
           <Divider />
+
+          <ListItem
+            button
+            component={Link}
+            to={`/list/${listId}/recipes`}
+            onClick={() => onClose()}
+          >
+            <ListItemIcon>
+              <RecipesIcon />
+            </ListItemIcon>
+            <ListItemText>Recipes</ListItemText>
+          </ListItem>
 
           <ListItem
             button

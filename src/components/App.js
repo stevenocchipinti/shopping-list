@@ -22,6 +22,8 @@ import { useAppState, useBackend } from "./Backend"
 import AppBar from "./AppBar"
 import ShoppingLists from "./ShoppingLists"
 import Catalogue from "./Catalogue"
+import Recipes from "./Recipes"
+import Recipe from "./Recipe"
 import Planner from "./Planner"
 import { AddItemDialog, AddPlanToListDialog } from "./Dialogs"
 import { greys } from "../helpers"
@@ -73,6 +75,29 @@ const App = ({ match }) => {
       <Route path={`${match.path}/catalogue`}>
         <AppBar loading={loading} title="History" />
         <Catalogue onDelete={item => backend.handleCatalogueDelete(item)} />
+      </Route>
+
+      <Route
+        path={`${match.path}/recipes/:recipeId`}
+        render={({ match }) => <Recipe {...match.params} />}
+      />
+
+      <Route path={`${match.path}/recipes`}>
+        <AppBar
+          loading={loading}
+          title="Recipes"
+          actions={
+            <IconButton
+              onClick={() => console.log("sdf")}
+              color="inherit"
+              edge="end"
+              aria-label="Add"
+            >
+              <ContentAddIcon />
+            </IconButton>
+          }
+        />
+        <Recipes />
       </Route>
 
       <Route path={match.path}>
