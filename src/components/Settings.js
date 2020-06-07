@@ -8,6 +8,7 @@ import AppBar from "../components/AppBar"
 
 const Label = styled(FormControlLabel)`
   && {
+    color: ${({ theme }) => theme.palette.text.primary};
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -17,6 +18,7 @@ const Label = styled(FormControlLabel)`
 
 const Toggle = ({ name, value, set, beta = false }) => (
   <Label
+    color="textSecondary"
     value="start"
     control={
       <Switch
