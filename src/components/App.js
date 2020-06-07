@@ -7,6 +7,7 @@ import {
   Fab as FloatingActionButton,
   BottomNavigation as MuiBottomNavigation,
   BottomNavigationAction,
+  Zoom,
 } from "@material-ui/core"
 
 import {
@@ -79,7 +80,7 @@ const App = ({ match }) => {
           <AppBar
             variant="main"
             actions={
-              hasSomeTickedItems && (
+              <Zoom in={hasSomeTickedItems}>
                 <IconButton
                   onClick={() => backend.handleSweep()}
                   color="inherit"
@@ -88,7 +89,7 @@ const App = ({ match }) => {
                 >
                   <SweepIcon />
                 </IconButton>
-              )
+              </Zoom>
             }
             loading={loading}
           />
