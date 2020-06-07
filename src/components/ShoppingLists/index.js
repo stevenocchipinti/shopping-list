@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 
-import Chip from "./Chip"
-import { slugify } from "../helpers"
-import { EditItemDialog } from "./Dialogs"
-import { useAppState } from "./Backend"
+import Placeholder from "./Placeholder"
+import Chip from "../Chip"
+import { slugify } from "../../helpers"
+import { EditItemDialog } from "../Dialogs"
+import { useAppState } from "../Backend"
 
 import { Paper } from "@material-ui/core"
 
@@ -18,18 +19,6 @@ const Container = styled.div`
 const Card = styled(Paper)`
   margin: 10px 0;
   padding: ${({ variant }) => (variant === "embedded" ? "0" : "10px")};
-`
-
-const Placeholder = styled(Paper).attrs({ elevation: 0, variant: "outlined" })`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 4rem;
-  margin: 10px;
-  padding: 3rem;
-  && {
-    color: ${({ theme }) => theme.palette.text.secondary};
-  }
 `
 
 const Items = styled.div`
@@ -112,9 +101,7 @@ const ShoppingLists = ({
           </Card>
         ))}
 
-        {!loading && sections.length === 0 && (
-          <Placeholder>No items yet</Placeholder>
-        )}
+        {!loading && sections.length === 0 && <Placeholder />}
       </Container>
 
       <EditItemDialog

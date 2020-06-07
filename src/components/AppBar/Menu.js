@@ -8,8 +8,8 @@ import {
   ChevronLeft as ChevronLeftIcon,
   History as HistoryIcon,
   InfoOutlined as AboutIcon,
+  Tune as SettingsIcon,
 } from "@material-ui/icons"
-import { ReactComponent as SettingsIcon } from "./experiments.svg"
 
 import {
   IconButton,
@@ -130,7 +130,7 @@ const AppBar = ({ open, onOpen, onClose }) => {
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText>Experiments</ListItemText>
+            <ListItemText>Settings</ListItemText>
           </ListItem>
 
           <ListItem
