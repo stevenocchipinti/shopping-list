@@ -10,6 +10,7 @@ const AppProvider = ({ listId, children }) => {
   const [items, setItems] = useState([])
   const [catalogue, setCatalogue] = useState({})
   const [planner, setPlanner] = useState({})
+  const [recipes, setRecipes] = useState({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,13 +19,16 @@ const AppProvider = ({ listId, children }) => {
       onItemsChanged: items => setItems(items),
       onCatalogueChanged: catalogue => setCatalogue(catalogue),
       onPlannerChanged: planner => setPlanner(planner),
+      onRecipesChanged: recipes => setRecipes(recipes),
       onLoadingChanged: loading => setLoading(loading),
     })
     return () => backend.current.disconnect()
   }, [listId])
 
   return (
-    <AppContext.Provider value={{ items, catalogue, planner, loading }}>
+    <AppContext.Provider
+      value={{ items, catalogue, planner, recipes, loading }}
+    >
       <BackendContext.Provider value={backend.current?.actions()}>
         {children}
       </BackendContext.Provider>

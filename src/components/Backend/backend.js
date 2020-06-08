@@ -20,11 +20,13 @@ export default class Backend {
     this.items = []
     this.catalogue = {}
     this.planner = {}
+    this.recipes = {}
 
     this.listRef = Firebase.firestore().collection("lists").doc(listName)
     this.itemsRef = this.listRef.collection("items")
     this.catalogueRef = this.listRef.collection("catalogue")
     this.plannerRef = this.listRef.collection("planner")
+    this.recipesRef = this.listRef.collection("recipes")
 
     this.setLoading()
 
@@ -62,6 +64,20 @@ export default class Backend {
             {}
           )
           this.callbacks.onPlannerChanged(this.planner)
+          this.setDone()
+        }
+      )
+    )
+
+    this.unsubFunctions.push(
+      this.recipesRef.onSnapshot(
+        { includeMetadataChanges: true },
+        querySnapshot => {
+          this.recipes = querySnapshot.docs.reduce(
+            (a, doc) => ({ ...a, [doc.id]: doc.data() }),
+            {}
+          )
+          this.callbacks.onRecipesChanged(this.recipes)
           this.setDone()
         }
       )
