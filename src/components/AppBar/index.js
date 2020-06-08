@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 import {
   AppBar as MuiAppBar,
@@ -16,10 +16,12 @@ const AppBar = ({
   title = "Shopping List",
   variant,
   loading,
+  back,
   actions = [],
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const listId = window.localStorage.getItem("listName")
+  const { listId } = useParams()
+  const backUrl = back || (listId ? `/list/${listId}` : "/")
 
   // This keeps the height consistent instead of jumping by 4 pixels
   const loadingIndicator = () =>
@@ -45,7 +47,7 @@ const AppBar = ({
           ) : (
             <IconButton
               component={Link}
-              to={listId ? `/list/${listId}` : "/"}
+              to={backUrl}
               color="inherit"
               edge="start"
               aria-label="back"
