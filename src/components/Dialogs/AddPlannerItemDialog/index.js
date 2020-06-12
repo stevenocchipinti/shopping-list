@@ -9,12 +9,16 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core"
-
+import Alert from "../../Alert"
 import Dialog from "../Dialog"
 import { ItemAutocomplete } from "../../Autocomplete"
 import { slugify } from "../../../helpers"
 import styled from "styled-components"
 import { useAppState } from "../../Backend"
+
+const Spacer = styled.div`
+  flex-grow: 1;
+`
 
 const FormControl = styled(MuiFormControl)`
   && {
@@ -33,6 +37,7 @@ const AddPlannerItemDialog = ({
   const { planner } = useAppState()
   const itemInputRef = useRef()
   const [item, setItem] = useState("")
+  const [alertVisible, setAlertVisible] = useState(false)
 
   const plannedItems = planner[day]?.items || []
   const alreadyPlanned = plannedItems.some(i => i === slugify(item))
@@ -41,6 +46,8 @@ const AddPlannerItemDialog = ({
   const handleSubmit = e => {
     e.preventDefault()
     onSubmit({ item: slugify(item), day })
+    setAlertVisible(true)
+    setTimeout(() => setAlertVisible(false), 1000)
     setItem("")
     itemInputRef.current.focus()
   }
@@ -79,6 +86,8 @@ const AddPlannerItemDialog = ({
         />
       </DialogContent>
       <DialogActions>
+        <Alert visible={alertVisible}>Saved!</Alert>
+        <Spacer />
         <Button onClick={onClose}>Close</Button>
         <Button
           type="submit"

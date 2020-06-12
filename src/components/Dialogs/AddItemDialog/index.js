@@ -1,10 +1,12 @@
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
+import styled from "styled-components"
 import {
   DialogActions,
   DialogContent,
   DialogTitle,
   Button,
 } from "@material-ui/core"
+import Alert from "../../Alert"
 import Dialog from "../Dialog"
 import { ItemAutocomplete, SectionAutocomplete } from "../../Autocomplete"
 import NumberPicker from "../NumberPicker"
@@ -12,21 +14,28 @@ import useDialogState from "./useDialogState"
 import { prettify } from "../../../helpers"
 import { useAppState } from "../../Backend"
 
+const Spacer = styled.div`
+  flex-grow: 1;
+`
+
 const AddItemDialog = ({ open, onSubmit, onClose }) => {
   const { items, catalogue } = useAppState()
   const [dialogState, dispatch] = useDialogState()
+  const [alertVisible, setAlertVisible] = useState(false)
   const itemInputRef = useRef()
 
   const handleSubmit = e => {
+    e.preventDefault()
     onSubmit({
       item: prettify(dialogState.item),
       section: prettify(dialogState.section),
       quantity: parseInt(dialogState.quantity),
       emoji: dialogState.emoji,
     })
+    setAlertVisible(true)
+    setTimeout(() => setAlertVisible(false), 1000)
     dispatch({ type: "reset" })
     itemInputRef.current.focus()
-    e.preventDefault()
   }
 
   const updateItem = newItem =>
@@ -62,6 +71,8 @@ const AddItemDialog = ({ open, onSubmit, onClose }) => {
         <NumberPicker value={dialogState.quantity} onChange={updateQuantity} />
       </DialogContent>
       <DialogActions>
+        <Alert visible={alertVisible}>Saved!</Alert>
+        <Spacer />
         <Button onClick={onClose}>Close</Button>
         <Button
           type="submit"
