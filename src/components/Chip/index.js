@@ -13,6 +13,8 @@ const Chip = styled.span`
   font-size: 14px;
   line-height: 32px;
   border-radius: 16px;
+  box-shadow: ${({ theme, outline }) =>
+    outline ? `inset 0 0 0px 1px ${theme.palette.grey[500]}` : "none"};
   padding: 0 12px;
   margin: 0.25rem;
   color: ${({ done, theme }) => (done ? theme.palette.grey.A200 : "inherit")};

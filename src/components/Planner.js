@@ -57,7 +57,7 @@ const days = [
 ]
 
 const Planner = ({ onAdd, onEdit, onDelete }) => {
-  const { planner, loading } = useAppState()
+  const { planner, recipes, catalogue, loading } = useAppState()
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [day, setDay] = useState(null)
@@ -75,19 +75,25 @@ const Planner = ({ onAdd, onEdit, onDelete }) => {
                 </TableCell>
                 <ChipTableCell>
                   <ChipContainer>
-                    {planner?.[day]?.items?.map((item, index) => (
-                      <Chip
-                        emoji={false}
-                        key={index}
-                        onClick={() => console.log("Goto", item)}
-                        onLongPress={() => {
-                          setItemToEdit({ day, name: unslugify(item) })
-                          setEditDialogOpen(true)
-                        }}
-                      >
-                        {unslugify(item)}
-                      </Chip>
-                    ))}
+                    {planner?.[day]?.items?.map(({ name, type }, index) => {
+                      const emoji =
+                        type === "recipe"
+                          ? recipes[name]?.emoji
+                          : catalogue[name]?.emoji
+                      return (
+                        <Chip
+                          emoji={emoji}
+                          key={index}
+                          onClick={() => console.log("Goto", name)}
+                          onLongPress={() => {
+                            setItemToEdit({ day, name, type })
+                            setEditDialogOpen(true)
+                          }}
+                        >
+                          {unslugify(name)}
+                        </Chip>
+                      )
+                    })}
                     {!loading && (
                       <AddButton
                         onClick={() => {

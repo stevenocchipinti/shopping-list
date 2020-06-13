@@ -4,10 +4,6 @@ import {
   DialogContent,
   DialogTitle as MuiDialogTitle,
   Button,
-  FormControl as MuiFormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   IconButton,
   Typography,
 } from "@material-ui/core"
@@ -15,16 +11,14 @@ import {
 import { Delete as DeleteIcon } from "@material-ui/icons"
 
 import { useAppState } from "../../Backend"
+import DayPicker from "../DayPicker"
 import Dialog from "../Dialog"
-import { ItemAutocomplete } from "../../Autocomplete"
-import { slugify } from "../../../helpers"
+import {
+  ItemOrRecipeAutocomplete,
+  IngredientAutocomplete,
+} from "../../Autocomplete"
+import { unslugify, slugify } from "../../../helpers"
 import styled from "styled-components"
-
-const FormControl = styled(MuiFormControl)`
-  && {
-    margin-bottom: 2rem;
-  }
-`
 
 const DialogTitle = styled(MuiDialogTitle)`
   && {
@@ -35,7 +29,7 @@ const DialogTitle = styled(MuiDialogTitle)`
   }
 `
 
-const AddPlannerItemDialog = ({
+const EditPlannerItemDialog = ({
   item: itemToEdit,
   days,
   open,
@@ -43,24 +37,39 @@ const AddPlannerItemDialog = ({
   onDelete,
   onClose,
 }) => {
-  const { planner } = useAppState()
-
-  const itemInputRef = useRef()
+  const { recipes, catalogue } = useAppState()
   const [item, setItem] = useState("")
+  const [emoji, setEmoji] = useState(null)
+  const [ingredients, setIngredients] = useState([])
   const [day, setDay] = useState(days[0])
 
-  useEffect(() => {
-    setItem(itemToEdit?.name)
-    setDay(itemToEdit?.day)
-  }, [itemToEdit])
+  const itemInputRef = useRef()
 
-  const plannedItems = planner[day]?.items || []
-  const alreadyPlanned = plannedItems.some(i => i === slugify(item))
-  const disabled = slugify(item) === "" || alreadyPlanned
+  useEffect(() => {
+    const { name, day, type } = itemToEdit
+    const emoji =
+      type === "recipe" ? recipes[name]?.emoji : catalogue[name]?.emoji
+    const ingredients = recipes[name]?.ingredients?.map(i => unslugify(i.slug))
+    setItem(unslugify(name))
+    setIngredients((type === "recipe" && ingredients) || [])
+    setEmoji(emoji)
+    setDay(day)
+  }, [itemToEdit, recipes, catalogue])
+
+  // TODO: This got tricky, probably should disabled the button if there are no changes
+  // const plannedItems = planner[day]?.items || []
+  // const alreadyPlanned = plannedItems.some(i => i.name === slugify(item))
+  const disabled = slugify(item) === ""
 
   const handleSubmit = e => {
     e.preventDefault()
-    onSubmit({ item: itemToEdit, newItem: item, newDay: day })
+    onSubmit({
+      item: itemToEdit,
+      newItem: item,
+      newDay: day,
+      newEmoji: emoji,
+      newIngredients: ingredients,
+    })
     onClose()
   }
 
@@ -91,28 +100,16 @@ const AddPlannerItemDialog = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <FormControl fullWidth variant="outlined">
-          <InputLabel id="select-day-label">Day</InputLabel>
-          <Select
-            labelId="select-day-label"
-            id="select-day"
-            value={day || days[0]}
-            onChange={e => setDay(e.target.value)}
-            label="Day"
-          >
-            {days.map(d => (
-              <MenuItem key={d} value={d}>
-                {d}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <ItemAutocomplete
+        <DayPicker days={days} value={day} onChange={setDay} />
+        <ItemOrRecipeAutocomplete
+          emoji={emoji}
+          onEmojiChange={setEmoji}
           value={item}
           onChange={setItem}
           ref={itemInputRef}
           autoFocus
         />
+        <IngredientAutocomplete value={ingredients} onChange={setIngredients} />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
@@ -122,11 +119,11 @@ const AddPlannerItemDialog = ({
           color="primary"
           disabled={disabled}
         >
-          {alreadyPlanned ? "Already exists!" : "Save"}
+          Save
         </Button>
       </DialogActions>
     </Dialog>
   )
 }
 
-export default AddPlannerItemDialog
+export default EditPlannerItemDialog

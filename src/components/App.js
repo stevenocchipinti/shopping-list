@@ -83,20 +83,7 @@ const App = ({ match }) => {
       />
 
       <Route path={`${match.path}/recipes`}>
-        <AppBar
-          loading={loading}
-          title="Recipes"
-          actions={
-            <IconButton
-              onClick={() => console.log("sdf")}
-              color="inherit"
-              edge="end"
-              aria-label="Add"
-            >
-              <ContentAddIcon />
-            </IconButton>
-          }
-        />
+        <AppBar loading={loading} title="Recipes" />
         <Recipes />
       </Route>
 

@@ -150,6 +150,10 @@ export default class Backend {
         this.catalogueRef.doc(item).delete()
       },
 
+      handleRecipeDelete: item => {
+        this.recipesRef.doc(item).delete()
+      },
+
       handleSweep: () => {
         const batch = Firebase.firestore().batch()
         this.items
@@ -160,16 +164,30 @@ export default class Backend {
         batch.commit()
       },
 
-      handleAddToPlanner: ({ item, day }) => {
+      handleAddToPlanner: ({ day, name, ingredients, emoji }) => {
+        const slug = slugify(name)
+        const type = ingredients.length === 0 ? "item" : "recipe"
+        const newItem = { type, name: slug }
         const plannedItems = this.planner?.[day]?.items || []
-        this.plannerRef.doc(day).set({ items: [...plannedItems, item] })
+
+        const batch = Firebase.firestore().batch()
+        batch.set(this.plannerRef.doc(day), {
+          items: [...plannedItems, newItem],
+        })
+        if (type === "item") batch.set(this.catalogueRef.doc(slug), { emoji })
+        if (type === "recipe")
+          batch.set(this.recipesRef.doc(slug), {
+            ingredients: ingredients.map(i => ({ slug: slugify(i) })),
+            emoji,
+          })
+        batch.commit()
       },
 
       handleDeleteFromPlanner: ({ item, day }) => {
         const existingSlug = slugify(item)
         const existingItemsForExistingDay = this.planner?.[day]?.items || []
         const newItemsForExistingDay = existingItemsForExistingDay.filter(
-          slug => slug !== existingSlug
+          ({ name: slug }) => slug !== existingSlug
         )
         const existingDayNowEmpty = newItemsForExistingDay.length === 0
 
@@ -182,7 +200,14 @@ export default class Backend {
         }
       },
 
-      handleEditPlannerItem: ({ item, newItem, newDay }) => {
+      handleEditPlannerItem: ({
+        item,
+        newItem,
+        newDay,
+        newEmoji,
+        newIngredients,
+      }) => {
+        const type = newIngredients.length === 0 ? "item" : "recipe"
         const existingSlug = slugify(item.name)
         const newSlug = slugify(newItem)
         const editingTheSameDay = item.day === newDay
@@ -190,14 +215,14 @@ export default class Backend {
         const existingItemsForExistingDay =
           this.planner?.[item?.day]?.items || []
         const newItemsForExistingDay = existingItemsForExistingDay.filter(
-          slug => slug !== existingSlug
+          ({ name: slug }) => slug !== existingSlug
         )
         const existingDayNowEmpty = newItemsForExistingDay.length === 0
 
         const existingItemsForNewDay = this.planner?.[newDay]?.items || []
         const newItemsForNewDay = editingTheSameDay
-          ? [...newItemsForExistingDay, newSlug]
-          : [...existingItemsForNewDay, newSlug]
+          ? [...newItemsForExistingDay, { type, name: newSlug }]
+          : [...existingItemsForNewDay, { type, name: newSlug }]
 
         const batch = Firebase.firestore().batch()
         // Delete first
@@ -212,6 +237,13 @@ export default class Backend {
         batch.set(this.plannerRef.doc(newDay), {
           items: newItemsForNewDay,
         })
+        if (type === "item")
+          batch.set(this.catalogueRef.doc(newSlug), { emoji: newEmoji })
+        if (type === "recipe")
+          batch.set(this.recipesRef.doc(newSlug), {
+            ingredients: newIngredients.map(i => ({ slug: slugify(i) })),
+            emoji: newEmoji,
+          })
         batch.commit()
       },
 

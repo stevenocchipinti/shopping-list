@@ -16,6 +16,18 @@ const Link = styled(RouterLink)`
   }
 `
 
+const Placeholder = styled(Paper).attrs({ elevation: 0, variant: "outlined" })`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  padding: 3rem;
+  && {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
+`
+
 const Masonry = styled(ReactMasonry)`
   display: flex;
   margin-left: -${gutter};
@@ -50,7 +62,7 @@ const PlaceholderImage = styled(PlaceholderImg)`
   fill: #bbb;
 `
 
-const Placeholder = ({ emoji }) => (
+const PlaceholderRecipe = ({ emoji }) => (
   <PlaceholderTile>
     {emoji ? <Emoji size={50} emoji={emoji} /> : <PlaceholderImage />}
   </PlaceholderTile>
@@ -59,7 +71,7 @@ const Placeholder = ({ emoji }) => (
 const Tile = ({ image, title, href, emoji }) => (
   <Link to={href}>
     <Figure>
-      {image ? <Image src={image} /> : <Placeholder emoji={emoji} />}
+      {image ? <Image src={image} /> : <PlaceholderRecipe emoji={emoji} />}
       <Typography color="textSecondary" component="figcaption">
         {title}
       </Typography>
@@ -70,6 +82,16 @@ const Tile = ({ image, title, href, emoji }) => (
 const Recipes = () => {
   const { pathname } = useLocation()
   const { recipes } = useAppState()
+
+  if (Object.keys(recipes).length === 0)
+    return (
+      <Placeholder>
+        <Typography paragraph>No recipes yet</Typography>
+        <Typography align="center">
+          Add items with ingredients to the planner to create recipes
+        </Typography>
+      </Placeholder>
+    )
 
   return (
     <Masonry columnClassName="masonry-column">

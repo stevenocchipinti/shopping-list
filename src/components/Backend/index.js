@@ -29,7 +29,7 @@ const AppProvider = ({ listId, children }) => {
     <AppContext.Provider
       value={{ items, catalogue, planner, recipes, loading }}
     >
-      <BackendContext.Provider value={backend.current?.actions()}>
+      <BackendContext.Provider value={backend.current?.actions() || {}}>
         {children}
       </BackendContext.Provider>
     </AppContext.Provider>

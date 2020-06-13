@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink, useHistory } from "react-router-dom"
 import {
   Typography,
   Link as MuiLink,
@@ -10,10 +10,11 @@ import {
 import {
   Instagram as InstagramIcon,
   ArrowBack as BackIcon,
+  Delete as DeleteIcon,
 } from "@material-ui/icons"
 
 import { Emoji } from "./Emoji"
-import { useAppState } from "./Backend"
+import { useAppState, useBackend } from "./Backend"
 import AppBar from "./AppBar"
 import { unslugify } from "../helpers"
 
@@ -71,11 +72,14 @@ const Description = styled.div`
 
 export default ({ recipeId, listId }) => {
   const { recipes } = useAppState()
+  const { handleRecipeDelete } = useBackend()
+  const history = useHistory()
   const recipe = recipes?.[recipeId]
   if (!recipe) return null
 
   const back = `/list/${listId}/recipes`
-  const { title, emoji, image, description, instagram, ingredients } = recipe
+  const title = unslugify(recipeId)
+  const { emoji, image, description, instagram, ingredients } = recipe
   return (
     <>
       {image ? (
@@ -86,7 +90,23 @@ export default ({ recipeId, listId }) => {
           <Img src={image} />
         </>
       ) : (
-        <AppBar title="" back={back} />
+        <AppBar
+          title=""
+          back={back}
+          actions={
+            <IconButton
+              onClick={() => {
+                handleRecipeDelete(recipeId)
+                history.replace(`/list/${listId}/recipes`)
+              }}
+              aria-label="delete"
+              color="inherit"
+              edge="end"
+            >
+              <DeleteIcon />
+            </IconButton>
+          }
+        />
       )}
       <Wrapper>
         <TitleRow>
@@ -104,7 +124,7 @@ export default ({ recipeId, listId }) => {
           {ingredients && (
             <ul>
               {ingredients.map(ingredient => (
-                <li key={ingredient}>{unslugify(ingredient)}</li>
+                <li key={ingredient.slug}>{unslugify(ingredient.slug)}</li>
               ))}
             </ul>
           )}

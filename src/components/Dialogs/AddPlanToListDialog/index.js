@@ -13,13 +13,18 @@ import { unslugify } from "../../../helpers"
 import { useAppState } from "../../Backend"
 
 const AddPlanToListDialog = ({ open, onSubmit, onClose }) => {
-  const { items, catalogue, planner } = useAppState()
+  const { items, catalogue, recipes, planner } = useAppState()
   const [ignoredItems, setIgnoredItems] = useState([])
 
-  // Returns: ["apples", "apples", "bananas"]
-  const plannedItemSlugs = Object.values(planner)
-    .map(p => p.items)
-    .flat()
+  // Returns: ["apples", "pizza"]
+  const plannerItems = Object.values(planner).flatMap(p => p.items)
+  const plannedItemSlugs = [
+    ...plannerItems
+      ?.filter(i => i.type === "recipe")
+      ?.flatMap(i => recipes[i.name]?.ingredients.map(i => i.slug))
+      ?.filter(Boolean),
+    ...plannerItems?.filter(i => i.type === "item")?.map(i => i.name),
+  ]
 
   // Returns: {"apples": 2, "bananas": 1}
   const qtyBySlug = plannedItemSlugs.reduce(
