@@ -4,26 +4,20 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-  FormControl as MuiFormControl,
-  InputLabel,
-  Select,
-  MenuItem,
 } from "@material-ui/core"
 import Alert from "../../Alert"
+import DayPicker from "../DayPicker"
 import Dialog from "../Dialog"
-import { ItemAutocomplete } from "../../Autocomplete"
-import { slugify } from "../../../helpers"
+import {
+  ItemOrRecipeAutocomplete,
+  IngredientAutocomplete,
+} from "../../Autocomplete"
+import { slugify, unslugify } from "../../../helpers"
 import styled from "styled-components"
 import { useAppState } from "../../Backend"
 
 const Spacer = styled.div`
   flex-grow: 1;
-`
-
-const FormControl = styled(MuiFormControl)`
-  && {
-    margin-bottom: 2rem;
-  }
 `
 
 const AddPlannerItemDialog = ({
@@ -34,22 +28,38 @@ const AddPlannerItemDialog = ({
   onClose,
   onChangeDay,
 }) => {
-  const { planner } = useAppState()
-  const itemInputRef = useRef()
+  const { recipes, planner } = useAppState()
   const [item, setItem] = useState("")
+  const [emoji, setEmoji] = useState(null)
+  const [ingredients, setIngredients] = useState([])
   const [alertVisible, setAlertVisible] = useState(false)
 
+  const itemInputRef = useRef()
+
   const plannedItems = planner[day]?.items || []
-  const alreadyPlanned = plannedItems.some(i => i === slugify(item))
+  const alreadyPlanned = plannedItems.some(i => i.name === slugify(item))
   const disabled = slugify(item) === "" || alreadyPlanned
 
   const handleSubmit = e => {
     e.preventDefault()
-    onSubmit({ item: slugify(item), day })
+    onSubmit({
+      day,
+      name: item,
+      ingredients,
+      emoji,
+    })
     setAlertVisible(true)
     setTimeout(() => setAlertVisible(false), 1000)
     setItem("")
+    setEmoji(null)
+    setIngredients([])
     itemInputRef.current.focus()
+  }
+
+  const updateItem = newItem => {
+    setItem(newItem)
+    const recipe = recipes[slugify(newItem)]
+    if (recipe) setIngredients(recipe.ingredients.map(i => unslugify(i.slug)))
   }
 
   return (
@@ -61,29 +71,16 @@ const AddPlannerItemDialog = ({
     >
       <DialogTitle>Add items to planner</DialogTitle>
       <DialogContent>
-        <FormControl fullWidth variant="outlined">
-          <InputLabel id="select-day-label">Day</InputLabel>
-          <Select
-            labelId="select-day-label"
-            id="select-day"
-            value={day || days[0]}
-            onChange={e => onChangeDay(e.target.value)}
-            label="Day"
-          >
-            {days.map(d => (
-              <MenuItem key={d} value={d}>
-                {d}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {/* Having `-search` in the id stops lastpass autocomplete */}
-        <ItemAutocomplete
+        <DayPicker days={days} value={day} onChange={onChangeDay} />
+        <ItemOrRecipeAutocomplete
+          emoji={emoji}
+          onEmojiChange={setEmoji}
           value={item}
-          onChange={setItem}
+          onChange={updateItem}
           ref={itemInputRef}
           autoFocus
         />
+        <IngredientAutocomplete value={ingredients} onChange={setIngredients} />
       </DialogContent>
       <DialogActions>
         <Alert visible={alertVisible}>Saved!</Alert>

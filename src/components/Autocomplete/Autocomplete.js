@@ -51,7 +51,7 @@ const Option = ({ option, onDelete }) => {
 }
 
 const Autocomplete = forwardRef(
-  ({ value, onChange, onDelete, emoji, onEmojiChange, ...props }, ref) => {
+  ({ onDelete, emoji, onEmojiChange, ...props }, ref) => {
     const emojiPickerRef = useRef()
     const [anchorEl, setAnchorEl] = useState(null)
     const handleClick = event => setAnchorEl(event.currentTarget)
@@ -88,8 +88,6 @@ const Autocomplete = forwardRef(
         )}
         <StyledAutocomplete
           freeSolo
-          inputValue={value}
-          onInputChange={(e, newValue) => e && onChange(newValue)}
           getOptionSelected={caseInsensitiveCompare}
           filterOptions={fuzzy}
           renderOption={onDelete ? memoOption : undefined}

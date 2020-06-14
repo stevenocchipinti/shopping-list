@@ -78,8 +78,8 @@ const ShareDialog = ({ open, onClose }) => {
             <AutoComplete
               id="list-search"
               options={listMRU}
-              value={newList}
-              onChange={setNewList}
+              inputValue={newList}
+              onInputChange={(e, newValue) => e && setNewList(newValue)}
               onDelete={removeFromListMRU}
               autoFocus
               renderInput={params => (
