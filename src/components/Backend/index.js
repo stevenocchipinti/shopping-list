@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, createContext } from "react"
-import Backend from "./backend"
+import { Backend, generateListName } from "./backend"
 
 const AppContext = createContext()
 const BackendContext = createContext()
@@ -39,4 +39,4 @@ const AppProvider = ({ listId, children }) => {
 const useAppState = () => React.useContext(AppContext)
 const useBackend = () => React.useContext(BackendContext)
 
-export { AppProvider, useAppState, useBackend }
+export { AppProvider, useAppState, useBackend, generateListName }

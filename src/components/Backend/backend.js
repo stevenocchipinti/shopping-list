@@ -6,7 +6,7 @@ export function generateListName() {
   return Firebase.firestore().collection("lists").doc().id
 }
 
-export default class Backend {
+export class Backend {
   constructor(listName, callbacks) {
     this.unsubFunctions = []
     this.callbacks = callbacks

@@ -15,7 +15,7 @@ import AutoComplete from "../Autocomplete"
 
 import { Link, useLocation, useHistory } from "react-router-dom"
 import useLocalStorage from "../../useLocalStorage"
-import { generateListName } from "../../components/Backend/backend"
+import { generateListName } from "../../components/Backend"
 
 // The form is nessesary to get the mobile keyboards to tab through the
 // fields and the styling is needed because the DialogTitle, DialogContent,
