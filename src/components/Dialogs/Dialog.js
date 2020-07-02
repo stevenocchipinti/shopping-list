@@ -4,6 +4,7 @@ import { Dialog as MuiDialog, Slide, useMediaQuery } from "@material-ui/core"
 import { useTheme } from "@material-ui/core/styles"
 
 const StyledDialog = styled(MuiDialog)`
+  user-select: none;
   & .MuiDialog-paper:not(.MuiDialog-paperFullScreen) {
     min-width: 400px;
   }

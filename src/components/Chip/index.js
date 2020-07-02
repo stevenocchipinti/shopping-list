@@ -19,6 +19,12 @@ const Chip = styled.span`
   margin: 0.25rem;
   color: ${({ done, theme }) => (done ? theme.palette.grey.A200 : "inherit")};
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.3s ease-in-out;
+
+  :active {
+    background-color: ${greys("400", "700")};
+  }
 
   .emoji-mart-emoji {
     height: 16px;
