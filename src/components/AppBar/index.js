@@ -13,7 +13,7 @@ import { Menu as MenuIcon, ArrowBack as BackIcon } from "@material-ui/icons"
 import Menu from "./Menu"
 
 const AppBar = ({
-  title = "Shopping List",
+  title = "Shopping list",
   variant,
   loading,
   back,

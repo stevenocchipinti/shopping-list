@@ -1,7 +1,7 @@
 {
-  "name": "Shopping List",
-  "short_name": "ShoppingList",
-  "start_url": "https://shopping.stevenocchipinti.com",
+  "name": "Shopping Planner",
+  "short_name": "Shopping Planner",
+  "start_url": "https://shoppingplanner.app",
   "theme_color": "#009688",
   "background_color": "#ffffff",
   "display": "standalone",

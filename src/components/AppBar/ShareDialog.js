@@ -15,7 +15,7 @@ const ShareDialog = ({ open, onClose }) => {
     if (navigator.share !== undefined) {
       navigator
         .share({
-          title: "My shopping list",
+          title: "My shopping planner",
           url: window.location.href,
         })
         .then(onClose)
