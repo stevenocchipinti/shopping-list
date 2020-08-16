@@ -8,14 +8,14 @@ import useSetting from "../../useSetting"
 
 const Chip = styled.span`
   display: flex;
-  align-items: center;
+  align-items: stretch;
   background-color: ${greys("300", "900")};
   font-size: 14px;
-  line-height: 32px;
+  line-height: 24px;
   border-radius: 16px;
   box-shadow: ${({ theme, outline }) =>
     outline ? `inset 0 0 0px 1px ${theme.palette.grey[500]}` : "none"};
-  padding: 0 12px;
+  padding: 4px 12px;
   margin: 0.25rem;
   color: ${({ done, theme }) => (done ? theme.palette.grey.A200 : "inherit")};
   cursor: pointer;
@@ -28,7 +28,7 @@ const Chip = styled.span`
 
   .emoji-mart-emoji {
     height: 16px;
-    margin-right: 4px;
+    margin: 4px 4px 4px 0;
     filter: ${({ done }) => (done ? "grayscale(1) opacity(0.4)" : "none")};
   }
 `
@@ -42,7 +42,7 @@ const Qty = styled.span`
   align-items: center;
   line-height: 16px;
   background-color: ${greys("200", "800")};
-  border-radius: 0 18px 18px 0;
+  border-radius: 0 12px 12px 0;
   padding: 4px 7px 4px 6px;
   margin: 0 -7px 0 7px;
 `
