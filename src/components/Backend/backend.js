@@ -260,7 +260,6 @@ export class Backend {
         items.forEach(({ name, section, quantity }) => {
           const slug = slugify(name)
           batch.set(this.itemsRef.doc(slug), { name, quantity, done: false })
-          batch.set(this.catalogueRef.doc(slug), { section })
         })
         batch.commit()
       },
