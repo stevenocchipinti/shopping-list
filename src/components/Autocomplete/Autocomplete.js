@@ -19,7 +19,13 @@ const caseInsensitiveCompare = (option, value) =>
   option.toLowerCase() === value.toLowerCase()
 
 const fuzzy = (options, { inputValue }) => {
-  const r = new RegExp(".*" + inputValue.split("").join(".*") + ".*", "i")
+  const r = new RegExp(
+    `.*${inputValue
+      .replace(/[()+*{}[]]*/gi, "")
+      .split("")
+      .join(".*")}.*`,
+    "i"
+  )
   return options.filter(o => r.exec(o))
 }
 

@@ -3,7 +3,10 @@ import customEmojis from "./customEmojis"
 
 const searchCustom = searchTerm => {
   if (searchTerm === "") return []
-  const broaderSearch = searchTerm.replace(/i?e?s?$/, "").toLowerCase()
+  const broaderSearch = searchTerm
+    .replace(/[()+*{}[]]*/gi, "")
+    .replace(/i?e?s?$/, "")
+    .toLowerCase()
 
   return customEmojis
     .filter(customEmoji =>
