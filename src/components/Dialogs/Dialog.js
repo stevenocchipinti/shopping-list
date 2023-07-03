@@ -8,6 +8,7 @@ const StyledDialog = styled(MuiDialog)`
   & .MuiDialog-paper:not(.MuiDialog-paperFullScreen) {
     min-width: 400px;
   }
+  max-height: 100vmin;
 `
 
 // The form is nessesary to get the mobile keyboards to tab through the
