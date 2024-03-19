@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "shoppingplanner",
     "public": "build",
     "rewrites": [
       {
@@ -9,11 +10,11 @@
     ],
     "headers": [
       {
-        "source" : "/service-worker.js",
-        "headers" : [
+        "source": "/service-worker.js",
+        "headers": [
           {
-            "key" : "Cache-Control",
-            "value" : "max-age=0"
+            "key": "Cache-Control",
+            "value": "max-age=0"
           }
         ]
       }
