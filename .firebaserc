@@ -1,5 +1,14 @@
 {
   "projects": {
     "shopping-list": "shopping-list-app-de905"
+  },
+  "targets": {
+    "shopping-list-app-de905": {
+      "hosting": {
+        "redirect-site": [
+          "shopping-list-app-de905"
+        ]
+      }
+    }
   }
 }

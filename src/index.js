@@ -1,84 +1,79 @@
-import React, { useState, useEffect } from "react"
-import ReactDOM from "react-dom"
-import { createGlobalStyle } from "styled-components"
-import { BrowserRouter as Router, Route } from "react-router-dom"
-import * as Firebase from "firebase/app"
-import "firebase/firestore"
-import * as serviceWorker from "./serviceWorker"
-
-import { AppProvider } from "./components/Backend"
-import App from "./components/App"
-import Home from "./components/Home"
-import Settings from "./components/Settings"
-import { ThemeProvider } from "./components/ThemeProvider"
-
-import { Snackbar } from "@material-ui/core"
-
-Firebase.initializeApp({
-  apiKey: "AIzaSyCtgligqZSkUwWkWIAcMOW0nIW2mfgVdcw",
-  authDomain: "shopping-list-app-de905.firebaseapp.com",
-  databaseURL: "https://shopping-list-app-de905.firebaseio.com",
-  projectId: "shopping-list-app-de905",
-  storageBucket: "",
-  messagingSenderId: "975596815491",
-})
-Firebase.firestore().enablePersistence()
+import React from "react";
+import ReactDOM from "react-dom";
+import styled, { createGlobalStyle } from "styled-components";
+import { unregister } from "./serviceWorker";
 
 const GlobalStyle = createGlobalStyle`
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: ${({ theme }) => theme.palette.background.default};
-    height: 100vh;
-  }
   * {
     font-family: Roboto, sans-serif;
     box-sizing: border-box;
   }
-`
+`;
+
+const Main = styled.main`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  height: 100vh;
+
+  p {
+    text-align: center;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+const LinkButton = styled.a`
+  padding: 1rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
 
 const Root = () => {
-  const [notification, setNotification] = useState({
-    message: "",
-    visible: false,
-  })
-
-  useEffect(() => {
-    window.addEventListener("online", () => {
-      setNotification({ message: "You are now online!", visible: true })
-    })
-    window.addEventListener("offline", () => {
-      setNotification({ message: "You have been disconnected", visible: true })
-    })
-  }, [])
-
   return (
-    <ThemeProvider>
-      <Router>
-        <>
-          <GlobalStyle />
-          <Route path="/" exact={true} render={() => <Home />} />
-          <Route path="/settings" exact={true} render={() => <Settings />} />
-          <Route
-            path="/list/:listId"
-            render={({ match }) => (
-              <AppProvider listId={match.params.listId}>
-                <App match={match} />
-              </AppProvider>
-            )}
-          />
-        </>
-      </Router>
-
-      <Snackbar
-        open={notification.visible}
-        message={notification.message}
-        autoHideDuration={3000}
-        onClose={() => setNotification({ message: "", visible: false })}
+    <Main>
+      <GlobalStyle />
+      <h1>Shopping Planner</h1>
+      <img
+        width={150}
+        height={150}
+        src="/android-chrome-192x192.png"
+        alt="shoppingplanner logo"
       />
-    </ThemeProvider>
-  )
-}
+      <p>
+        This app has moved to a new location.
+        <br />
+        <br />
+        Please update your bookmark to use{" "}
+        <a href="https://shoppingplanner.web.app">
+          shoppingplanner.web.app
+        </a>{" "}
+        instead.
+      </p>
+      <LinkButton href="https://shoppingplanner.web.app">
+        Goto new URL
+      </LinkButton>
+    </Main>
+  );
+};
 
-ReactDOM.render(<Root />, document.getElementById("root"))
-serviceWorker.unregister()
+ReactDOM.render(<Root />, document.getElementById("root"));
+unregister();
